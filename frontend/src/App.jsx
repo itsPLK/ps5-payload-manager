@@ -299,29 +299,35 @@ function App() {
 
   useEffect(() => {
     const init = async () => {
-      let offline = false
+      // Health = /version only. LAN IP is optional (tile uses 127.0.0.1).
+      // Upstream #40: treating getip / 0.0.0.0 as dead broke offline tile UI.
+      try {
+        const verRes = await fetch('/version')
+        const verText = await verRes.text()
+        if (!verRes.ok || verText.toLowerCase().includes('<!doctype')) {
+          setIsOffline(true)
+          return
+        }
+        setVersion(verText.trim())
+      } catch (e) {
+        setIsOffline(true)
+        return
+      }
+
       try {
         const ipRes = await fetch('/getip').then(r => r.text())
-        if (ipRes.toLowerCase().includes('<!doctype')) offline = true
-        else setIp(ipRes)
+        if (ipRes && !ipRes.toLowerCase().includes('<!doctype')) {
+          const cleaned = ipRes.trim()
+          setIp(cleaned && cleaned !== '0.0.0.0' ? cleaned : '127.0.0.1')
+        } else {
+          setIp('127.0.0.1')
+        }
       } catch (e) {
-        offline = true
+        setIp('127.0.0.1')
       }
 
-      try {
-        const verRes = await fetch('/version').then(r => r.text())
-        if (verRes.toLowerCase().includes('<!doctype')) offline = true
-        else setVersion(verRes)
-      } catch (e) {
-        offline = true
-      }
-
-      if (offline) {
-        setIsOffline(true)
-      } else {
-        refreshPayloads()
-        refreshConfig()
-      }
+      refreshPayloads()
+      refreshConfig()
     }
     init()
   }, [])

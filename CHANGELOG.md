@@ -1,3 +1,9 @@
+## v0.4.2
+
+* **Rest Mode / offline tile fix** (upstream #61 / #40): after sleep/wake, HTTP on 8084 is recovered via SIGCONT + loopback probe — no longer requires a LAN/WAN IP or “plug cable again”.
+* Local health is `127.0.0.1` / `/version`; UI no longer treats missing LAN IP as “Payload Manager is not running”.
+* `/getip` returns `127.0.0.1` when offline instead of `0.0.0.0`.
+
 ## v0.4.1
 
 * Installed payloads show release version under the name in blue when installed from Download Hub (sidecar `version` / tag), same style as filename `_v1.0` badges.

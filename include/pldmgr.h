@@ -45,7 +45,7 @@
 #define ROUTE_GH_RELEASES "/github_releases"
 #define ROUTE_GH_INSTALL "/github_install"
 
-#define MENU_VERSION "0.4.1"
+#define MENU_VERSION "0.4.2"
 #define AUTOLOAD_CONFIG_PATH "/data/pldmgr/autoload.txt"
 #define PLDMGR_CONFIG_PATH "/data/pldmgr/pldmgr_config.txt"
 #define REPOSITORY_CACHE_PATH "/data/pldmgr/repository_cache.json"
