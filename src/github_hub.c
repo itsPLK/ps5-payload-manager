@@ -804,9 +804,10 @@ static int fetch_and_cache(const char *repo, GhRelease *out, int *count,
   char cache_path[512];
   char *raw = NULL;
   size_t raw_size = 0;
-  char resp_buf[256 * 1024];
+  char *resp_buf;
   size_t resp_len;
   long now = (long)time(NULL);
+  const size_t resp_cap = 512 * 1024;
 
   ensure_dir_recursive(BASE_DATA_DIR);
   ensure_dir_recursive(GH_CACHE_DIR);
@@ -835,10 +836,13 @@ static int fetch_and_cache(const char *repo, GhRelease *out, int *count,
   free(raw);
 
   *fetched_at = now;
-  resp_len = build_releases_response(repo, out, *count, 0, now, resp_buf,
-                                     sizeof(resp_buf));
+  resp_buf = malloc(resp_cap);
+  if (!resp_buf)
+    return -1;
+  resp_len = build_releases_response(repo, out, *count, 0, now, resp_buf, resp_cap);
   cache_path_for_repo(repo, cache_path, sizeof(cache_path));
   write_file_text(cache_path, resp_buf, resp_len);
+  free(resp_buf);
   return 0;
 }
 
