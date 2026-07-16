@@ -8,7 +8,6 @@
  */
 
 #include <ctype.h>
-#include <curl/curl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,7 +21,7 @@
 #include "payload_mgr.h"
 #include "pldmgr.h"
 #include "config.h"
-#include "assets_cacert_pem.h"
+#include "repository.h"
 
 #define GH_REPOS_PATH "/data/pldmgr/github_repos.json"
 #define GH_CACHE_DIR "/data/pldmgr/github_cache"
@@ -146,120 +145,6 @@ static void cache_path_for_repo(const char *repo, char *out, size_t out_size) {
   }
   safe[j] = '\0';
   snprintf(out, out_size, "%s/%s.json", GH_CACHE_DIR, safe);
-}
-
-static void read_github_token(char *out, size_t out_size) {
-  FILE *f;
-  char line[512];
-  out[0] = '\0';
-  f = fopen(PLDMGR_CONFIG_PATH, "r");
-  if (!f)
-    return;
-  while (fgets(line, sizeof(line), f)) {
-    if (!strncmp(line, "GITHUB_TOKEN=", 13)) {
-      char *v = line + 13;
-      size_t len = strcspn(v, "\r\n");
-      if (len >= out_size)
-        len = out_size - 1;
-      memcpy(out, v, len);
-      out[len] = '\0';
-      break;
-    }
-  }
-  fclose(f);
-}
-
-/* ── curl download with optional auth ──────────────────────── */
-
-static size_t write_file_cb(void *ptr, size_t size, size_t nmemb, FILE *stream) {
-  return fwrite(ptr, size, nmemb, stream);
-}
-
-static int download_url(const char *url, const char *out_path, int use_github_api) {
-  CURL *curl;
-  FILE *fp;
-  CURLcode res = CURLE_FAILED_INIT;
-  char token[256];
-  struct curl_slist *headers = NULL;
-  char *ca_bundle = NULL;
-
-  if (!url || !out_path)
-    return -1;
-
-  fp = fopen(out_path, "wb");
-  if (!fp)
-    return -1;
-
-  curl = curl_easy_init();
-  if (!curl) {
-    fclose(fp);
-    return -1;
-  }
-
-  curl_easy_setopt(curl, CURLOPT_URL, url);
-  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_file_cb);
-  curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-  curl_easy_setopt(curl, CURLOPT_USERAGENT, "pldmgr-download-hub/1.0");
-  curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 120L);
-  curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 20L);
-
-  ca_bundle = malloc(assets_cacert_pem_len + 1);
-  if (ca_bundle) {
-    memcpy(ca_bundle, assets_cacert_pem, assets_cacert_pem_len);
-    ca_bundle[assets_cacert_pem_len] = '\0';
-  }
-  {
-    struct curl_blob blob;
-    blob.data = ca_bundle ? ca_bundle : (void *)assets_cacert_pem;
-    blob.len = ca_bundle ? (assets_cacert_pem_len + 1) : assets_cacert_pem_len;
-    blob.flags = CURL_BLOB_COPY;
-    curl_easy_setopt(curl, CURLOPT_CAINFO_BLOB, &blob);
-  }
-  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1L);
-  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 2L);
-
-  if (use_github_api) {
-    headers = curl_slist_append(headers, "Accept: application/vnd.github+json");
-    headers = curl_slist_append(headers, "X-GitHub-Api-Version: 2022-11-28");
-    read_github_token(token, sizeof(token));
-    if (token[0]) {
-      char auth[320];
-      snprintf(auth, sizeof(auth), "Authorization: Bearer %s", token);
-      headers = curl_slist_append(headers, auth);
-    }
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-  }
-
-  res = curl_easy_perform(curl);
-  if (res == CURLE_PEER_FAILED_VERIFICATION) {
-    pldmgr_log("[GH] SSL verify failed, retry insecure: %s\n", url);
-    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
-    res = curl_easy_perform(curl);
-  }
-
-  {
-    long code = 0;
-    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
-    if (res == CURLE_OK && code != 200) {
-      pldmgr_log("[GH] HTTP %ld for %s\n", code, url);
-      res = CURLE_HTTP_RETURNED_ERROR;
-    }
-  }
-
-  if (headers)
-    curl_slist_free_all(headers);
-  curl_easy_cleanup(curl);
-  if (ca_bundle)
-    free(ca_bundle);
-  fclose(fp);
-
-  if (res != CURLE_OK) {
-    remove(out_path);
-    return -1;
-  }
-  return 0;
 }
 
 /* ── repo list persistence ─────────────────────────────────── */
@@ -818,7 +703,7 @@ static int fetch_and_cache(const char *repo, GhRelease *out, int *count,
   snprintf(tmp_path, sizeof(tmp_path), "%s/releases_raw.tmp", GH_CACHE_DIR);
 
   pldmgr_log("[GH] Fetching releases for %s\n", repo);
-  if (download_url(api_url, tmp_path, 1) != 0) {
+  if (download_to_file_ex(api_url, tmp_path, 1) != 0) {
     pldmgr_log("[GH] Failed to download releases for %s\n", repo);
     return -1;
   }
@@ -968,7 +853,7 @@ int github_install_asset(const char *repo_in, const char *tag, const char *asset
   snprintf(tmp_path, sizeof(tmp_path), "%s/%s.part", PAYLOADS_STORAGE_DIR, asset);
 
   pldmgr_log("[GH] Downloading %s @ %s / %s\n", repo, tag, asset);
-  if (download_url(url, tmp_path, 0) != 0) {
+  if (download_to_file_ex(url, tmp_path, 0) != 0) {
     snprintf(msg, msg_size, "Download failed");
     remove(tmp_path);
     return -1;

@@ -23,10 +23,32 @@ static size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
     return fwrite(ptr, size, nmemb, stream);
 }
 
-int download_to_file(const char *url, const char *out_path) {
+static void read_github_token(char *out, size_t out_size) {
+    FILE *f;
+    char line[512];
+    out[0] = '\0';
+    f = fopen(PLDMGR_CONFIG_PATH, "r");
+    if (!f)
+        return;
+    while (fgets(line, sizeof(line), f)) {
+        if (!strncmp(line, "GITHUB_TOKEN=", 13)) {
+            char *v = line + 13;
+            size_t len = strcspn(v, "\r\n");
+            if (len >= out_size)
+                len = out_size - 1;
+            memcpy(out, v, len);
+            out[len] = '\0';
+            break;
+        }
+    }
+    fclose(f);
+}
+
+int download_to_file_ex(const char *url, const char *out_path, int github_api) {
     CURL *curl;
     FILE *fp;
     CURLcode res = CURLE_FAILED_INIT;
+    struct curl_slist *headers = NULL;
 
     if (!url || !out_path) {
         pldmgr_log("[PLDMGR] download_to_file: missing url or path\n");
@@ -44,13 +66,14 @@ int download_to_file(const char *url, const char *out_path) {
         curl_easy_setopt(curl, CURLOPT_URL, url);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+        curl_easy_setopt(curl, CURLOPT_USERAGENT,
+                         github_api ? "pldmgr-download-hub/1.0" : "pldmgr/1.0");
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 120L);
+        curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 20L);
 
-        /* User agent */
-        curl_easy_setopt(curl, CURLOPT_USERAGENT, "pldmgr/1.0");
-
-        /* Securely verify SSL against embedded CA bundle */
-        /* Older curl versions with mbedTLS require the PEM buffer to be NUL-terminated,
-           and the length to include the NUL terminator. */
+        /* Securely verify SSL against embedded CA bundle.
+         * Older curl + mbedTLS wants a NUL-terminated PEM length. */
         char *ca_bundle = malloc(assets_cacert_pem_len + 1);
         if (ca_bundle) {
             memcpy(ca_bundle, assets_cacert_pem, assets_cacert_pem_len);
@@ -71,13 +94,22 @@ int download_to_file(const char *url, const char *out_path) {
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1L);
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 2L);
 
-        /* Allow redirection */
-        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        if (github_api) {
+            char token[256];
+            headers = curl_slist_append(headers, "Accept: application/vnd.github+json");
+            headers = curl_slist_append(headers, "X-GitHub-Api-Version: 2022-11-28");
+            read_github_token(token, sizeof(token));
+            if (token[0]) {
+                char auth[320];
+                snprintf(auth, sizeof(auth), "Authorization: Bearer %s", token);
+                headers = curl_slist_append(headers, auth);
+            }
+            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        }
+
         res = curl_easy_perform(curl);
 
-        /* If SSL verification fails (e.g., due to mbedTLS Quirks with Let's Encrypt / Sectigo
-           cross-signed roots, or user's time drift), fallback to insecure download.
-           We verify checksums later anyway for ELFs! */
+        /* If SSL verification fails, retry insecurely (checksums still gate ELFs). */
         if (res == CURLE_PEER_FAILED_VERIFICATION) {
             pldmgr_log("[PLDMGR] SSL verification failed. Retrying insecurely: %s\n", url);
             curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
@@ -88,6 +120,8 @@ int download_to_file(const char *url, const char *out_path) {
         long http_code = 0;
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
 
+        if (headers)
+            curl_slist_free_all(headers);
         curl_easy_cleanup(curl);
 
         if (res != CURLE_OK) {
@@ -107,6 +141,10 @@ int download_to_file(const char *url, const char *out_path) {
     }
 
     return 0;
+}
+
+int download_to_file(const char *url, const char *out_path) {
+    return download_to_file_ex(url, out_path, 0);
 }
 
 /* ── JSON parsing ──────────────────────────────────────────── */

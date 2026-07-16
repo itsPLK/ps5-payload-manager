@@ -21,6 +21,9 @@ typedef struct RepoPayload {
 /* Download a URL to a local file. Returns 0 on success, -1 on failure. */
 int download_to_file(const char *url, const char *out_path);
 
+/* Same as download_to_file, optional GitHub API headers + Bearer token from config. */
+int download_to_file_ex(const char *url, const char *out_path, int github_api);
+
 /* Parse a JSON string containing payload objects into a RepoPayload array.
  * Caller must free *out_items. Returns 0 on success, -1 on failure. */
 int parse_repository_payloads(const char *json, RepoPayload **out_items, size_t *out_count);
