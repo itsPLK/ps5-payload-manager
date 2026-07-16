@@ -1,3 +1,12 @@
+## v0.4.0 Download Hub
+
+* **Download Hub** (Blurfer-style): add GitHub repos (`owner/repo`), pick a release version, install `.elf` / `.bin` / `.js` assets into `/data/pldmgr/payloads`.
+* New native endpoints: `/github_repos_*`, `/github_releases`, `/github_install`.
+* Release JSON cached under `/data/pldmgr/github_cache/` (1 hour TTL) for PS5 reliability / rate limits.
+* Optional `GITHUB_TOKEN=...` in `/data/pldmgr/pldmgr_config.txt` for higher API limits.
+* Default repos include BFpilot, pldmgr, kstuff-lite, zftpd, elfldr, websrv, etc.
+* Legacy flat `payloads.json` multi-source remains under Settings (off by default).
+
 ## v0.3.1
 
 - Fixed an issue where installed payloads were not showing on the dashboard for some users ([#28](https://github.com/itsPLK/ps5-payload-manager/issues/28)).

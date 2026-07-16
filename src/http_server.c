@@ -21,6 +21,7 @@
 #include "sources.h"
 #include "process_mgr.h"
 #include "ps5_launcher.h"
+#include "github_hub.h"
 
 #include "assets_index_html.h"
 #include "assets_cache_appcache.h"
@@ -122,6 +123,7 @@ static int is_noisy_route(const char *url) {
     if (strcmp(url, ROUTE_GET_CONFIG) == 0) return 1;
     if (strcmp(url, ROUTE_REPO_LIST) == 0) return 1;
     if (strcmp(url, ROUTE_PROCESSES_LIST) == 0) return 1;
+    if (strcmp(url, ROUTE_GH_REPOS_LIST) == 0) return 1;
     if (strcmp(url, "/events") == 0) return 1;
     return 0;
 }
@@ -205,6 +207,15 @@ enum MHD_Result http_on_request(void *cls, struct MHD_Connection *conn,
         }
 
         if (strcmp(url, ROUTE_SOURCES_SET) == 0 && strcmp(method, "POST") == 0) {
+            struct PostStatus *status = malloc(sizeof(struct PostStatus));
+            status->data = NULL;
+            status->size = 0;
+            status->error = 0;
+            *con_cls = status;
+            return MHD_YES;
+        }
+
+        if (strcmp(url, ROUTE_GH_REPOS_SET) == 0 && strcmp(method, "POST") == 0) {
             struct PostStatus *status = malloc(sizeof(struct PostStatus));
             status->data = NULL;
             status->size = 0;
@@ -375,6 +386,41 @@ enum MHD_Result http_on_request(void *cls, struct MHD_Connection *conn,
                 conn, ok == 0 ? MHD_HTTP_OK : MHD_HTTP_INTERNAL_SERVER_ERROR, resp_ss);
             MHD_destroy_response(resp_ss);
             return ret_ss;
+        }
+    }
+
+    /* ── Handle POST data for /github_repos_set ────────────── */
+    if (strcmp(url, ROUTE_GH_REPOS_SET) == 0 && strcmp(method, "POST") == 0) {
+        struct PostStatus *status = (struct PostStatus *)*con_cls;
+        if (*upload_data_size != 0) {
+            char *nd = realloc(status->data, status->size + *upload_data_size + 1);
+            if (!nd) {
+                status->error = 1;
+            } else {
+                status->data = nd;
+                memcpy(status->data + status->size, upload_data, *upload_data_size);
+                status->size += *upload_data_size;
+                status->data[status->size] = '\0';
+            }
+            *upload_data_size = 0;
+            return MHD_YES;
+        } else {
+            int ok = -1;
+            if (status->data && !status->error)
+                ok = github_repos_set(status->data, status->size);
+            if (status->data)
+                free(status->data);
+            free(status);
+            *con_cls = NULL;
+
+            const char *msg = ok == 0 ? MSG_OK : "Failed to save repos";
+            struct MHD_Response *resp_gh = MHD_create_response_from_buffer(
+                strlen(msg), (void *)msg, MHD_RESPMEM_MUST_COPY);
+            add_cors_headers(resp_gh);
+            enum MHD_Result ret_gh = MHD_queue_response(
+                conn, ok == 0 ? MHD_HTTP_OK : MHD_HTTP_INTERNAL_SERVER_ERROR, resp_gh);
+            MHD_destroy_response(resp_gh);
+            return ret_gh;
         }
     }
 
@@ -759,6 +805,98 @@ enum MHD_Result http_on_request(void *cls, struct MHD_Connection *conn,
         MHD_add_response_header(resp, "Content-Type", "application/json");
         add_cors_headers(resp);
         return MHD_queue_response(conn, rc_rm == 0 ? MHD_HTTP_OK : MHD_HTTP_BAD_REQUEST, resp);
+    } else if (strcmp(url, ROUTE_GH_REPOS_LIST) == 0) {
+        char *resp_buf;
+        struct MHD_Response *oom_resp = alloc_response_buffer(&resp_buf);
+        if (oom_resp)
+            return MHD_queue_response(conn, MHD_HTTP_INTERNAL_SERVER_ERROR, oom_resp);
+        github_repos_list_json(resp_buf, RESPONSE_BUFFER_SIZE);
+        resp = MHD_create_response_from_buffer(strlen(resp_buf), (void *)resp_buf,
+                                               MHD_RESPMEM_MUST_FREE);
+        MHD_add_response_header(resp, "Content-Type", "application/json");
+    } else if (strcmp(url, ROUTE_GH_REPOS_ADD) == 0) {
+        const char *slug = MHD_lookup_connection_value(conn, MHD_GET_ARGUMENT_KIND, "repo");
+        if (!slug || !slug[0])
+            slug = MHD_lookup_connection_value(conn, MHD_GET_ARGUMENT_KIND, "url");
+        char msg_buf[256] = "";
+        int rc = slug ? github_repos_add(slug, msg_buf, sizeof(msg_buf)) : -1;
+        if (!slug)
+            snprintf(msg_buf, sizeof(msg_buf), "Missing repo");
+        char msg_e[512];
+        char json_resp[640];
+        pldmgr_json_escape(msg_buf, msg_e, sizeof(msg_e));
+        if (rc == 0)
+            snprintf(json_resp, sizeof(json_resp), "{\"ok\":true,\"repo\":\"%s\"}", msg_e);
+        else
+            snprintf(json_resp, sizeof(json_resp), "{\"ok\":false,\"message\":\"%s\"}", msg_e);
+        resp = MHD_create_response_from_buffer(strlen(json_resp), (void *)json_resp,
+                                               MHD_RESPMEM_MUST_COPY);
+        MHD_add_response_header(resp, "Content-Type", "application/json");
+        add_cors_headers(resp);
+        return MHD_queue_response(conn, rc == 0 ? MHD_HTTP_OK : MHD_HTTP_BAD_REQUEST, resp);
+    } else if (strcmp(url, ROUTE_GH_REPOS_REMOVE) == 0) {
+        const char *slug = MHD_lookup_connection_value(conn, MHD_GET_ARGUMENT_KIND, "repo");
+        char msg_buf[256] = "";
+        int rc = slug ? github_repos_remove(slug, msg_buf, sizeof(msg_buf)) : -1;
+        if (!slug)
+            snprintf(msg_buf, sizeof(msg_buf), "Missing repo");
+        char msg_e[512];
+        char json_resp[640];
+        pldmgr_json_escape(msg_buf, msg_e, sizeof(msg_e));
+        snprintf(json_resp, sizeof(json_resp), "{\"ok\":%s,\"message\":\"%s\"}",
+                 rc == 0 ? "true" : "false", msg_e);
+        resp = MHD_create_response_from_buffer(strlen(json_resp), (void *)json_resp,
+                                               MHD_RESPMEM_MUST_COPY);
+        MHD_add_response_header(resp, "Content-Type", "application/json");
+        add_cors_headers(resp);
+        return MHD_queue_response(conn, rc == 0 ? MHD_HTTP_OK : MHD_HTTP_BAD_REQUEST, resp);
+    } else if (strcmp(url, ROUTE_GH_RELEASES) == 0) {
+        const char *repo = MHD_lookup_connection_value(conn, MHD_GET_ARGUMENT_KIND, "repo");
+        const char *force = MHD_lookup_connection_value(conn, MHD_GET_ARGUMENT_KIND, "refresh");
+        int force_refresh = force && (force[0] == '1' || !strcasecmp(force, "true"));
+        if (!repo || !repo[0]) {
+            const char *err = "{\"ok\":false,\"message\":\"Missing repo\"}";
+            resp = MHD_create_response_from_buffer(strlen(err), (void *)err,
+                                                   MHD_RESPMEM_MUST_COPY);
+            MHD_add_response_header(resp, "Content-Type", "application/json");
+            add_cors_headers(resp);
+            return MHD_queue_response(conn, MHD_HTTP_BAD_REQUEST, resp);
+        }
+        char *resp_buf;
+        struct MHD_Response *oom_resp = alloc_response_buffer(&resp_buf);
+        if (oom_resp)
+            return MHD_queue_response(conn, MHD_HTTP_INTERNAL_SERVER_ERROR, oom_resp);
+        size_t len = github_releases_json(repo, force_refresh, resp_buf, RESPONSE_BUFFER_SIZE);
+        int ok = (len > 0 && strstr(resp_buf, "\"ok\":true") != NULL);
+        resp = MHD_create_response_from_buffer(len, (void *)resp_buf, MHD_RESPMEM_MUST_FREE);
+        MHD_add_response_header(resp, "Content-Type", "application/json");
+        add_cors_headers(resp);
+        {
+            enum MHD_Result ret = MHD_queue_response(
+                conn, ok ? MHD_HTTP_OK : MHD_HTTP_BAD_GATEWAY, resp);
+            MHD_destroy_response(resp);
+            return ret;
+        }
+    } else if (strcmp(url, ROUTE_GH_INSTALL) == 0) {
+        const char *repo = MHD_lookup_connection_value(conn, MHD_GET_ARGUMENT_KIND, "repo");
+        const char *tag = MHD_lookup_connection_value(conn, MHD_GET_ARGUMENT_KIND, "tag");
+        const char *asset = MHD_lookup_connection_value(conn, MHD_GET_ARGUMENT_KIND, "asset");
+        char msg_buf[512] = "";
+        int rc = -1;
+        if (repo && tag && asset)
+            rc = github_install_asset(repo, tag, asset, msg_buf, sizeof(msg_buf));
+        else
+            snprintf(msg_buf, sizeof(msg_buf), "Need repo, tag, and asset");
+        char msg_e[640];
+        char json_resp[800];
+        pldmgr_json_escape(msg_buf, msg_e, sizeof(msg_e));
+        snprintf(json_resp, sizeof(json_resp), "{\"ok\":%s,\"message\":\"%s\"}",
+                 rc == 0 ? "true" : "false", msg_e);
+        resp = MHD_create_response_from_buffer(strlen(json_resp), (void *)json_resp,
+                                               MHD_RESPMEM_MUST_COPY);
+        MHD_add_response_header(resp, "Content-Type", "application/json");
+        add_cors_headers(resp);
+        return MHD_queue_response(conn, rc == 0 ? MHD_HTTP_OK : MHD_HTTP_BAD_REQUEST, resp);
     } else if (strncmp(url, ROUTE_LOAD_PAYLOAD, strlen(ROUTE_LOAD_PAYLOAD)) == 0) {
         const char *path = url + strlen(ROUTE_LOAD_PAYLOAD);
         const char *final_path = NULL;

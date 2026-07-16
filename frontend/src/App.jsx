@@ -12,6 +12,7 @@ import {
   Terminal,
   X
 } from 'lucide-react'
+// CloudDownload used by Download Hub nav
 
 import './App.css'
 
@@ -35,6 +36,7 @@ import MoveFromUsbView from './components/views/MoveFromUsbView'
 import LogViewer from './components/views/LogViewer'
 import ManageSourcesView from './components/views/ManageSourcesView'
 import ActiveProcessesView from './components/views/ActiveProcessesView'
+import DownloadHubView from './components/views/DownloadHubView'
 
 function App() {
   const [view, setView] = useState('dashboard')
@@ -447,6 +449,7 @@ function App() {
 
           <nav className="flex-1 space-y-2">
             <NavButton sidebar sidebarExpanded={sidebarExpanded} active={view === 'dashboard'} onClick={() => setView('dashboard')} icon={LayoutDashboard} label="Dashboard" />
+            <NavButton sidebar sidebarExpanded={sidebarExpanded} active={view === 'download'} onClick={() => setView('download')} icon={CloudDownload} label="Download Hub" />
             <NavButton sidebar sidebarExpanded={sidebarExpanded} active={view === 'storage'} onClick={() => setView('storage')} icon={Database} label="Manage Payloads" />
             <NavButton sidebar sidebarExpanded={sidebarExpanded} active={view === 'autoload'} onClick={() => setView('autoload')} icon={RefreshCw} label="Autoload" />
             <NavButton sidebar sidebarExpanded={sidebarExpanded} active={view === 'processes'} onClick={() => setView('processes')} icon={Cpu} label="Active Processes" />
@@ -473,10 +476,11 @@ function App() {
         isPS5 ? "hidden" : "md:hidden"
       )}>
         <NavButton active={view === 'dashboard'} onClick={() => setView('dashboard')} icon={LayoutDashboard} label="Dashboard" mobileLabel="HOME" />
+        <NavButton showSeparator active={view === 'download'} onClick={() => setView('download')} icon={CloudDownload} label="Download Hub" mobileLabel="HUB" />
         <NavButton showSeparator active={view === 'storage'} onClick={() => setView('storage')} icon={Database} label="Manage Payloads" mobileLabel="MANAGE" />
         <NavButton showSeparator active={view === 'autoload'} onClick={() => setView('autoload')} icon={RefreshCw} label="Autoload" mobileLabel="AUTO" />
-        <NavButton showSeparator active={view === 'processes'} onClick={() => setView('processes')} icon={Cpu} label="Active Processes" mobileLabel="PROCESSES" />
-        <NavButton showSeparator active={view === 'settings'} onClick={() => setView('settings')} icon={Settings} label="Settings" mobileLabel="SETTINGS" />
+        <NavButton showSeparator active={view === 'processes'} onClick={() => setView('processes')} icon={Cpu} label="Active Processes" mobileLabel="PROCS" />
+        <NavButton showSeparator active={view === 'settings'} onClick={() => setView('settings')} icon={Settings} label="Settings" mobileLabel="SET" />
         <NavButton
           showSeparator
           active={view === 'donate'}
@@ -519,7 +523,7 @@ function App() {
                       <p className="text-white font-extrabold tracking-tight text-2xl">Empty Library</p>
                       <p className="text-zinc-500 font-medium">Add payloads from the Cloud Hub to get started.</p>
                     </div>
-                    <button onClick={() => { setStorageScrollTarget('cloud-repository'); setView('storage'); }} className="px-8 py-3 bg-ps-blue text-white rounded-xl font-bold tracking-tight">Open Repository</button>
+                    <button onClick={() => setView('download')} className="px-8 py-3 bg-ps-blue text-white rounded-xl font-bold tracking-tight">Open Download Hub</button>
                   </div>
                 ) : (
                   payloads.filter(p => !isSystemPayload(p)).map((p) => (
@@ -534,6 +538,15 @@ function App() {
                 )}
               </div>
             </div>
+          )}
+
+          {view === 'download' && (
+            <DownloadHubView
+              addToast={addToast}
+              showConfirm={showConfirm}
+              localPayloads={payloads}
+              onInstalled={refreshPayloads}
+            />
           )}
 
           {view === 'storage' && (

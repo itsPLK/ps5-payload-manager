@@ -142,17 +142,40 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
         </div>
       </section>
 
-      {/* Multi-Source */}
+      {/* Download Hub */}
       <section className="space-y-8">
         <h3 className="label-caps !text-ps-blue !opacity-100 flex items-center space-x-4 text-xl tracking-[0.2em]">
           <Globe className="w-6 h-6" />
-          <span>Payload Sources</span>
+          <span>Downloads</span>
         </h3>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <button
+            onClick={() => onNavigate('download')}
+            className="group w-full text-left grid grid-cols-[1fr_auto] md:flex md:items-center md:justify-between p-5 md:p-8 bg-white/[0.03] rounded-3xl border border-white/10 hover:border-ps-blue/50 hover:bg-ps-blue/5 transition-all gap-x-4 gap-y-3 md:gap-6"
+          >
+            <div className="flex items-start md:items-center space-x-4 md:space-x-6 min-w-0 col-span-1">
+              <div className="p-3 md:p-4 bg-white/5 rounded-2xl group-hover:bg-ps-blue/10 transition-colors shrink-0">
+                <Globe className="w-5 h-5 md:w-6 md:h-6 text-zinc-500 group-hover:text-ps-blue transition-colors" />
+              </div>
+              <div className="space-y-1 min-w-0">
+                <p className="font-bold text-white uppercase text-base md:text-lg tracking-tight leading-tight">Download Hub</p>
+                <p className="hidden md:!block text-sm text-zinc-500 max-w-md leading-relaxed">
+                  GitHub repos, pick a release version, install assets.
+                </p>
+              </div>
+            </div>
+            <div className="shrink-0 col-start-2 row-start-1 md:ml-8 self-center md:self-auto">
+              <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-zinc-700 group-hover:text-ps-blue group-hover:translate-x-2 transition-all" />
+            </div>
+            <p className="md:hidden col-span-2 text-xs text-zinc-500 leading-relaxed">
+              GitHub repos, pick a release version, install assets.
+            </p>
+          </button>
+
           <SettingRow
-            title="Multiple Payload Sources"
-            description="Enable third-party payload repositories. Payloads from multiple sources are grouped by catalog in the Manage tab."
+            title="Legacy JSON catalogs"
+            description="Optional flat payloads.json lists (old multi-source). Most people only need Download Hub."
             icon={Globe}
           >
             <button
@@ -179,16 +202,13 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
                   <Globe className="w-5 h-5 md:w-6 md:h-6 text-zinc-500 group-hover:text-ps-blue transition-colors" />
                 </div>
                 <div className="space-y-1 min-w-0">
-                  <p className="font-bold text-white uppercase text-base md:text-lg tracking-tight leading-tight">Manage Sources</p>
-                  <p className="hidden md:!block text-sm text-zinc-500 max-w-md leading-relaxed">Add, remove, or reorder your payload repositories.</p>
+                  <p className="font-bold text-white uppercase text-base md:text-lg tracking-tight leading-tight">JSON sources</p>
+                  <p className="hidden md:!block text-sm text-zinc-500 max-w-md leading-relaxed">Manage flat payloads.json URLs for the Manage tab catalog.</p>
                 </div>
               </div>
               <div className="shrink-0 col-start-2 row-start-1 md:ml-8 self-center md:self-auto">
                 <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-zinc-700 group-hover:text-ps-blue group-hover:translate-x-2 transition-all" />
               </div>
-              <p className="md:hidden col-span-2 text-xs text-zinc-500 leading-relaxed">
-                Add, remove, or reorder your payload repositories.
-              </p>
             </button>
           )}
         </div>

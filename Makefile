@@ -14,7 +14,7 @@ LIBS     := -L$(TARGET)/lib -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lmicrohttp
 # Source Files
 SRCS := src/main.c src/http_server.c src/config.c src/log_server.c \
         src/sha256.c src/json_helpers.c src/repository.c src/sources.c \
-        src/payload_mgr.c src/process_mgr.c \
+        src/github_hub.c src/payload_mgr.c src/process_mgr.c \
         src/ps5_launcher.c src/notification.c src/utils.c src/autoload.c \
         src/app_installer.c
 OBJS := $(SRCS:.c=.o)

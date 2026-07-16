@@ -37,7 +37,15 @@
 #define ROUTE_PROCESSES_LIST "/processes_list"
 #define ROUTE_PROCESS_KILL "/process_kill"
 
-#define MENU_VERSION "0.3.3"
+/* GitHub Download Hub (Blurfer-style) */
+#define ROUTE_GH_REPOS_LIST "/github_repos_list"
+#define ROUTE_GH_REPOS_ADD "/github_repos_add"
+#define ROUTE_GH_REPOS_REMOVE "/github_repos_remove"
+#define ROUTE_GH_REPOS_SET "/github_repos_set"
+#define ROUTE_GH_RELEASES "/github_releases"
+#define ROUTE_GH_INSTALL "/github_install"
+
+#define MENU_VERSION "0.4.0"
 #define AUTOLOAD_CONFIG_PATH "/data/pldmgr/autoload.txt"
 #define PLDMGR_CONFIG_PATH "/data/pldmgr/pldmgr_config.txt"
 #define REPOSITORY_CACHE_PATH "/data/pldmgr/repository_cache.json"

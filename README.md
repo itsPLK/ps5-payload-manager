@@ -11,7 +11,8 @@
 
 ## Features
 - **Web-Based Interface**: A modern dashboard to manage payloads from your PC, phone, or the PS5 itself.
-- **Import Payloads**: Easily add new payloads from a USB drive or download them from the cloud repository.
+- **Download Hub**: Add GitHub repos (`owner/repo`), pick a release version, install `.elf` / `.bin` assets (same idea as Blurfer’s Download Hub). Runs on the PS5 via the daemon — no PC app required.
+- **Import Payloads**: USB import, browser upload, and the older flat `payloads.json` catalog (optional).
 - **Automated Startup**: Set up a list of payloads to load automatically whenever you start the manager.
 - **Home Screen Shortcut**: Installs a dedicated "Payload Manager" app icon to your PS5 home screen for quick access.
 - **Auto-Close Disc Player**: Optional setting to automatically close the Disc Player on startup (useful for BD-JB users).
