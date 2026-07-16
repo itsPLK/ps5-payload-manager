@@ -12,7 +12,6 @@ import {
   Terminal,
   X
 } from 'lucide-react'
-// CloudDownload used by Download Hub nav
 
 import './App.css'
 
