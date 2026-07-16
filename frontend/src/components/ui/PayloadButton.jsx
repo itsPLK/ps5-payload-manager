@@ -2,7 +2,7 @@ import React from 'react'
 import { Loader2, Globe } from 'lucide-react'
 import PayloadName from './PayloadName'
 
-const PayloadButton = ({ path, onClick, isLoading, sourceName }) => {
+const PayloadButton = ({ path, onClick, isLoading, sourceName, metaVersion = null }) => {
   return (
     <button
       onClick={onClick}
@@ -10,7 +10,7 @@ const PayloadButton = ({ path, onClick, isLoading, sourceName }) => {
       className="group glass-card p-6 rounded-ps-xl flex flex-col border border-white/5 hover:border-ps-blue hover:bg-ps-blue/5 transition-all text-left relative overflow-hidden"
     >
       <div className="flex items-start justify-between w-full z-10">
-        <PayloadName path={path} className="text-white text-xl" stacked />
+        <PayloadName path={path} className="text-white text-xl" stacked metaVersion={metaVersion} />
         {isLoading && <Loader2 className="w-6 h-6 animate-spin text-ps-blue shrink-0" />}
       </div>
       {path.startsWith('/mnt/usb') && (

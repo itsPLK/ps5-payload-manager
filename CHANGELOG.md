@@ -1,3 +1,7 @@
+## v0.4.1
+
+* Installed payloads show release version under the name in blue when installed from Download Hub (sidecar `version` / tag), same style as filename `_v1.0` badges.
+
 ## v0.4.0 Download Hub
 
 * **Download Hub** (Blurfer-style): add GitHub repos (`owner/repo`), pick a release version, install `.elf` / `.bin` / `.js` assets into `/data/pldmgr/payloads`.

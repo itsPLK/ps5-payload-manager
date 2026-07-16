@@ -525,15 +525,20 @@ function App() {
                     <button onClick={() => setView('download')} className="px-8 py-3 bg-ps-blue text-white rounded-xl font-bold tracking-tight">Open Download Hub</button>
                   </div>
                 ) : (
-                  payloads.filter(p => !isSystemPayload(p)).map((p) => (
+                  payloads.filter(p => !isSystemPayload(p)).map((p) => {
+                    const fileName = p.split('/').pop()
+                    const meta = payloadMeta[fileName] || {}
+                    return (
                     <PayloadButton
                       key={p}
                       path={p}
                       onClick={() => loadPayload(p)}
-                      isLoading={loading && activeLoadingName === p.split('/').pop().replace(/\.(elf|bin)$/i, '').replace(/_/g, ' ')}
-                      sourceName={config.MULTI_SOURCES_ENABLED ? (payloadMeta[p.split('/').pop()]?.source_name || null) : null}
+                      isLoading={loading && activeLoadingName === fileName.replace(/\.(elf|bin)$/i, '').replace(/_/g, ' ')}
+                      sourceName={config.MULTI_SOURCES_ENABLED ? (meta.source_name || null) : null}
+                      metaVersion={meta.version || null}
                     />
-                  ))
+                    )
+                  })
                 )}
               </div>
             </div>

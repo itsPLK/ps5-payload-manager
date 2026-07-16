@@ -1,9 +1,17 @@
 import React from 'react'
 import { Zap, Usb } from 'lucide-react'
-import { cn, parsePayloadName } from '../../utils/helpers'
+import { cn, resolvePayloadDisplay } from '../../utils/helpers'
 
-const PayloadName = ({ path, className, versionClassName, stacked = false, hideIcon = false, lastUpdate = null }) => {
-  const { displayName, version, isDelay } = parsePayloadName(path);
+const PayloadName = ({
+  path,
+  className,
+  versionClassName,
+  stacked = false,
+  hideIcon = false,
+  lastUpdate = null,
+  metaVersion = null,
+}) => {
+  const { displayName, version, isDelay } = resolvePayloadDisplay(path, metaVersion);
   const isUsb = path?.startsWith('/mnt/usb');
 
   return (
