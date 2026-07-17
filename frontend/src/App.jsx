@@ -10,7 +10,8 @@ import {
   Heart,
   Menu,
   Terminal,
-  X
+  X,
+  Star
 } from 'lucide-react'
 
 import './App.css'
@@ -70,8 +71,22 @@ function App() {
   const [moveFromUsbPath, setMoveFromUsbPath] = useState(null)
   const [storageScrollTarget, setStorageScrollTarget] = useState(null)
   const [showLogs, setShowLogs] = useState(false)
-  // Map filename -> metadata (source_name, etc.)
   const [payloadMeta, setPayloadMeta] = useState({})
+  const [pinnedPayloads, setPinnedPayloads] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('pinnedPayloads') || '[]')
+    } catch { return [] }
+  })
+
+  useEffect(() => {
+    localStorage.setItem('pinnedPayloads', JSON.stringify(pinnedPayloads))
+  }, [pinnedPayloads])
+
+  const togglePin = (path) => {
+    setPinnedPayloads(prev =>
+      prev.includes(path) ? prev.filter(p => p !== path) : [...prev, path]
+    )
+  }
 
   useEffect(() => {
     if (!showLogs) return
@@ -496,46 +511,80 @@ function App() {
           "custom-scrollbar max-w-[1800px] mx-auto w-full flex flex-col",
           isPS5 ? "pt-16 px-16 pb-12 flex-1 overflow-y-auto" : "pt-6 px-6 pb-36 md:pt-16 md:px-16 md:pb-12 md:flex-1 md:overflow-y-auto"
         )}>
-          {view === 'dashboard' && (
-            <div className="space-y-8 md:space-y-12">
-              <h2 className="text-4xl font-extrabold text-white tracking-tight">
-                Launch <span className="text-ps-blue">Payload</span>
-              </h2>
-              <div className={cn(
-                "grid gap-4 md:gap-6",
-                isPS5 ? "grid-cols-3 xl:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-              )}>
+          {view === 'dashboard' && (() => {
+            const visiblePayloads = payloads.filter(p => !isSystemPayload(p))
+            const activePins = pinnedPayloads.filter(p => visiblePayloads.includes(p))
+            const unpinned = visiblePayloads.filter(p => !pinnedPayloads.includes(p))
+            const gridCols = cn(
+              "grid gap-4 md:gap-6",
+              isPS5 ? "grid-cols-3 xl:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            )
+            const makeCard = (p) => (
+              <PayloadButton
+                key={p}
+                path={p}
+                onClick={() => loadPayload(p)}
+                isLoading={loading && activeLoadingName === p.split('/').pop().replace(/\.(elf|bin)$/i, '').replace(/_/g, ' ')}
+                sourceName={config.MULTI_SOURCES_ENABLED ? (payloadMeta[p.split('/').pop()]?.source_name || null) : null}
+                version={payloadMeta[p.split('/').pop()]?.version || null}
+                isPinned={pinnedPayloads.includes(p)}
+                onTogglePin={togglePin}
+              />
+            )
+            return (
+              <div className="space-y-8 md:space-y-12">
+                <h2 className="text-4xl font-extrabold text-white tracking-tight">
+                  Launch <span className="text-ps-blue">Payload</span>
+                </h2>
                 {loadingPayloads ? (
-                  Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="glass-card p-6 rounded-ps-xl flex flex-col space-y-2 border-white/5">
-                      <div className="h-7 w-40 bg-white/5 rounded-lg" />
-                      <div className="h-3 w-20 bg-white/5 rounded-md opacity-50" />
+                  <div className={gridCols}>
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <div key={i} className="glass-card p-6 rounded-ps-xl flex flex-col space-y-2 border-white/5">
+                        <div className="h-7 w-40 bg-white/5 rounded-lg" />
+                        <div className="h-3 w-20 bg-white/5 rounded-md opacity-50" />
+                      </div>
+                    ))}
+                  </div>
+                ) : visiblePayloads.length === 0 ? (
+                  <div className={gridCols}>
+                    <div className="col-span-full py-20 border-2 border-dashed border-white/5 rounded-ps-xl flex flex-col items-center justify-center space-y-6 bg-white/[0.01]">
+                      <Package className="w-16 h-16 text-white/10" />
+                      <div className="text-center">
+                        <p className="text-white font-extrabold tracking-tight text-2xl">Empty Library</p>
+                        <p className="text-zinc-500 font-medium">Add payloads from the Cloud Hub to get started.</p>
+                      </div>
+                      <button onClick={() => { setStorageScrollTarget('cloud-repository'); setView('storage'); }} className="px-8 py-3 bg-ps-blue text-white rounded-xl font-bold tracking-tight">Open Repository</button>
                     </div>
-                  ))
-                ) : payloads.length === 0 ? (
-                  <div className="col-span-full py-20 border-2 border-dashed border-white/5 rounded-ps-xl flex flex-col items-center justify-center space-y-6 bg-white/[0.01]">
-                    <Package className="w-16 h-16 text-white/10" />
-                    <div className="text-center">
-                      <p className="text-white font-extrabold tracking-tight text-2xl">Empty Library</p>
-                      <p className="text-zinc-500 font-medium">Add payloads from the Cloud Hub to get started.</p>
-                    </div>
-                    <button onClick={() => { setStorageScrollTarget('cloud-repository'); setView('storage'); }} className="px-8 py-3 bg-ps-blue text-white rounded-xl font-bold tracking-tight">Open Repository</button>
                   </div>
                 ) : (
-                  payloads.filter(p => !isSystemPayload(p)).map((p) => (
-                    <PayloadButton
-                      key={p}
-                      path={p}
-                      onClick={() => loadPayload(p)}
-                      isLoading={loading && activeLoadingName === p.split('/').pop().replace(/\.(elf|bin)$/i, '').replace(/_/g, ' ')}
-                      sourceName={config.MULTI_SOURCES_ENABLED ? (payloadMeta[p.split('/').pop()]?.source_name || null) : null}
-                      version={payloadMeta[p.split('/').pop()]?.version || null}
-                    />
-                  ))
+                  <>
+                    {activePins.length > 0 && (
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                          <span className="text-sm font-bold tracking-widest uppercase text-yellow-400">Favorites</span>
+                        </div>
+                        <div className={gridCols}>
+                          {activePins.map(makeCard)}
+                        </div>
+                        <div className="border-t border-white/5 pt-8">
+                          <p className="text-sm font-bold tracking-widest uppercase text-zinc-500 mb-4">All Payloads</p>
+                          <div className={gridCols}>
+                            {unpinned.map(makeCard)}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {activePins.length === 0 && (
+                      <div className={gridCols}>
+                        {visiblePayloads.map(makeCard)}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
-            </div>
-          )}
+            )
+          })()}
 
           {view === 'storage' && (
             <StorageHub
