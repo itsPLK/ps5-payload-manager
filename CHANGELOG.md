@@ -1,21 +1,21 @@
 ## v0.4.2
 
-* **Rest Mode / offline tile fix** (upstream #61 / #40): after sleep/wake, HTTP on 8084 is recovered via SIGCONT + loopback probe — no longer requires a LAN/WAN IP or “plug cable again”.
-* Local health is `127.0.0.1` / `/version`; UI no longer treats missing LAN IP as “Payload Manager is not running”.
-* `/getip` returns `127.0.0.1` when offline instead of `0.0.0.0`.
+* Rest Mode / offline: after sleep, HTTP on 8084 comes back via SIGCONT + a loopback check. No longer needs a LAN IP just to open the tile.
+* UI treats /version as health, not missing LAN IP.
+* /getip returns 127.0.0.1 when offline instead of 0.0.0.0.
 
 ## v0.4.1
 
-* Installed payloads show release version under the name in blue when installed from Download Hub (sidecar `version` / tag), same style as filename `_v1.0` badges.
+* Installed payloads can show the GitHub release/tag under the name (same idea as filename _v1.0 badges).
 
-## v0.4.0 Download Hub
+## v0.4.0
 
-* **Download Hub** (Blurfer-style): add GitHub repos (`owner/repo`), pick a release version, install `.elf` / `.bin` / `.js` assets into `/data/pldmgr/payloads`.
-* New native endpoints: `/github_repos_*`, `/github_releases`, `/github_install`.
-* Release JSON cached under `/data/pldmgr/github_cache/` (1 hour TTL) for PS5 reliability / rate limits.
-* Optional `GITHUB_TOKEN=...` in `/data/pldmgr/pldmgr_config.txt` for higher API limits.
-* Default repos include BFpilot, pldmgr, kstuff-lite, zftpd, elfldr, websrv, etc.
-* Legacy flat `payloads.json` multi-source remains under Settings (off by default).
+* Download Hub: add GitHub repos, pick a release, install .elf / .bin / .js into /data/pldmgr/payloads.
+* Endpoints: /github_repos_*, /github_releases, /github_install.
+* Release JSON cached under /data/pldmgr/github_cache/ (~1 hour).
+* Optional GITHUB_TOKEN in /data/pldmgr/pldmgr_config.txt for higher API limits.
+* A few default repos are seeded; you can add/remove your own.
+* Old payloads.json multi-source catalog is unchanged (still under Settings).
 
 ## v0.3.1
 

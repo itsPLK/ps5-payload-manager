@@ -976,7 +976,7 @@ enum MHD_Result http_on_request(void *cls, struct MHD_Connection *conn,
         MHD_add_response_header(resp, "Content-Type", "text/plain");
     } else if (strcmp(url, ROUTE_GETIP) == 0) {
         char ip[64];
-        /* No LAN is normal offline — report loopback so tile/UI stay honest. */
+        /* Offline: no LAN IP — return loopback for the home tile. */
         if (pldmgr_get_local_ip(ip, sizeof(ip)) != 0) {
             snprintf(ip, sizeof(ip), "%s", "127.0.0.1");
         }

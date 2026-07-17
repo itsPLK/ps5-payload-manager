@@ -299,8 +299,7 @@ function App() {
 
   useEffect(() => {
     const init = async () => {
-      // Health = /version only. LAN IP is optional (tile uses 127.0.0.1).
-      // Upstream #40: treating getip / 0.0.0.0 as dead broke offline tile UI.
+      // Health check is /version. LAN IP is only for display.
       try {
         const verRes = await fetch('/version')
         const verText = await verRes.text()

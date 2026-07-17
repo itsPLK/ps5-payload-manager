@@ -37,7 +37,7 @@
 #define ROUTE_PROCESSES_LIST "/processes_list"
 #define ROUTE_PROCESS_KILL "/process_kill"
 
-/* GitHub Download Hub (Blurfer-style) */
+/* GitHub Download Hub */
 #define ROUTE_GH_REPOS_LIST "/github_repos_list"
 #define ROUTE_GH_REPOS_ADD "/github_repos_add"
 #define ROUTE_GH_REPOS_REMOVE "/github_repos_remove"

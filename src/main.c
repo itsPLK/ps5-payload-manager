@@ -1,13 +1,7 @@
 /*
- * Payload Manager Core - Main Entry Point
- *
- * HTTP routing: http_server.c
- * This file: process init, signals, MHD lifecycle, Rest Mode recovery.
- *
- * Rest Mode / offline (upstream #61, #40):
- *  - Tile opens http://127.0.0.1:8084/ — must not require WAN or LAN IP.
- *  - After SIGCONT, always rebind listen; periodically probe loopback and
- *    restart if dead even when getifaddrs has no non-loopback address.
+ * Payload Manager - main
+ * Init, signals, HTTP server lifecycle. Rest Mode recovery lives here too;
+ * routes are in http_server.c.
  */
 
 #include <microhttpd.h>

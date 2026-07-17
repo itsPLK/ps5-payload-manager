@@ -1,6 +1,4 @@
-/**
- * Pure name/version helpers (no UI deps) — used by PayloadName and unit tests.
- */
+/* Name / version parsing for payload labels. */
 
 export const parsePayloadName = (path) => {
   if (!path) return { displayName: '', version: null };
@@ -27,10 +25,7 @@ export const parsePayloadName = (path) => {
   };
 };
 
-/**
- * Resolve display name + version for installed payloads.
- * Filename-parsed version wins; otherwise use sidecar/meta.version (e.g. GH tag v0.4.0).
- */
+/* Prefer version from the filename; fall back to sidecar/meta if present. */
 export const resolvePayloadDisplay = (path, metaVersion = null) => {
   const parsed = parsePayloadName(path);
   if (parsed.isDelay) return parsed;

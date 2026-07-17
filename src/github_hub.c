@@ -1,10 +1,7 @@
 /*
- * GitHub Download Hub — Blurfer-style repo → release → asset install.
- *
- * PS5 constraints:
- *  - All GitHub API traffic is server-side (curl), not browser CORS.
- *  - Releases are cached under /data/pldmgr/github_cache/ (1h TTL).
- *  - Asset install reuses payload storage + sidecar metadata.
+ * Download Hub: GitHub owner/repo -> pick release -> install asset.
+ * API calls run on the daemon (curl). Release lists are cached under
+ * /data/pldmgr/github_cache/ for about an hour.
  */
 
 #include <ctype.h>
