@@ -1,0 +1,172 @@
+name: Pre-Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Pre-release channel'
+        required: true
+        default: 'beta'
+        type: choice
+        options:
+          - alpha
+          - beta
+          - rc
+      build_number:
+        description: 'Build number (appended as .N — leave blank to auto-increment)'
+        required: false
+        default: ''
+      skip_duplicate_check:
+        description: 'Overwrite existing pre-release tag if it exists'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+  push:
+    branches:
+      - dev
+      - beta
+      - development
+
+jobs:
+  pre-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Resolve pre-release version
+        id: version
+        run: |
+          BASE=$(grep '#define MENU_VERSION' include/pldmgr.h | awk '{print $3}' | tr -d '"' | tr -d '\r')
+          if [ -z "$BASE" ]; then
+            echo "Error: Could not find MENU_VERSION in include/pldmgr.h"
+            exit 1
+          fi
+
+          # Channel: use input when triggered manually, otherwise derive from branch name
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            CHANNEL="${{ github.event.inputs.channel }}"
+          else
+            BRANCH="${GITHUB_REF##*/}"
+            case "$BRANCH" in
+              alpha*)   CHANNEL="alpha" ;;
+              rc*)      CHANNEL="rc"    ;;
+              *)        CHANNEL="beta"  ;;
+            esac
+          fi
+
+          # Build number: explicit input → auto-increment from existing tags
+          BUILD_NUM="${{ github.event.inputs.build_number }}"
+          if [ -z "$BUILD_NUM" ]; then
+            # Count existing tags matching this base+channel and add 1
+            COUNT=$(git tag --list "v${BASE}-${CHANNEL}.*" | wc -l)
+            BUILD_NUM=$((COUNT + 1))
+          fi
+
+          PRE_TAG="v${BASE}-${CHANNEL}.${BUILD_NUM}"
+          echo "Base version : $BASE"
+          echo "Channel      : $CHANNEL"
+          echo "Pre-release  : $PRE_TAG"
+
+          echo "base=${BASE}"           >> $GITHUB_OUTPUT
+          echo "channel=${CHANNEL}"     >> $GITHUB_OUTPUT
+          echo "build=${BUILD_NUM}"     >> $GITHUB_OUTPUT
+          echo "tag=${PRE_TAG}"         >> $GITHUB_OUTPUT
+          echo "elf=pldmgr_${PRE_TAG}.elf" >> $GITHUB_OUTPUT
+
+      - name: Check / handle existing tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          SKIP="${{ github.event.inputs.skip_duplicate_check }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            if [ "$SKIP" = "true" ]; then
+              echo "Tag $TAG exists — deleting old pre-release before overwrite."
+              gh release delete "$TAG" --yes
+              git push origin ":refs/tags/$TAG" || true
+            else
+              echo "Tag $TAG already exists. Use skip_duplicate_check=true or bump the build number."
+              exit 1
+            fi
+          fi
+
+      - name: Build React frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build SDK Docker image (cached)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.sdk
+          tags: ps5-payload-sdk-pldmgr:latest
+          load: true
+          cache-from: type=gha
+          cache-to:   type=gha,mode=max
+
+      - name: Build native ELF via Docker
+        run: |
+          docker run --rm -v "$(pwd)":/src -w /src ps5-payload-sdk-pldmgr make clean all
+
+      - name: Rename ELF output
+        run: |
+          ELF="${{ steps.version.outputs.elf }}"
+          mv pldmgr.elf "$ELF"
+          echo "Built: $ELF"
+
+      - name: Upload ELF as artifact (always, even before the release)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.version.outputs.elf }}
+          path: ${{ steps.version.outputs.elf }}
+          retention-days: 14
+
+      - name: Create GitHub pre-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          ELF="${{ steps.version.outputs.elf }}"
+          BASE="${{ steps.version.outputs.base }}"
+          CHANNEL="${{ steps.version.outputs.channel }}"
+          BUILD="${{ steps.version.outputs.build }}"
+          SHORT_SHA="${GITHUB_SHA::7}"
+
+          NOTES="## ⚠️ Pre-release — ${CHANNEL} build
+
+          | Field   | Value |
+          |---------|-------|
+          | Base    | v${BASE} |
+          | Channel | ${CHANNEL} |
+          | Build   | #${BUILD} |
+          | Commit  | [\`${SHORT_SHA}\`](https://github.com/${{ github.repository }}/commit/${GITHUB_SHA}) |
+          | Branch  | \`${GITHUB_REF##*/}\` |
+
+          > This is a **pre-release** build intended for testing only.
+          > Do not use on a console you are not prepared to recover."
+
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --notes "$NOTES" \
+            --prerelease \
+            "$ELF"
