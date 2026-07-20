@@ -143,6 +143,7 @@ body {
   align-self: stretch;
   height: 100%;
   min-height: 0;
+  overflow: hidden; /* contain children; collapsed rail sizes carefully */
 }
 
 .cp-sidebar__inner {
@@ -150,40 +151,85 @@ body {
   flex-direction: column;
   flex: 1 1 0%;
   min-height: 0;
-  padding: 1.25rem 1.5rem;
+  min-width: 0;
+  padding: 1.25rem 1.25rem;
   box-sizing: border-box;
+}
+
+/* Collapsed rail: tight but enough room for icon + 1px border frame */
+.cp-sidebar--collapsed .cp-sidebar__inner {
+  padding: 0.85rem 0.55rem;
+  align-items: center;
 }
 
 .cp-sidebar__brand {
   display: flex;
   align-items: center;
-  height: 2.5rem;
-  margin-bottom: 1.75rem;
+  min-height: 2.75rem;
+  margin-bottom: 1.25rem;
   flex-shrink: 0;
+  width: 100%;
+  position: relative;
+}
+
+.cp-sidebar__brand--collapsed {
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.cp-sidebar__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cp-sidebar__nav {
   flex: 1 1 auto;
   min-height: 0;
+  min-width: 0;
+  width: 100%;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: visible; /* don't clip active cyan frames */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  gap: 0.15rem;
+  gap: 0;
   -webkit-overflow-scrolling: touch;
+  padding: 2px 0; /* room for 1px borders on first/last items */
+}
+
+.cp-sidebar--collapsed .cp-sidebar__nav {
+  align-items: center;
+  gap: 0.35rem;
+  overflow-x: hidden; /* rail is narrow; items are sized to fit */
+  overflow-y: auto;
 }
 
 .cp-sidebar__nav > * {
   flex: 0 0 auto !important;
+  min-width: 0;
+}
+
+.cp-sidebar--collapsed .cp-sidebar__nav > * {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .cp-sidebar__foot {
   flex-shrink: 0;
   margin-top: auto;
-  padding-top: 1.25rem;
+  padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
+  width: 100%;
+}
+
+.cp-sidebar--collapsed .cp-sidebar__foot {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.75rem;
+  border-top-color: rgba(255, 60, 60, 0.2);
 }
 
 /* Token-driven shared components (both themes set these vars) */
@@ -224,14 +270,39 @@ body {
   border-radius: var(--radius-ps-xl);
 }
 
+/*
+ * Base nav chrome — both themes override look, but every theme gets
+ * readable padding + icon/label gap so Classic never ends up cramped.
+ */
 .cp-nav-item {
   color: var(--color-nav-idle) !important;
   background: transparent !important;
   border: 1px solid transparent !important;
   border-radius: var(--radius-nav) !important;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   font-weight: 700;
+  font-family: var(--font-ui);
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
+/* Sidebar: original pldmgr pill spacing */
+.cp-sidebar .cp-nav-item {
+  width: 100%;
+  padding: 1rem 1rem;
+  margin-bottom: 0.5rem;
+  min-height: 3.25rem;
+  justify-content: flex-start;
+}
+
+.cp-sidebar .cp-nav-item.justify-center {
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  width: auto;
+  min-width: 3.25rem;
+  padding: 0.85rem;
 }
 
 .cp-nav-item:hover {
@@ -328,6 +399,142 @@ button:focus {
   will-change: transform;
 }
 
+/* ── Settings cards ───────────────────────────────────────────────
+ * Fixed 3-column grid: icon | text (minmax 0,1fr) | control.
+ * Prevents wide toggles from crushing titles into one-word lines.
+ */
+.setting-row {
+  display: grid;
+  grid-template-columns: auto minmax(12rem, 1fr) auto;
+  grid-template-areas: "icon copy control";
+  column-gap: 1rem;
+  row-gap: 0.75rem;
+  align-items: center;
+  height: 100%;
+  padding: 1.25rem 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .setting-row {
+    padding: 1.75rem 2rem;
+    column-gap: 1.25rem;
+  }
+}
+
+.setting-row:hover {
+  border-color: rgba(0, 149, 255, 0.35);
+}
+
+.setting-row__icon {
+  grid-area: icon;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  color: #71717a;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .setting-row__icon {
+    padding: 1rem;
+  }
+}
+
+.setting-row:hover .setting-row__icon {
+  background: rgba(0, 149, 255, 0.12);
+  color: var(--color-ps-blue);
+}
+
+.setting-row__copy {
+  grid-area: copy;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.setting-row__title {
+  margin: 0;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 1rem;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  overflow-wrap: normal;
+  word-break: normal;
+  white-space: normal;
+}
+
+@media (min-width: 768px) {
+  .setting-row__title {
+    font-size: 1.125rem;
+  }
+}
+
+.setting-row__desc {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: #71717a;
+  max-width: 36rem;
+}
+
+/* Control column — reserved width, never squeezes the copy column */
+.setting-row__control {
+  grid-area: control;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  align-self: center;
+  min-width: max-content;
+}
+
+/* Vertical variant (language picker): control under copy, full width */
+.setting-row--vertical {
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    "icon copy"
+    "control control";
+  align-items: start;
+}
+
+.setting-row--vertical .setting-row__control {
+  justify-content: stretch;
+  width: 100%;
+  padding-top: 0.25rem;
+}
+
+.setting-row--vertical .setting-row__control > * {
+  width: 100%;
+}
+
+/* Narrow cards (two-up grid): stack control under text so titles keep room */
+@media (max-width: 1279px) {
+  .setting-row:not(.setting-row--vertical) {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "icon copy"
+      "control control";
+    align-items: start;
+  }
+
+  .setting-row:not(.setting-row--vertical) .setting-row__control {
+    justify-content: flex-end;
+    padding-top: 0.25rem;
+  }
+}
+
 /* Theme picker (token-driven) */
 .cp-theme-grid {
   display: grid;
@@ -381,4 +588,193 @@ button:focus {
   font-size: 12px;
   color: var(--color-muted);
   line-height: 1.4;
+}
+
+/* Autoload Delay settings card */
+.cp-delay-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  height: 100%;
+  padding: 1.5rem 1.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  box-sizing: border-box;
+}
+
+.cp-delay-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cp-delay-card__value {
+  flex-shrink: 0;
+  font-weight: 900;
+  font-size: 2.25rem;
+  font-style: italic;
+  letter-spacing: -0.03em;
+  color: var(--color-ps-blue);
+  line-height: 1;
+}
+
+.cp-delay-card__chips {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+/* ── Fullscreen log overlay ─────────────────────────────────────── */
+.cp-log-overlay {
+  background: #08080a;
+  color: #e4e4e7;
+}
+
+.cp-log-overlay__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-shrink: 0;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 8, 10, 0.96);
+  z-index: 20;
+}
+
+@media (min-width: 768px) {
+  .cp-log-overlay__header {
+    padding: 1.5rem 2rem;
+  }
+}
+
+.cp-log-overlay__title {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.cp-log-overlay__title h3 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-style: italic;
+  color: #fff;
+  line-height: 1.1;
+}
+
+@media (min-width: 768px) {
+  .cp-log-overlay__title h3 {
+    font-size: 2rem;
+  }
+}
+
+.cp-log-overlay__body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1 1 0%;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.cp-log-viewer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0%;
+  min-height: 0;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.cp-log-viewer__scroll {
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 1rem 1rem 5.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+}
+
+@media (min-width: 768px) {
+  .cp-log-viewer__scroll {
+    padding: 1.5rem 2rem 6rem;
+    font-size: 0.9375rem;
+  }
+}
+
+.cp-log-viewer__empty {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #71717a;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
+}
+
+.cp-log-viewer__pad {
+  height: 1rem;
+}
+
+/* Grid line: # | » | message — message wraps without crushing the gutter */
+.cp-log-line {
+  display: grid;
+  grid-template-columns: 2.75rem 1.1rem minmax(0, 1fr);
+  column-gap: 0.65rem;
+  align-items: start;
+  padding: 0.35rem 0.6rem;
+  border-left: 2px solid transparent;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.cp-log-line:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-left-color: var(--color-ps-blue);
+}
+
+.cp-log-line__num {
+  font-weight: 700;
+  color: #52525b;
+  text-align: right;
+  user-select: none;
+  font-variant-numeric: tabular-nums;
+  white-space: pre;
+}
+
+.cp-log-line__prompt {
+  font-weight: 800;
+  color: var(--color-ps-blue);
+  opacity: 0.85;
+  user-select: none;
+  line-height: inherit;
+}
+
+.cp-log-line__text {
+  color: #e4e4e7;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+/* Jump-to-bottom control — always centered over the scrollport */
+.cp-log-viewer__jump {
+  position: absolute;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+  z-index: 30;
+  pointer-events: auto;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.55));
 }

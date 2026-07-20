@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { QRCodeSVG } from 'qrcode.react'
 import { cn, isPS5, isIOS, parsePayloadName } from '../../utils/helpers'
 import PayloadName from '../ui/PayloadName'
+import HudButton from '../ui/HudButton'
 
 const PayloadItem = ({ p, multiSources, isPS5, onInstall, srcId, srcUrl }) => {
   const { t } = useTranslation()
@@ -23,19 +24,15 @@ const PayloadItem = ({ p, multiSources, isPS5, onInstall, srcId, srcUrl }) => {
         <p className="text-sm md:text-base text-zinc-400 font-medium leading-relaxed">{p.description}</p>
       )}
     </div>
-    <button
+    <HudButton
       onClick={() => onInstall(p, srcId === 'legacy-repo' ? null : srcId, srcUrl)}
-      className={cn(
-        "flex items-center justify-center space-x-3 px-6 md:px-8 py-3 md:py-5 rounded-2xl font-bold text-lg transition-all shrink-0 transform active:scale-95",
-        isPS5 ? "w-auto px-12" : "w-full md:w-auto",
-        p.isUpdate
-          ? "bg-emerald-600 hover:bg-emerald-500 text-white"
-          : "bg-ps-blue hover:bg-ps-blue/80 text-white"
-      )}
+      icon={CloudDownload}
+      variant={p.isUpdate ? 'success' : 'primary'}
+      size="lg"
+      className={cn('shrink-0', !isPS5 && 'w-full md:w-auto')}
     >
-      <CloudDownload className="w-5 h-5 md:w-6 md:h-6" />
-      <span>{p.isUpdate ? t("storage_hub.update_btn", "Update") : t("storage_hub.install_btn", "Install")}</span>
-    </button>
+      {p.isUpdate ? t("storage_hub.update_btn", "Update") : t("storage_hub.install_btn", "Install")}
+    </HudButton>
   </div>
 )
 }
@@ -201,9 +198,9 @@ const StorageHub = ({ payloads, payloadMeta, onInstall, onDelete, onUpload, onIm
         </h2>
 
         {!isPS5 && (
-          <label className="inline-flex items-center space-x-4 px-10 py-5 bg-ps-blue hover:bg-ps-blue/80 text-white rounded-[1.25rem] font-bold tracking-tight text-xl cursor-pointer transition-all shrink-0 transform active:scale-95">
-            <Upload className="w-7 h-7" />
-            <span>{t("storage_hub.upload_btn", "Upload ELF Payload")}</span>
+          <label className="cp-btn cp-btn--primary cp-btn--lg shrink-0 cursor-pointer inline-flex items-center justify-center gap-3">
+            <Upload className="cp-btn__icon w-6 h-6" />
+            <span className="cp-btn__label">{t("storage_hub.upload_btn", "Upload ELF Payload")}</span>
             <input type="file" className="hidden" onChange={onUpload} accept={isIOS ? undefined : ".elf,.bin"} />
           </label>
         )}
@@ -253,27 +250,29 @@ const StorageHub = ({ payloads, payloadMeta, onInstall, onDelete, onUpload, onIm
                       </div>
                     </div>
                     <div className="flex items-center shrink-0">
-                      <button
+                      <HudButton
                         onClick={() => onDelete(fileName)}
-                        className="p-3 md:p-4 rounded-xl bg-red-950/20 text-red-500 border border-red-500/10 hover:bg-red-500 hover:text-white transition-all"
+                        icon={Trash2}
+                        variant="dangerSoft"
+                        size="sm"
+                        className="cp-btn--icon"
                         title={t("storage_hub.remove_payload", "Remove Payload")}
-                      >
-                        <Trash2 className="w-5 h-5 md:w-6 md:h-6" />
-                      </button>
+                        aria-label={t("storage_hub.remove_payload", "Remove Payload")}
+                      />
                     </div>
                   </div>
                   {remoteMatch?.isUpdate && (
-                    <button
+                    <HudButton
                       onClick={() => onInstall(remoteMatch, remoteMatch.source_id, legacyRepoUrl)}
-                      className="w-full flex items-center justify-center space-x-2 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs md:text-sm transition-all"
+                      icon={RefreshCw}
+                      variant="success"
+                      size="sm"
+                      block
                     >
-                      <RefreshCw className="w-4 h-4 md:w-5 md:h-5" />
-                      <span>
-                        {remoteVersion
-                          ? t("storage_hub.update_to_version", "Update (to v{{version}})", { version: remoteVersion.replace(/^v/i, '') })
-                          : t("storage_hub.update_btn", "Update")}
-                      </span>
-                    </button>
+                      {remoteVersion
+                        ? t("storage_hub.update_to_version", "Update (to v{{version}})", { version: remoteVersion.replace(/^v/i, '') })
+                        : t("storage_hub.update_btn", "Update")}
+                    </HudButton>
                   )}
                 </div>
               )
@@ -341,7 +340,9 @@ const StorageHub = ({ payloads, payloadMeta, onInstall, onDelete, onUpload, onIm
               <p className="text-xl font-bold text-white uppercase tracking-tight">{t("storage_hub.repo_unavailable", "Repository Unavailable")}</p>
               <p className="text-zinc-500 mt-1">{t("storage_hub.repo_unavailable_desc", "Check your internet connection and try again.")}</p>
             </div>
-            <button onClick={() => fetchRemote(true)} className="px-8 py-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-xl font-bold uppercase text-xs transition-all">{t("storage_hub.retry_btn", "Retry Connection")}</button>
+            <HudButton onClick={() => fetchRemote(true)} variant="secondary" size="sm">
+              {t("storage_hub.retry_btn", "Retry Connection")}
+            </HudButton>
           </div>
         ) : enrichedSources.length > 0 ? (
           /* ===== REPOSITORY CATALOGS ===== */
@@ -540,13 +541,14 @@ const StorageHub = ({ payloads, payloadMeta, onInstall, onDelete, onUpload, onIm
                     </div>
                   </div>
                   <div className="flex items-center shrink-0">
-                    <button
+                    <HudButton
                       onClick={() => onImportFromUsb(path)}
-                      className="flex items-center space-x-2 md:space-x-3 px-4 md:px-6 py-3 md:py-4 bg-white/5 hover:bg-ps-blue text-white rounded-xl font-bold text-xs md:text-sm transition-all border border-white/10 hover:border-ps-blue group/btn"
+                      icon={Database}
+                      variant="primary"
+                      size="sm"
                     >
-                      <Database className="w-4 h-4 md:w-5 md:h-5 text-ps-blue group-hover/btn:text-white transition-colors" />
-                      <span>{t("storage_hub.move_internal_btn", "Move to Internal")}</span>
-                    </button>
+                      {t("storage_hub.move_internal_btn", "Move to Internal")}
+                    </HudButton>
                   </div>
                 </div>
               )

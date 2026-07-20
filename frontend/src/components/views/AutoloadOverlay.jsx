@@ -3,6 +3,7 @@ import { CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '../../utils/helpers'
 import PayloadName from '../ui/PayloadName'
+import HudButton from '../ui/HudButton'
 
 const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
   const { t } = useTranslation()
@@ -133,20 +134,13 @@ const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
           {/* Action Buttons */}
           <div className="w-full pt-4">
             {isDone ? (
-              <button
-                onClick={onFinish}
-                className="w-full py-8 bg-ps-blue text-black text-3xl font-extrabold rounded-xl hover:bg-ps-yellow transition-all transform active:scale-95 shadow-[0_0_30px_rgba(0,240,255,0.25)]"
-              >
+              <HudButton onClick={onFinish} variant="primary" size="lg" block className="cp-btn--bar !min-h-[4.5rem] !text-xl">
                 {t("autoload_overlay.return_btn", "Return to Dashboard")}
-              </button>
+              </HudButton>
             ) : isCountdown ? (
-              <button
-                onClick={onCancel}
-                autoFocus
-                className="w-full py-8 bg-white/10 text-white border border-white/10 text-3xl font-black uppercase rounded-3xl hover:bg-red-600 hover:border-red-600 transition-all transform active:scale-95"
-              >
+              <HudButton onClick={onCancel} autoFocus variant="danger" size="lg" block className="cp-btn--bar !min-h-[4.5rem] !text-xl">
                 {t("autoload_overlay.abort_btn", "Abort Autoload")}
-              </button>
+              </HudButton>
             ) : (
               <div className="h-[92px] w-full flex items-center justify-center">
                 <div className="flex space-x-2">

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { cn } from '../../utils/helpers'
 import { useTheme } from '../../theme/ThemeContext'
 import ToggleSwitch from '../ui/ToggleSwitch'
+import HudButton from '../ui/HudButton'
 
 const FOLLOW_BROWSER_LANGUAGE = '__auto__'
 
@@ -15,30 +16,32 @@ const isFollowingBrowserLanguage = () => {
   }
 }
 
+/**
+ * Settings card: icon | copy | control.
+ * Uses a real 3-col grid so the cyberpunk OFF|ON toggle never collapses
+ * the title into a single-word column.
+ */
 const SettingRow = ({ title, description, children, icon: Icon, vertical }) => (
-  <div className={cn(
-    "p-5 md:p-8 bg-white/[0.03] rounded-3xl border border-white/10 hover:border-ps-blue/30 transition-all group h-full",
-    vertical ? "flex flex-col space-y-4" : "grid grid-cols-[1fr_auto] gap-x-4 gap-y-3 md:flex md:items-center md:justify-between md:gap-6"
-  )}>
-    <div className="flex items-start md:items-center space-x-4 md:space-x-6 min-w-0 col-span-1">
-      {Icon && (
-        <div className="p-3 md:p-4 bg-white/5 rounded-2xl group-hover:bg-ps-blue/10 transition-colors shrink-0">
-          <Icon className="w-5 h-5 md:w-6 md:h-6 text-zinc-500 group-hover:text-ps-blue transition-colors" />
-        </div>
-      )}
-      <div className="space-y-1 min-w-0">
-        <p className="font-bold text-white uppercase text-base md:text-lg tracking-tight leading-tight">{title}</p>
-        <p className={cn("text-sm text-zinc-500 max-w-md leading-relaxed", vertical ? "block mt-2" : "hidden md:!block")}>{description}</p>
+  <div
+    className={cn(
+      'setting-row group',
+      vertical && 'setting-row--vertical'
+    )}
+  >
+    {Icon && (
+      <div className="setting-row__icon">
+        <Icon className="w-5 h-5 md:w-6 md:h-6" />
       </div>
+    )}
+    <div className="setting-row__copy">
+      <p className="setting-row__title">{title}</p>
+      {description && (
+        <p className="setting-row__desc">{description}</p>
+      )}
     </div>
-    <div className={cn("shrink-0", vertical ? "w-full pt-2" : "col-start-2 row-start-1 md:ml-8 self-center md:self-auto")}>
+    <div className="setting-row__control">
       {children}
     </div>
-    {!vertical && (
-      <p className="md:hidden col-span-2 text-xs text-zinc-500 leading-relaxed">
-        {description}
-      </p>
-    )}
   </div>
 )
 
@@ -205,29 +208,26 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
             />
           </SettingRow>
 
-          <div className="flex flex-col justify-between p-8 bg-white/[0.03] rounded-3xl border border-white/10 space-y-8 h-full">
-            <div className="flex justify-between items-center">
-              <div className="space-y-1">
-                <p className="font-bold text-white uppercase text-lg tracking-tight">{t("settings.autoload_delay_title", "Autoload Delay")}</p>
-                <p className="text-sm text-zinc-500">{t("settings.autoload_delay_desc", "Wait time before the autoload sequence begins.")}</p>
+          <div className="cp-delay-card">
+            <div className="cp-delay-card__head">
+              <div className="min-w-0 space-y-1">
+                <p className="setting-row__title">{t("settings.autoload_delay_title", "Autoload Delay")}</p>
+                <p className="setting-row__desc">{t("settings.autoload_delay_desc", "Wait time before the autoload sequence begins.")}</p>
               </div>
-              <span className="text-ps-blue font-black text-4xl italic tracking-tighter">{autoloadDelay}s</span>
+              <span className="cp-delay-card__value">{autoloadDelay}s</span>
             </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              {[3, 5, 10].map(s => (
-                <button
+            <div className="cp-delay-card__chips">
+              {[3, 5, 10].map((s) => (
+                <HudButton
                   key={s}
                   onClick={() => onSaveConfig({ AUTOLOAD_DELAY: s })}
-                  className={cn(
-                    "py-5 rounded-2xl font-black text-xl transition-all border uppercase italic",
-                    autoloadDelay === s
-                      ? "bg-ps-blue border-ps-blue text-white scale-[1.02]"
-                      : "bg-white/5 border-white/10 text-zinc-500 hover:bg-white/10 hover:text-white"
-                  )}
+                  variant={autoloadDelay === s ? 'primary' : 'secondary'}
+                  size="lg"
+                  block
+                  className={cn(autoloadDelay === s && 'cp-btn--selected is-selected')}
                 >
                   {s}s
-                </button>
+                </HudButton>
               ))}
             </div>
           </div>
@@ -255,24 +255,20 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
 
           {multiSources && (
             <button
+              type="button"
               onClick={() => onNavigate('sources')}
-              className="group w-full text-left grid grid-cols-[1fr_auto] md:flex md:items-center md:justify-between p-5 md:p-8 bg-white/[0.03] rounded-3xl border border-white/10 hover:border-ps-blue/50 hover:bg-ps-blue/5 transition-all gap-x-4 gap-y-3 md:gap-6"
+              className="setting-row group w-full text-left cursor-pointer hover:border-ps-blue/50"
             >
-              <div className="flex items-start md:items-center space-x-4 md:space-x-6 min-w-0 col-span-1">
-                <div className="p-3 md:p-4 bg-white/5 rounded-2xl group-hover:bg-ps-blue/10 transition-colors shrink-0">
-                  <Globe className="w-5 h-5 md:w-6 md:h-6 text-zinc-500 group-hover:text-ps-blue transition-colors" />
-                </div>
-                <div className="space-y-1 min-w-0">
-                  <p className="font-bold text-white uppercase text-base md:text-lg tracking-tight leading-tight">{t("settings.manage_sources_title", "Manage Sources")}</p>
-                  <p className="hidden md:!block text-sm text-zinc-500 max-w-md leading-relaxed">{t("settings.manage_sources_desc", "Add, remove, or reorder your payload repositories.")}</p>
-                </div>
+              <div className="setting-row__icon">
+                <Globe className="w-5 h-5 md:w-6 md:h-6" />
               </div>
-              <div className="shrink-0 col-start-2 row-start-1 md:ml-8 self-center md:self-auto">
-                <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-zinc-700 group-hover:text-ps-blue group-hover:translate-x-2 transition-all" />
+              <div className="setting-row__copy">
+                <p className="setting-row__title">{t("settings.manage_sources_title", "Manage Sources")}</p>
+                <p className="setting-row__desc">{t("settings.manage_sources_desc", "Add, remove, or reorder your payload repositories.")}</p>
               </div>
-              <p className="md:hidden col-span-2 text-xs text-zinc-500 leading-relaxed">
-                {t("settings.manage_sources_desc", "Add, remove, or reorder your payload repositories.")}
-              </p>
+              <div className="setting-row__control">
+                <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-zinc-600 group-hover:text-ps-blue group-hover:translate-x-1 transition-all" />
+              </div>
             </button>
           )}
         </div>
@@ -286,24 +282,20 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
         </h3>
 
         <button
+          type="button"
           onClick={() => setShowLogs(true)}
-          className="group w-full text-left grid grid-cols-[1fr_auto] md:flex md:items-center md:justify-between p-5 md:p-8 bg-white/[0.03] rounded-3xl border border-white/10 hover:border-ps-blue/50 hover:bg-ps-blue/5 transition-all gap-x-4 gap-y-3 md:gap-6"
+          className="setting-row group w-full text-left cursor-pointer hover:border-ps-blue/50"
         >
-          <div className="flex items-start md:items-center space-x-4 md:space-x-6 min-w-0 col-span-1">
-            <div className="p-3 md:p-4 bg-white/5 rounded-2xl group-hover:bg-ps-blue/10 transition-colors shrink-0">
-              <Terminal className="w-5 h-5 md:w-6 md:h-6 text-zinc-500 group-hover:text-ps-blue transition-colors" />
-            </div>
-            <div className="space-y-1 min-w-0">
-              <p className="font-bold text-white uppercase text-base md:text-lg tracking-tight leading-tight">{t("settings.log_viewer_title", "Open Log Viewer")}</p>
-              <p className="hidden md:!block text-sm text-zinc-500 max-w-md leading-relaxed">{t("settings.log_viewer_desc", "Access real-time debug output from the Payload Manager daemon.")}</p>
-            </div>
+          <div className="setting-row__icon">
+            <Terminal className="w-5 h-5 md:w-6 md:h-6" />
           </div>
-          <div className="shrink-0 col-start-2 row-start-1 md:ml-8 self-center md:self-auto">
-            <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-zinc-700 group-hover:text-ps-blue group-hover:translate-x-2 transition-all" />
+          <div className="setting-row__copy">
+            <p className="setting-row__title">{t("settings.log_viewer_title", "Open Log Viewer")}</p>
+            <p className="setting-row__desc">{t("settings.log_viewer_desc", "Access real-time debug output from the Payload Manager daemon.")}</p>
           </div>
-          <p className="md:hidden col-span-2 text-xs text-zinc-500 leading-relaxed">
-            {t("settings.log_viewer_desc", "Access real-time debug output from the Payload Manager daemon.")}
-          </p>
+          <div className="setting-row__control">
+            <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-zinc-600 group-hover:text-ps-blue group-hover:translate-x-1 transition-all" />
+          </div>
         </button>
       </section>
 

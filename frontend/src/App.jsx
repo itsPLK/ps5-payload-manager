@@ -27,6 +27,7 @@ import PayloadButton from './components/ui/PayloadButton'
 import LogoIcon from './components/ui/LogoIcon'
 import Atmosphere from './components/ui/Atmosphere'
 import HudBar from './components/ui/HudBar'
+import HudButton from './components/ui/HudButton'
 import { useTheme } from './theme/ThemeContext'
 
 // Views
@@ -428,8 +429,12 @@ function App() {
         onClose={() => setConfirmModal({ show: false })}
         footer={
           <>
-            <button onClick={() => setConfirmModal({ show: false })} className="flex-1 px-8 py-5 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold transition-all uppercase tracking-tight">{t("app.buttons.cancel", "Cancel")}</button>
-            <button onClick={confirmModal.onConfirm} className="flex-1 px-8 py-5 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-bold transition-all uppercase tracking-tight">{t("app.buttons.confirm", "Confirm")}</button>
+            <HudButton onClick={() => setConfirmModal({ show: false })} variant="secondary" size="lg" className="flex-1">
+              {t("app.buttons.cancel", "Cancel")}
+            </HudButton>
+            <HudButton onClick={confirmModal.onConfirm} variant="danger" size="lg" className="flex-1">
+              {t("app.buttons.confirm", "Confirm")}
+            </HudButton>
           </>
         }
       >
@@ -439,23 +444,33 @@ function App() {
       <aside className={cn(
         "cp-sidebar transition-all duration-500 z-[100] shrink-0 self-stretch",
         isPS5 ? "flex" : "hidden md:flex",
-        sidebarExpanded ? "w-80" : "w-24"
+        sidebarExpanded ? "w-80 cp-sidebar--expanded" : "w-[4.75rem] cp-sidebar--collapsed"
       )}>
-        {/* Yellow hazard stripe ΓÇö cyberpunk only (height 0 in classic via CSS) */}
+        {/* Yellow hazard stripe — cyberpunk only (height 0 in classic via CSS) */}
         <div className="cp-hazard shrink-0" aria-hidden="true" />
         <div className="cp-sidebar__inner">
-          <div className="cp-sidebar__brand">
+          <div className={cn(
+            "cp-sidebar__brand",
+            !sidebarExpanded && "cp-sidebar__brand--collapsed"
+          )}>
             <button
               onClick={() => setSidebarExpanded(!sidebarExpanded)}
-              className="p-3 bg-white/5 hover:bg-ps-yellow hover:text-black rounded-lg transition-all mr-4 shrink-0 border border-white/10"
+              className={cn(
+                "cp-sidebar__toggle p-2.5 bg-white/5 hover:bg-ps-blue hover:text-white rounded-xl transition-all shrink-0",
+                sidebarExpanded && "mr-3"
+              )}
+              aria-label={sidebarExpanded ? "Collapse sidebar" : "Expand sidebar"}
             >
-              <Menu className="w-6 h-6" />
+              <Menu className="w-5 h-5" />
             </button>
-            <div className={cn("flex items-center space-x-3 transition-all duration-500", sidebarExpanded ? "opacity-100 scale-100" : "opacity-0 scale-90 absolute pointer-events-none")}>
-              <div className="p-2 rounded-lg cp-brand-icon">
+            <div className={cn(
+              "flex items-center space-x-3 transition-all duration-300 min-w-0",
+              sidebarExpanded ? "opacity-100 scale-100" : "opacity-0 scale-90 w-0 overflow-hidden pointer-events-none absolute"
+            )}>
+              <div className="p-2 rounded-lg cp-brand-icon shrink-0">
                 <LogoIcon className="w-6 h-6" />
               </div>
-              <span className="text-xl cp-brand cp-glitch">PLDMGR</span>
+              <span className="text-xl cp-brand cp-glitch truncate">PLDMGR</span>
             </div>
           </div>
 
@@ -539,7 +554,13 @@ function App() {
                       <p className="text-white font-extrabold tracking-tight text-2xl">{t("app.dashboard.empty.title", "Empty Library")}</p>
                       <p className="text-zinc-500 font-medium">{t("app.dashboard.empty.message", "Add payloads from the Cloud Hub to get started.")}</p>
                     </div>
-                    <button onClick={() => { setStorageScrollTarget('cloud-repository'); setView('storage'); }} className="px-8 py-3 bg-ps-blue text-white rounded-xl font-bold tracking-tight">{t("app.dashboard.empty.button", "Open Repository")}</button>
+                    <HudButton
+                      onClick={() => { setStorageScrollTarget('cloud-repository'); setView('storage'); }}
+                      variant="primary"
+                      size="lg"
+                    >
+                      {t("app.dashboard.empty.button", "Open Repository")}
+                    </HudButton>
                   </div>
                 ) : (
                   payloads.filter(p => !isSystemPayload(p)).map((p) => (
@@ -643,20 +664,22 @@ function App() {
         </div>
       )}
       {showLogs && (
-        <div className="fixed inset-0 z-[9999] bg-[#08080a] flex flex-col animate-in fade-in duration-300">
-          <div className="p-6 md:p-8 border-b border-white/10 flex items-center justify-between bg-[#08080a]/95 backdrop-blur-xl sticky top-0 z-10">
-            <div className="flex items-center space-x-4">
-              <Terminal className="w-8 h-8 text-ps-blue" />
-              <h3 className="text-3xl font-black text-white uppercase italic tracking-tighter">{t("app.logs.title", "Logs")}</h3>
+        <div className="cp-log-overlay fixed inset-0 z-[9999] flex flex-col animate-in fade-in duration-300">
+          <header className="cp-log-overlay__header">
+            <div className="cp-log-overlay__title">
+              <Terminal className="w-7 h-7 md:w-8 md:h-8 shrink-0 text-ps-blue" />
+              <h3>{t("app.logs.title", "Logs")}</h3>
             </div>
-            <button
+            <HudButton
               onClick={() => setShowLogs(false)}
-              className="p-4 rounded-2xl bg-white/5 hover:bg-red-600 hover:text-white transition-all border border-white/10 group"
-            >
-              <X className="w-8 h-8 transition-transform group-hover:rotate-90" />
-            </button>
-          </div>
-          <div className="flex-1 overflow-hidden bg-black/20">
+              icon={X}
+              variant="secondary"
+              size="sm"
+              className="cp-btn--icon"
+              aria-label={t("app.buttons.close", "Close")}
+            />
+          </header>
+          <div className="cp-log-overlay__body min-h-0 flex-1">
             <LogViewer logs={logs} />
           </div>
         </div>

@@ -4,9 +4,14 @@ import { cn, isPS5, isSystemPayload } from '../../utils/helpers'
 import { useTranslation } from 'react-i18next'
 import PayloadName from '../ui/PayloadName'
 import Modal from '../ui/Modal'
+import ToggleSwitch from '../ui/ToggleSwitch'
+import HudButton from '../ui/HudButton'
+import { useTheme } from '../../theme/ThemeContext'
 
 const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) => {
   const { t } = useTranslation()
+  const { themeId } = useTheme()
+  const isCyberpunk = themeId === 'cyberpunk'
   const [subView, setSubView] = useState('list')
   const [enabled, setEnabled] = useState(false)
   const [autoloadList, setAutoloadList] = useState([])
@@ -103,46 +108,60 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
       <div className="flex items-center justify-between shrink-0">
         <div className="flex items-center space-x-4">
           {subView === 'add' && (
-            <button onClick={() => setSubView('list')} className="p-2 bg-white/5 rounded-xl border border-white/10 lg:hidden">
-              <ArrowLeft className="w-5 h-5" />
-            </button>
+            <HudButton
+              onClick={() => setSubView('list')}
+              icon={ArrowLeft}
+              variant="secondary"
+              size="sm"
+              className="cp-btn--icon lg:hidden"
+              aria-label="Back"
+            />
           )}
           <h3 className="label-caps !text-white !opacity-100 text-xl tracking-widest">{t("autoload.available_title", "Available Payloads")}</h3>
         </div>
       </div>
       <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar min-h-0 pb-6">
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-3">
           {availablePayloads.map(p => {
             const isKstuff = p.toLowerCase().includes('kstuff');
             const hasKstuff = autoloadList.some(x => x.toLowerCase().includes('kstuff'));
             const isBlocked = isKstuff && hasKstuff;
 
             return (
-              <button
+              <HudButton
                 key={p}
                 onClick={() => !isBlocked && addPayload(p)}
                 disabled={isBlocked}
+                endIcon={ArrowRight}
+                variant="secondary"
+                size="lg"
+                block
+                raw
                 className={cn(
-                  "flex items-start justify-between p-6 glass-card rounded-2xl border-white/20 transition-all text-left",
-                  isBlocked ? "opacity-40 cursor-not-allowed" : "bg-white/[0.03] hover:border-ps-blue group"
+                  'cp-btn--bar cp-btn--payload-row',
+                  isBlocked && 'opacity-40'
                 )}
               >
-                <PayloadName path={p} className={cn("text-xl", isBlocked ? "text-zinc-500" : "text-white")} stacked />
-                <ArrowRight className={cn("w-6 h-6 transition-all shrink-0 mt-1", isBlocked ? "text-zinc-800" : "text-zinc-500 group-hover:text-ps-blue group-hover:translate-x-2")} />
-              </button>
+                <PayloadName
+                  path={p}
+                  className={cn('text-lg md:text-xl', isBlocked ? 'text-zinc-500' : 'text-white')}
+                  stacked
+                />
+              </HudButton>
             )
           })}
-          <div className="pt-4 border-t border-white/10 mt-4">
-            <button
+          <div className="pt-4 border-t border-white/10 mt-2">
+            <HudButton
               onClick={() => setShowDelayModal(true)}
-              className="w-full flex items-center justify-between p-6 bg-white/[0.03] rounded-2xl border border-dashed border-white/20 hover:border-ps-blue group transition-all"
+              icon={Zap}
+              endIcon={ArrowRight}
+              variant="primary"
+              size="lg"
+              block
+              className="cp-btn--bar"
             >
-              <div className="flex items-center space-x-4">
-                <Zap className="w-6 h-6 text-ps-blue" />
-                <span className="font-bold text-white uppercase tracking-tight text-xl">{t("autoload.add_delay_btn", "Add Delay")}</span>
-              </div>
-              <ArrowRight className="w-6 h-6 text-zinc-500 group-hover:text-ps-blue group-hover:translate-x-2 transition-all" />
-            </button>
+              {t("autoload.add_delay_btn", "Add Delay")}
+            </HudButton>
           </div>
           <div className="pt-8 border-t border-white/5 mt-8 text-center space-y-4">
             <p className="text-zinc-500 text-sm font-bold uppercase tracking-widest opacity-60">{t("autoload.missing_payload", "Missing a payload?")}</p>
@@ -182,12 +201,25 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
             ) : null}
           </div>
         </div>
-        <button
-          onClick={() => handleToggle(false)}
-          className="px-4 py-2 rounded-xl font-black uppercase italic tracking-tighter bg-red-600/10 text-red-500 border border-red-500/30 hover:bg-red-600 hover:text-white transition-all shadow-lg text-xs"
-        >
-          {t("autoload.disable_btn", "Disable Autoload")}
-        </button>
+        {isCyberpunk ? (
+          <div className="flex items-center gap-4 shrink-0">
+            <span className="label-caps !text-zinc-400 !opacity-100 text-xs md:text-sm tracking-[0.16em] whitespace-nowrap">
+              {t("autoload.disable_btn", "Disable Autoload")}
+            </span>
+            {/*
+              Label is "Disable Autoload": ON = disabled (autoload off).
+              Flip to OFF to keep sequence enabled.
+            */}
+            <ToggleSwitch
+              on={!enabled}
+              onChange={(disable) => handleToggle(!disable)}
+            />
+          </div>
+        ) : (
+          <HudButton onClick={() => handleToggle(false)} variant="dangerSoft" size="sm">
+            {t("autoload.disable_btn", "Disable Autoload")}
+          </HudButton>
+        )}
       </div>
 
       <div className="glass-panel p-6 rounded-ps-3xl border-white/10 flex-1 overflow-hidden flex flex-col min-h-0">
@@ -200,16 +232,10 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
               <div className="flex items-center min-w-0 pl-2">
                 <PayloadName path={p} className="text-white" stacked />
               </div>
-              <div className="flex items-center space-x-2">
-                <button onClick={() => moveUp(i)} disabled={i === 0} className="p-2 bg-white/10 text-zinc-400 hover:bg-ps-blue hover:text-white rounded-xl disabled:opacity-20">
-                  <ChevronUp className="w-5 h-5" />
-                </button>
-                <button onClick={() => moveDown(i)} disabled={i === autoloadList.length - 1} className="p-2 bg-white/10 text-zinc-400 hover:bg-ps-blue hover:text-white rounded-xl disabled:opacity-20">
-                  <ChevronDown className="w-5 h-5" />
-                </button>
-                <button onClick={() => setAutoloadList(autoloadList.filter((_, idx) => idx !== i))} className="p-2 bg-white/10 text-zinc-400 hover:bg-red-600 hover:text-white rounded-xl">
-                  <Trash2 className="w-5 h-5" />
-                </button>
+              <div className="flex items-center gap-2">
+                <HudButton onClick={() => moveUp(i)} disabled={i === 0} icon={ChevronUp} variant="secondary" size="sm" className="cp-btn--icon" aria-label="Move up" />
+                <HudButton onClick={() => moveDown(i)} disabled={i === autoloadList.length - 1} icon={ChevronDown} variant="secondary" size="sm" className="cp-btn--icon" aria-label="Move down" />
+                <HudButton onClick={() => setAutoloadList(autoloadList.filter((_, idx) => idx !== i))} icon={Trash2} variant="dangerSoft" size="sm" className="cp-btn--icon" aria-label="Remove" />
               </div>
             </div>
           ))}
@@ -221,13 +247,16 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
           )}
 
           <div className={cn("pt-4 mt-2", isPS5 ? "hidden" : "lg:hidden")}>
-            <button
+            <HudButton
               onClick={() => setSubView('add')}
-              className="w-full flex items-center justify-center space-x-4 p-6 bg-ps-blue/10 hover:bg-ps-blue text-ps-blue hover:text-white rounded-2xl border border-dashed border-ps-blue/30 hover:border-ps-blue transition-all group shadow-lg"
+              icon={Activity}
+              variant="primary"
+              size="lg"
+              block
+              className="cp-btn--bar"
             >
-              <Activity className="w-6 h-6" />
-              <span className="font-black italic text-xl uppercase tracking-tighter">{t("autoload.add_item_btn", "Add Item to Sequence")}</span>
-            </button>
+              {t("autoload.add_item_btn", "Add Item to Sequence")}
+            </HudButton>
           </div>
         </div>
       </div>
@@ -251,12 +280,25 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
             {t("autoload.enable_desc", "Chain multiple payloads to be executed automatically every time Payload Manager starts.")}
           </p>
         </div>
-        <button
-          onClick={() => handleToggle(true)}
-          className="px-8 md:px-12 py-5 md:py-6 bg-ps-blue text-white text-lg md:text-2xl font-extrabold rounded-2xl md:rounded-[1.5rem] hover:bg-ps-blue/80 transition-all transform active:scale-95 shadow-[0_0_40px_rgba(0,149,255,0.3)]"
-        >
-          {t("autoload.enable_btn", "Enable Autoload")}
-        </button>
+        {isCyberpunk ? (
+          <div className="flex flex-col items-center gap-5">
+            <span className="label-caps !text-zinc-400 !opacity-100 text-sm tracking-[0.16em]">
+              {t("autoload.disable_btn", "Disable Autoload")}
+            </span>
+            {/*
+              Autoload is currently off → Disable is ON.
+              Switch to OFF to enable the sequence.
+            */}
+            <ToggleSwitch
+              on={!enabled}
+              onChange={(disable) => handleToggle(!disable)}
+            />
+          </div>
+        ) : (
+          <HudButton onClick={() => handleToggle(true)} variant="primary" size="lg">
+            {t("autoload.enable_btn", "Enable Autoload")}
+          </HudButton>
+        )}
       </div>
     )
   }
@@ -284,24 +326,23 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
         title={t("autoload.delay_modal.title", "Configure Delay")}
         onClose={() => setShowDelayModal(false)}
         footer={
-          <button
-            onClick={() => setShowDelayModal(false)}
-            className="w-full py-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl font-bold uppercase tracking-tight transition-all"
-          >
+          <HudButton onClick={() => setShowDelayModal(false)} variant="secondary" block>
             {t("autoload.delay_modal.cancel", "Cancel")}
-          </button>
+          </HudButton>
         }
       >
         <div className="space-y-6 md:space-y-8">
           <div className="grid grid-cols-3 gap-3 md:gap-4">
             {[1, 3, 5].map(s => (
-              <button
+              <HudButton
                 key={s}
                 onClick={() => addDelay(s * 1000)}
-                className="py-4 md:py-6 bg-ps-blue/20 hover:bg-ps-blue border border-ps-blue/30 text-white rounded-2xl font-black text-xl md:text-2xl transition-all shadow-lg"
+                variant="primary"
+                size="lg"
+                className="flex-1"
               >
                 {s}s
-              </button>
+              </HudButton>
             ))}
           </div>
 
@@ -315,12 +356,14 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
                 onChange={(e) => setCustomDelay(e.target.value)}
                 className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-4 md:p-5 text-white font-mono text-xl md:text-2xl focus:border-ps-blue outline-none transition-all"
               />
-              <button
+              <HudButton
                 onClick={() => customDelay && addDelay(parseInt(customDelay))}
-                className="py-4 md:py-0 px-8 md:px-10 bg-ps-blue text-white rounded-2xl font-black uppercase italic tracking-tighter text-lg md:text-xl shadow-2xl hover:bg-ps-blue/80 transition-all shrink-0"
+                variant="primary"
+                size="lg"
+                className="shrink-0"
               >
                 {t("autoload.delay_modal.add_btn", "Add")}
-              </button>
+              </HudButton>
             </div>
           </div>
         </div>

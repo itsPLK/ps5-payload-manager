@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { ArrowLeft, HardDrive, Cpu, AlertTriangle, CheckCircle2, Loader2, Info, Usb } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '../../utils/helpers'
+import HudButton from '../ui/HudButton'
 
 const MoveFromUsbView = ({ path, onBack, onComplete, addToast }) => {
   const { t } = useTranslation()
@@ -94,7 +95,9 @@ const MoveFromUsbView = ({ path, onBack, onComplete, addToast }) => {
             <div className="space-y-2">
               <p className="text-lg font-bold text-white">{t("move_usb.error_title", "Something went wrong")}</p>
               <p className="text-red-400/80 leading-relaxed">{errorMsg}</p>
-              <button onClick={checkPayload} className="mt-4 px-6 py-2 bg-red-500 text-white rounded-xl font-bold text-sm">{t("move_usb.retry_btn", "Retry")}</button>
+              <HudButton onClick={checkPayload} variant="danger" size="sm" className="mt-4">
+                {t("move_usb.retry_btn", "Retry")}
+              </HudButton>
             </div>
           </div>
         )}
@@ -110,7 +113,9 @@ const MoveFromUsbView = ({ path, onBack, onComplete, addToast }) => {
                 </p>
               </div>
             </div>
-            <button onClick={onBack} className="w-full py-4 md:py-6 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-black uppercase italic text-lg md:text-xl transition-all border border-white/10">{t("move_usb.return_btn", "Return to Storage Hub")}</button>
+            <HudButton onClick={onBack} variant="secondary" size="lg" block className="cp-btn--bar">
+              {t("move_usb.return_btn", "Return to Storage Hub")}
+            </HudButton>
           </div>
         )}
 
@@ -126,10 +131,16 @@ const MoveFromUsbView = ({ path, onBack, onComplete, addToast }) => {
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button onClick={onBack} className="flex-1 py-4 md:py-6 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold uppercase transition-all">{t("move_usb.cancel_btn", "Cancel")}</button>
+              <HudButton onClick={onBack} variant="secondary" size="lg" className="flex-1">
+                {t("move_usb.cancel_btn", "Cancel")}
+              </HudButton>
               <div className="flex flex-1 gap-2">
-                <button onClick={() => performMove(true, true)} className="flex-1 py-4 md:py-6 rounded-2xl bg-ps-blue/50 hover:bg-ps-blue/70 text-white font-black uppercase italic text-sm md:text-lg transition-all border border-ps-blue/30">{t("move_usb.overwrite_copy_btn", "Overwrite & Copy")}</button>
-                <button onClick={() => performMove(true, false)} className="flex-1 py-4 md:py-6 rounded-2xl bg-ps-blue hover:bg-ps-blue/80 text-white font-black uppercase italic text-sm md:text-lg transition-all shadow-xl shadow-ps-blue/20">{t("move_usb.overwrite_move_btn", "Overwrite & Move")}</button>
+                <HudButton onClick={() => performMove(true, true)} variant="ghost" size="lg" className="flex-1">
+                  {t("move_usb.overwrite_copy_btn", "Overwrite & Copy")}
+                </HudButton>
+                <HudButton onClick={() => performMove(true, false)} variant="primary" size="lg" className="flex-1">
+                  {t("move_usb.overwrite_move_btn", "Overwrite & Move")}
+                </HudButton>
               </div>
             </div>
           </div>
@@ -147,8 +158,12 @@ const MoveFromUsbView = ({ path, onBack, onComplete, addToast }) => {
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button onClick={() => performMove(false, true)} className="flex-1 py-4 md:py-6 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-black uppercase italic text-lg md:text-xl transition-all border border-white/20">{t("move_usb.copy_btn", "Copy to Internal")}</button>
-              <button onClick={() => performMove(false, false)} className="flex-1 py-4 md:py-6 rounded-2xl bg-ps-blue hover:bg-ps-blue/80 text-white font-black uppercase italic text-lg md:text-xl transition-all shadow-2xl shadow-ps-blue/30">{t("move_usb.move_btn", "Move to Internal")}</button>
+              <HudButton onClick={() => performMove(false, true)} variant="secondary" size="lg" className="flex-1">
+                {t("move_usb.copy_btn", "Copy to Internal")}
+              </HudButton>
+              <HudButton onClick={() => performMove(false, false)} variant="primary" size="lg" className="flex-1">
+                {t("move_usb.move_btn", "Move to Internal")}
+              </HudButton>
             </div>
           </div>
         )}

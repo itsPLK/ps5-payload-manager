@@ -61,6 +61,10 @@
  * - active: cyan text + thin cyan rectangular frame only
  * - no cursor chip / no heavy fill
  */
+[data-theme="cyberpunk"] .cp-sidebar__nav {
+  gap: 0.15rem !important;
+}
+
 [data-theme="cyberpunk"] .cp-sidebar .cp-nav-item {
   letter-spacing: 0.16em !important;
   border-radius: 0 !important;
@@ -71,6 +75,7 @@
   box-shadow: none !important;
   text-shadow: none !important;
   padding: 0.85rem 1.15rem !important;
+  margin-bottom: 0 !important;
   min-height: 3rem;
   gap: 0.85rem !important;
   justify-content: flex-start !important;
@@ -102,14 +107,49 @@
   opacity: 0.9;
 }
 
-/* Collapsed rail: keep square frame around icon only */
+/* Collapsed rail: square icon tiles that fully fit (no clipped borders) */
+[data-theme="cyberpunk"] .cp-sidebar--collapsed .cp-nav-item,
 [data-theme="cyberpunk"] .cp-sidebar .cp-nav-item.justify-center {
   justify-content: center !important;
-  padding: 0.75rem !important;
-  width: auto !important;
-  min-width: 3rem;
-  margin-left: auto;
-  margin-right: auto;
+  align-items: center !important;
+  padding: 0 !important;
+  width: 2.75rem !important;
+  min-width: 2.75rem !important;
+  max-width: 2.75rem !important;
+  height: 2.75rem !important;
+  min-height: 2.75rem !important;
+  margin: 0 auto !important;
+  gap: 0 !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+[data-theme="cyberpunk"] .cp-sidebar--collapsed .cp-nav-item svg,
+[data-theme="cyberpunk"] .cp-sidebar .cp-nav-item.justify-center svg {
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  flex-shrink: 0;
+}
+
+/* Hide label box entirely when collapsed so it can't steal width */
+[data-theme="cyberpunk"] .cp-sidebar--collapsed .cp-nav-item > span {
+  display: none !important;
+  width: 0 !important;
+  opacity: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+[data-theme="cyberpunk"] .cp-sidebar--collapsed .cp-sidebar__toggle {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid rgba(255, 60, 60, 0.28);
+  border-radius: 0.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Donate uses same frame, warmer red when idle */
@@ -470,15 +510,45 @@
 
 /* Corner chips removed — they clipped headers / card top borders */
 
+/* Settings cards — cyberpunk chrome (angular, not crushed copy) */
+[data-theme="cyberpunk"] .setting-row {
+  border-radius: 0.35rem !important;
+  border-color: rgba(255, 60, 60, 0.18) !important;
+  background: rgba(18, 6, 10, 0.72) !important;
+}
+
+[data-theme="cyberpunk"] .setting-row:hover {
+  border-color: rgba(0, 240, 255, 0.35) !important;
+}
+
+[data-theme="cyberpunk"] .setting-row__title {
+  /* Mono + huge tracking made "Multiple Payload Sources" wrap word-by-word */
+  letter-spacing: 0.06em !important;
+  font-style: normal !important;
+  line-height: 1.35 !important;
+}
+
+[data-theme="cyberpunk"] .setting-row__desc {
+  color: #7a6a68 !important;
+  letter-spacing: 0.01em !important;
+}
+
+[data-theme="cyberpunk"] .setting-row__icon {
+  border-radius: 0.35rem !important;
+  border: 1px solid rgba(255, 60, 60, 0.2);
+  color: rgba(255, 90, 90, 0.65) !important;
+}
+
 /*
  * OFF | ON segmented toggle (settings UI reference)
  * Angular ends, dim OFF side, solid cyan ON side when selected.
+ * Slightly narrower so it coexists with long titles in half-width cards.
  */
 [data-theme="cyberpunk"] .cp-toggle {
   display: inline-flex;
   align-items: stretch;
-  width: 9.5rem;
-  height: 2.25rem;
+  width: 8.25rem;
+  height: 2.15rem;
   padding: 0;
   border: 1px solid rgba(255, 60, 60, 0.35);
   background: rgba(8, 2, 6, 0.9);
@@ -489,8 +559,8 @@
 
 @media (min-width: 768px) {
   [data-theme="cyberpunk"] .cp-toggle {
-    width: 11rem;
-    height: 2.6rem;
+    width: 9.5rem;
+    height: 2.45rem;
   }
 }
 
@@ -556,4 +626,317 @@
 [data-theme="cyberpunk"] .cp-toggle.is-on .cp-toggle__seg--off {
   color: rgba(255, 90, 90, 0.4);
   background: rgba(40, 8, 14, 0.9);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * CP2077 menu action buttons (Install / Update / Upload / etc.)
+ * Match in-game CRAFTING / INVENTORY / MAP / DATABASE bar tiles.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+[data-theme="cyberpunk"] .cp-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  min-height: 2.75rem;
+  padding: 0.7rem 1.35rem;
+  border: 1px solid rgba(255, 60, 60, 0.38);
+  border-radius: 0;
+  background:
+    linear-gradient(180deg, rgba(50, 10, 16, 0.72) 0%, rgba(18, 6, 10, 0.85) 100%);
+  color: rgba(0, 240, 255, 0.82);
+  font-family: var(--font-ui);
+  font-weight: 800;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  cursor: pointer;
+  outline: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.4),
+    0 0 0 0 transparent;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+[data-theme="cyberpunk"] .cp-btn:hover:not(:disabled),
+[data-theme="cyberpunk"] .cp-btn:focus-visible:not(:disabled) {
+  color: #00f0ff;
+  border-color: #00f0ff;
+  background:
+    linear-gradient(90deg, rgba(80, 12, 20, 0.75) 0%, rgba(0, 50, 60, 0.4) 100%);
+  box-shadow:
+    0 0 20px rgba(0, 240, 255, 0.14),
+    inset 0 0 0 1px rgba(0, 240, 255, 0.18);
+}
+
+[data-theme="cyberpunk"] .cp-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+[data-theme="cyberpunk"] .cp-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  filter: grayscale(0.3);
+}
+
+[data-theme="cyberpunk"] .cp-btn__icon {
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+[data-theme="cyberpunk"] .cp-btn__label {
+  white-space: nowrap;
+}
+
+/* Primary — selected MAP-style cyan frame */
+[data-theme="cyberpunk"] .cp-btn--primary {
+  border-color: rgba(0, 240, 255, 0.55);
+  color: #00f0ff;
+  background:
+    linear-gradient(90deg, rgba(70, 8, 16, 0.8) 0%, rgba(0, 45, 55, 0.45) 55%, rgba(20, 8, 14, 0.8) 100%);
+  box-shadow:
+    inset 0 0 24px rgba(0, 240, 255, 0.05),
+    0 0 12px rgba(0, 240, 255, 0.08);
+}
+
+[data-theme="cyberpunk"] .cp-btn--primary:hover:not(:disabled),
+[data-theme="cyberpunk"] .cp-btn--primary:focus-visible:not(:disabled) {
+  border-color: #00f0ff;
+  color: #00f0ff;
+  background:
+    linear-gradient(90deg, rgba(90, 10, 18, 0.85) 0%, rgba(0, 70, 80, 0.5) 100%);
+  box-shadow:
+    0 0 24px rgba(0, 240, 255, 0.22),
+    inset 0 0 0 1px rgba(0, 240, 255, 0.25);
+}
+
+/* Secondary / Cancel — dim red frame like idle CRAFTING */
+[data-theme="cyberpunk"] .cp-btn--secondary {
+  border-color: rgba(255, 60, 60, 0.32);
+  color: rgba(255, 120, 120, 0.8);
+  background: rgba(24, 6, 10, 0.7);
+}
+
+[data-theme="cyberpunk"] .cp-btn--secondary:hover:not(:disabled) {
+  border-color: rgba(0, 240, 255, 0.55);
+  color: #00f0ff;
+  background: rgba(0, 40, 48, 0.35);
+}
+
+/* Danger — Kill / Delete / Abort */
+[data-theme="cyberpunk"] .cp-btn--danger {
+  border-color: rgba(255, 60, 60, 0.65);
+  color: #ff6b6b;
+  background: linear-gradient(90deg, rgba(70, 8, 12, 0.85) 0%, rgba(40, 6, 10, 0.75) 100%);
+}
+
+[data-theme="cyberpunk"] .cp-btn--danger:hover:not(:disabled) {
+  border-color: #ff3c3c;
+  color: #fff;
+  background: rgba(255, 40, 50, 0.28);
+  box-shadow: 0 0 20px rgba(255, 60, 60, 0.25);
+}
+
+/* Soft danger — icon row delete */
+[data-theme="cyberpunk"] .cp-btn--dangerSoft {
+  border-color: rgba(255, 60, 60, 0.28);
+  color: #ff6b6b;
+  background: rgba(40, 6, 10, 0.45);
+  min-height: 2.4rem;
+  padding: 0.5rem 0.75rem;
+}
+
+[data-theme="cyberpunk"] .cp-btn--dangerSoft:hover:not(:disabled) {
+  border-color: #ff3c3c;
+  color: #fff;
+  background: rgba(255, 50, 60, 0.25);
+}
+
+/* Success — Update */
+[data-theme="cyberpunk"] .cp-btn--success {
+  border-color: rgba(0, 240, 255, 0.45);
+  color: #7dffc8;
+  background:
+    linear-gradient(90deg, rgba(0, 40, 30, 0.55) 0%, rgba(0, 50, 55, 0.4) 100%);
+}
+
+[data-theme="cyberpunk"] .cp-btn--success:hover:not(:disabled) {
+  border-color: #00f0ff;
+  color: #00f0ff;
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.18);
+}
+
+/* Ghost — dashed idle / secondary actions */
+[data-theme="cyberpunk"] .cp-btn--ghost {
+  border-style: solid;
+  border-color: rgba(255, 60, 60, 0.22);
+  color: rgba(255, 100, 100, 0.7);
+  background: transparent;
+}
+
+[data-theme="cyberpunk"] .cp-btn--ghost:hover:not(:disabled) {
+  border-color: rgba(0, 240, 255, 0.5);
+  color: #00f0ff;
+  background: rgba(0, 240, 255, 0.05);
+}
+
+/* Sizes */
+[data-theme="cyberpunk"] .cp-btn--sm {
+  min-height: 2.15rem;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  gap: 0.45rem;
+}
+
+[data-theme="cyberpunk"] .cp-btn--lg {
+  min-height: 3.5rem;
+  padding: 1rem 1.75rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.18em;
+  gap: 0.85rem;
+}
+
+[data-theme="cyberpunk"] .cp-btn--block {
+  width: 100%;
+}
+
+/* Icon-only square (trash, chevrons in rows) */
+[data-theme="cyberpunk"] .cp-btn--icon {
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  padding: 0.5rem;
+  gap: 0;
+}
+
+/* Full-width menu bar tiles (autoload enable, overlay actions) */
+[data-theme="cyberpunk"] .cp-btn--bar {
+  width: 100%;
+  min-height: 3.75rem;
+  justify-content: flex-start;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+}
+
+/* Bar rows with trailing arrow (Autoload available payloads) */
+[data-theme="cyberpunk"] .cp-btn--with-end,
+[data-theme="cyberpunk"] .cp-btn--bar.cp-btn--with-end {
+  justify-content: space-between;
+  text-align: left;
+}
+
+[data-theme="cyberpunk"] .cp-btn__end {
+  margin-left: auto;
+  opacity: 0.55;
+  transition: opacity 0.15s ease, transform 0.15s ease, color 0.15s ease;
+}
+
+[data-theme="cyberpunk"] .cp-btn:hover:not(:disabled) .cp-btn__end,
+[data-theme="cyberpunk"] .cp-btn:focus-visible:not(:disabled) .cp-btn__end {
+  opacity: 1;
+  color: #00f0ff;
+  transform: translateX(4px);
+}
+
+[data-theme="cyberpunk"] .cp-btn__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  min-width: 0;
+  white-space: normal;
+}
+
+/* Selected chip (Autoload Delay 3s/5s/10s) */
+[data-theme="cyberpunk"] .cp-btn--selected,
+[data-theme="cyberpunk"] .cp-btn.is-selected {
+  border-color: #00f0ff !important;
+  color: #00f0ff !important;
+  background:
+    linear-gradient(90deg, rgba(70, 8, 16, 0.85) 0%, rgba(0, 55, 65, 0.5) 100%) !important;
+  box-shadow:
+    0 0 22px rgba(0, 240, 255, 0.2),
+    inset 0 0 0 1px rgba(0, 240, 255, 0.25) !important;
+}
+
+[data-theme="cyberpunk"] .cp-delay-card {
+  border-radius: 0.35rem !important;
+  border-color: rgba(255, 60, 60, 0.18) !important;
+  background: rgba(18, 6, 10, 0.72) !important;
+}
+
+[data-theme="cyberpunk"] .cp-delay-card__value {
+  color: #00f0ff;
+  text-shadow: 0 0 14px rgba(0, 240, 255, 0.35);
+  font-family: var(--font-ui);
+  font-style: normal;
+  letter-spacing: 0.08em;
+}
+
+[data-theme="cyberpunk"] .cp-btn--payload-row {
+  min-height: 4rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  align-items: center;
+}
+
+/* Log overlay — Night City terminal */
+[data-theme="cyberpunk"] .cp-log-overlay {
+  background: #0a0508;
+}
+
+[data-theme="cyberpunk"] .cp-log-overlay__header {
+  border-bottom-color: rgba(255, 60, 60, 0.35);
+  background: linear-gradient(180deg, rgba(40, 4, 8, 0.96) 0%, rgba(12, 4, 8, 0.94) 100%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="cyberpunk"] .cp-log-overlay__title h3 {
+  font-family: var(--font-ui);
+  font-style: normal;
+  letter-spacing: 0.18em;
+  color: #ff3c3c;
+  text-shadow: 0 0 16px rgba(255, 60, 60, 0.4);
+}
+
+[data-theme="cyberpunk"] .cp-log-viewer {
+  background:
+    linear-gradient(180deg, rgba(12, 4, 8, 0.5) 0%, rgba(6, 2, 6, 0.85) 100%);
+}
+
+[data-theme="cyberpunk"] .cp-log-viewer__scroll {
+  font-family: var(--font-ui);
+  letter-spacing: 0.02em;
+}
+
+[data-theme="cyberpunk"] .cp-log-line:hover {
+  background: rgba(0, 240, 255, 0.04);
+  border-left-color: #00f0ff;
+}
+
+[data-theme="cyberpunk"] .cp-log-line__num {
+  color: rgba(255, 80, 80, 0.45);
+}
+
+[data-theme="cyberpunk"] .cp-log-line__prompt {
+  color: #00f0ff;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.35);
+}
+
+[data-theme="cyberpunk"] .cp-log-line__text {
+  color: #e8e4e0;
+}
+
+[data-theme="cyberpunk"] .cp-log-viewer__empty {
+  color: #7a6a68;
 }

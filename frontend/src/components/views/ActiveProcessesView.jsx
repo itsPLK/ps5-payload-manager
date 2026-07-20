@@ -3,6 +3,7 @@ import { Cpu, RefreshCw, XCircle, Search, AlertTriangle, Activity, Loader2, Info
 import { useTranslation, Trans } from 'react-i18next'
 import { cn, isPS5 } from '../../utils/helpers'
 import ToggleSwitch from '../ui/ToggleSwitch'
+import HudButton from '../ui/HudButton'
 
 const ActiveProcessesView = ({ ip, addToast, showConfirm }) => {
   const { t } = useTranslation()
@@ -117,9 +118,9 @@ const ActiveProcessesView = ({ ip, addToast, showConfirm }) => {
           <div className="py-12 bg-red-500/10 border border-red-500/20 rounded-2xl flex flex-col items-center justify-center space-y-4">
             <AlertTriangle className="w-10 h-10 text-red-500" />
             <p className="text-red-400 font-bold">{t("active_processes.error_loading", "Failed to load processes")}</p>
-            <button onClick={fetchProcesses} className="px-6 py-2 bg-red-500 hover:bg-red-400 text-white rounded-xl font-bold transition-colors">
+            <HudButton onClick={fetchProcesses} variant="danger" size="sm">
               {t("active_processes.retry", "Retry")}
-            </button>
+            </HudButton>
           </div>
         ) : filteredProcesses.length === 0 ? (
           <div className="py-20 flex flex-col items-center justify-center space-y-6 bg-white/[0.02] border-2 border-dashed border-white/5 rounded-2xl">
@@ -149,15 +150,17 @@ const ActiveProcessesView = ({ ip, addToast, showConfirm }) => {
                       </div>
                     </div>
                   </div>
-                  <button
+                  <HudButton
                     onClick={() => handleKill(p)}
                     disabled={critical}
-                    className="px-4 py-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-xl font-bold text-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed group-hover:opacity-100 opacity-50 flex items-center space-x-2"
+                    icon={Trash2}
+                    variant="dangerSoft"
+                    size="sm"
+                    className="opacity-50 group-hover:opacity-100"
                     title={critical ? t("active_processes.cannot_kill_tooltip", "Cannot kill critical process") : t("active_processes.kill_button", "Kill")}
                   >
-                    <Trash2 className="w-4 h-4" />
                     <span className="hidden sm:inline">{t("active_processes.kill_button", "Kill")}</span>
-                  </button>
+                  </HudButton>
                 </div>
               )
             })}

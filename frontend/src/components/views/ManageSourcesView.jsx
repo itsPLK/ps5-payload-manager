@@ -6,6 +6,7 @@ import {
 import { QRCodeSVG } from 'qrcode.react'
 import { useTranslation } from 'react-i18next'
 import { cn, isPS5 } from '../../utils/helpers'
+import HudButton from '../ui/HudButton'
 
 const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
   const { t } = useTranslation()
@@ -94,15 +95,17 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
   if (isPS5) {
     return (
       <div className="max-w-3xl mx-auto space-y-12 pb-20">
-        <div className="flex items-center space-x-6">
-          <button
+        <div className="flex items-center space-x-4 md:space-x-6">
+          <HudButton
             onClick={onBack}
-            className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all border border-white/10"
-          >
-            <ArrowLeft className="w-7 h-7" />
-          </button>
+            icon={ArrowLeft}
+            variant="secondary"
+            size="sm"
+            className="cp-btn--icon"
+            aria-label={t("manage_sources.back", "Back")}
+          />
           <h2 className="text-4xl font-extrabold text-white tracking-tight">
-            {t("manage_sources.ps5_title_1", "Manage")} <span className="text-ps-blue">{t("manage_sources.ps5_title_2", "Sources")}</span>
+            {t("manage_sources.ps5_title_1", "Manage")} <span className="cp-title-accent">{t("manage_sources.ps5_title_2", "Sources")}</span>
           </h2>
         </div>
 
@@ -125,15 +128,17 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
   return (
     <div className="w-full max-w-3xl mx-auto space-y-10 pb-20 min-w-0">
       {/* Header */}
-      <div className="flex items-center space-x-6">
-        <button
+      <div className="flex items-center space-x-4 md:space-x-6">
+        <HudButton
           onClick={onBack}
-          className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all border border-white/10"
-        >
-          <ArrowLeft className="w-7 h-7" />
-        </button>
+          icon={ArrowLeft}
+          variant="secondary"
+          size="sm"
+          className="cp-btn--icon"
+          aria-label={t("manage_sources.back", "Back")}
+        />
         <h2 className="text-4xl font-extrabold text-white tracking-tight">
-          {t("manage_sources.web_title_1", "Payload")} <span className="text-ps-blue">{t("manage_sources.web_title_2", "Sources")}</span>
+          {t("manage_sources.web_title_1", "Payload")} <span className="cp-title-accent">{t("manage_sources.web_title_2", "Sources")}</span>
         </h2>
       </div>
       {/* Sources list */}
@@ -182,29 +187,9 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
                 <div className="flex items-center space-x-2 shrink-0 lg:hidden">
                   {src.removable && (
                     <>
-                      <button
-                        onClick={() => move(idx, -1)}
-                        disabled={idx <= 1}
-                        className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
-                        title={t("manage_sources.move_up_btn", "Move up")}
-                      >
-                        <ChevronUp className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => move(idx, 1)}
-                        disabled={idx === sources.length - 1}
-                        className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
-                        title={t("manage_sources.move_down_btn", "Move down")}
-                      >
-                        <ChevronDown className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => remove(idx)}
-                        className="p-2 rounded-xl bg-red-950/20 text-red-500 border border-red-500/10 hover:bg-red-500 hover:text-white transition-all"
-                        title={t("manage_sources.remove_btn", "Remove source")}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <HudButton onClick={() => move(idx, -1)} disabled={idx <= 1} icon={ChevronUp} variant="secondary" size="sm" className="cp-btn--icon" title={t("manage_sources.move_up_btn", "Move up")} />
+                      <HudButton onClick={() => move(idx, 1)} disabled={idx === sources.length - 1} icon={ChevronDown} variant="secondary" size="sm" className="cp-btn--icon" title={t("manage_sources.move_down_btn", "Move down")} />
+                      <HudButton onClick={() => remove(idx)} icon={Trash2} variant="dangerSoft" size="sm" className="cp-btn--icon" title={t("manage_sources.remove_btn", "Remove source")} />
                     </>
                   )}
                   {!src.removable && (
@@ -235,29 +220,9 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
               <div className="hidden lg:flex items-center space-x-2 shrink-0">
                 {src.removable && (
                   <>
-                    <button
-                      onClick={() => move(idx, -1)}
-                      disabled={idx <= 1}
-                      className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
-                      title={t("manage_sources.move_up_btn", "Move up")}
-                    >
-                      <ChevronUp className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => move(idx, 1)}
-                      disabled={idx === sources.length - 1}
-                      className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
-                      title={t("manage_sources.move_down_btn", "Move down")}
-                    >
-                      <ChevronDown className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => remove(idx)}
-                      className="p-2 rounded-xl bg-red-950/20 text-red-500 border border-red-500/10 hover:bg-red-500 hover:text-white transition-all"
-                      title={t("manage_sources.remove_btn", "Remove source")}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <HudButton onClick={() => move(idx, -1)} disabled={idx <= 1} icon={ChevronUp} variant="secondary" size="sm" className="cp-btn--icon" title={t("manage_sources.move_up_btn", "Move up")} />
+                    <HudButton onClick={() => move(idx, 1)} disabled={idx === sources.length - 1} icon={ChevronDown} variant="secondary" size="sm" className="cp-btn--icon" title={t("manage_sources.move_down_btn", "Move down")} />
+                    <HudButton onClick={() => remove(idx)} icon={Trash2} variant="dangerSoft" size="sm" className="cp-btn--icon" title={t("manage_sources.remove_btn", "Remove source")} />
                   </>
                 )}
                 {!src.removable && (
@@ -273,13 +238,15 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
 
       {/* Add Source */}
       {!showAddForm ? (
-        <button
+        <HudButton
           onClick={() => { setShowAddForm(true); setAddError('') }}
-          className="w-full flex items-center justify-center space-x-3 py-5 border-2 border-dashed border-white/10 rounded-2xl text-zinc-500 hover:text-ps-blue hover:border-ps-blue/30 transition-all font-bold"
+          icon={Plus}
+          variant="ghost"
+          block
+          className="cp-btn--bar"
         >
-          <Plus className="w-5 h-5" />
-          <span>{t("manage_sources.add_source_btn", "Add Source")}</span>
-        </button>
+          {t("manage_sources.add_source_btn", "Add Source")}
+        </HudButton>
       ) : (
         <form onSubmit={handleAdd} className="p-6 glass-card rounded-2xl border border-white/10 space-y-4">
           <p className="font-bold text-white text-lg">{t("manage_sources.add_new_title", "Add a New Source")}</p>
@@ -297,22 +264,24 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
               disabled={adding}
             />
             <div className="flex gap-3 w-full lg:w-auto">
-              <button
+              <HudButton
                 type="submit"
                 disabled={adding || !newUrl.trim()}
-                className="flex-1 md:flex-initial flex items-center justify-center space-x-2 px-6 py-3 bg-ps-blue hover:bg-ps-blue/80 disabled:opacity-50 text-white rounded-xl font-bold transition-all whitespace-nowrap"
+                icon={adding ? Loader2 : Plus}
+                variant="primary"
+                className="flex-1 md:flex-initial"
               >
-                {adding ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                <span>{adding ? t("manage_sources.validating", "Validating...") : t("manage_sources.add_btn", "Add")}</span>
-              </button>
-              <button
+                {adding ? t("manage_sources.validating", "Validating...") : t("manage_sources.add_btn", "Add")}
+              </HudButton>
+              <HudButton
                 type="button"
                 onClick={() => { setShowAddForm(false); setNewUrl(''); setAddError('') }}
                 disabled={adding}
-                className="flex-1 md:flex-initial px-5 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl font-bold transition-all text-center whitespace-nowrap"
+                variant="secondary"
+                className="flex-1 md:flex-initial"
               >
                 {t("manage_sources.cancel_btn", "Cancel")}
-              </button>
+              </HudButton>
             </div>
           </div>
           {addError && (

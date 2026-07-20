@@ -35,9 +35,9 @@ const DonateView = () => {
             href={donateUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-10 md:px-16 py-6 md:py-8 bg-red-600 text-white text-xl md:text-3xl font-black uppercase rounded-2xl md:rounded-[2rem] hover:bg-red-500 transition-all transform active:scale-95 shadow-[0_0_50px_rgba(220,38,38,0.4)] text-center block"
+            className="cp-btn cp-btn--danger cp-btn--lg cp-btn--bar text-center no-underline"
           >
-            {t("donate.view_options_btn", "View Donation Options")}
+            <span className="cp-btn__label">{t("donate.view_options_btn", "View Donation Options")}</span>
           </a>
         )}
       </div>
