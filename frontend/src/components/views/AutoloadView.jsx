@@ -204,16 +204,10 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
         {isCyberpunk ? (
           <div className="flex items-center gap-4 shrink-0">
             <span className="label-caps !text-zinc-400 !opacity-100 text-xs md:text-sm tracking-[0.16em] whitespace-nowrap">
-              {t("autoload.disable_btn", "Disable Autoload")}
+              {t("autoload.enable_btn", "Enable Autoload")}
             </span>
-            {/*
-              Label is "Disable Autoload": ON = disabled (autoload off).
-              Flip to OFF to keep sequence enabled.
-            */}
-            <ToggleSwitch
-              on={!enabled}
-              onChange={(disable) => handleToggle(!disable)}
-            />
+            {/* ON = sequence active */}
+            <ToggleSwitch on={enabled} onChange={handleToggle} />
           </div>
         ) : (
           <HudButton onClick={() => handleToggle(false)} variant="dangerSoft" size="sm">
@@ -265,40 +259,54 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
 
   if (!enabled) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center space-y-8 text-center p-6 md:p-12">
-        <div className="relative h-24 w-24 md:h-32 md:w-32 mx-auto">
-          <div className="absolute inset-0 bg-ps-blue/20 rounded-full" />
-          <div className="relative flex items-center justify-center h-full w-full bg-black/40 border border-white/10 rounded-3xl md:rounded-[2.5rem] shadow-2xl">
-            <RefreshCw className="w-10 h-10 md:w-16 md:h-16 text-ps-blue" />
+      <div className="cp-autoload-off">
+        <div className="cp-autoload-off__panel">
+          <div className="cp-autoload-off__icon" aria-hidden="true">
+            <Zap className="w-10 h-10 md:w-12 md:h-12" />
+          </div>
+          <div className="cp-autoload-off__copy">
+            <h2 className="cp-autoload-off__title">
+              {t("autoload.sequence_title_1", "Autoload")}{' '}
+              <span className="cp-title-accent">{t("autoload.sequence_title_2", "Sequence")}</span>
+            </h2>
+            <p className="cp-autoload-off__desc">
+              {t(
+                "autoload.enable_desc",
+                "Chain multiple payloads to be executed automatically every time Payload Manager starts."
+              )}
+            </p>
+            <p className="cp-autoload-off__status">
+              {t("autoload.disabled_status", "Autoload is currently off")}
+            </p>
+          </div>
+          <div className="cp-autoload-off__actions">
+            <HudButton
+              onClick={() => handleToggle(true)}
+              icon={Zap}
+              variant="primary"
+              size="lg"
+              block
+              className={isCyberpunk ? 'cp-btn--bar' : undefined}
+            >
+              {t("autoload.enable_btn", "Enable Autoload")}
+            </HudButton>
+            {(saving || saved) && (
+              <div className="cp-autoload-off__save">
+                {saving ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>{t("autoload.saving", "Saving Changes...")}</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>{t("autoload.saved", "All Changes Saved")}</span>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </div>
-        <div className="space-y-3 md:space-y-4 px-4 max-w-2xl">
-          <h2 className="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter">
-            {t("autoload.sequence_title_1", "Autoload")} <span className="cp-title-accent">{t("autoload.sequence_title_2", "Sequence")}</span>
-          </h2>
-          <p className="text-md md:text-xl text-zinc-400 font-medium leading-relaxed">
-            {t("autoload.enable_desc", "Chain multiple payloads to be executed automatically every time Payload Manager starts.")}
-          </p>
-        </div>
-        {isCyberpunk ? (
-          <div className="flex flex-col items-center gap-5">
-            <span className="label-caps !text-zinc-400 !opacity-100 text-sm tracking-[0.16em]">
-              {t("autoload.disable_btn", "Disable Autoload")}
-            </span>
-            {/*
-              Autoload is currently off → Disable is ON.
-              Switch to OFF to enable the sequence.
-            */}
-            <ToggleSwitch
-              on={!enabled}
-              onChange={(disable) => handleToggle(!disable)}
-            />
-          </div>
-        ) : (
-          <HudButton onClick={() => handleToggle(true)} variant="primary" size="lg">
-            {t("autoload.enable_btn", "Enable Autoload")}
-          </HudButton>
-        )}
       </div>
     )
   }

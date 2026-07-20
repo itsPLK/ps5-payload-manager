@@ -456,7 +456,7 @@ function App() {
             <button
               onClick={() => setSidebarExpanded(!sidebarExpanded)}
               className={cn(
-                "cp-sidebar__toggle p-2.5 bg-white/5 hover:bg-ps-blue hover:text-white rounded-xl transition-all shrink-0",
+                "cp-sidebar__toggle p-2.5 bg-white/5 rounded-xl transition-all shrink-0",
                 sidebarExpanded && "mr-3"
               )}
               aria-label={sidebarExpanded ? "Collapse sidebar" : "Expand sidebar"}

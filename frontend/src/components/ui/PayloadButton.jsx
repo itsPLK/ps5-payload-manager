@@ -7,7 +7,7 @@ const PayloadButton = ({ path, onClick, isLoading, sourceName, version }) => {
     <button
       onClick={onClick}
       disabled={isLoading}
-      className="group glass-card p-6 rounded-ps-xl flex flex-col border border-white/5 hover:border-ps-blue hover:bg-ps-blue/5 transition-all text-left relative overflow-hidden"
+      className="group glass-card p-6 rounded-ps-xl flex flex-col border border-white/5 hover:border-ps-blue hover:bg-ps-blue/5 transition-all text-left relative"
     >
       <div className="flex items-start justify-between w-full z-10">
         <PayloadName path={path} version={version} className="text-white text-xl" stacked />

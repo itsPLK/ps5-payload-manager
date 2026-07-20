@@ -778,3 +778,110 @@ button:focus {
   pointer-events: auto;
   filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.55));
 }
+
+/* Autoload disabled empty state (replaces old circular refresh panel) */
+.cp-autoload-off {
+  flex: 1 1 0%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.cp-autoload-off__panel {
+  width: 100%;
+  max-width: 40rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  box-sizing: border-box;
+}
+
+.cp-autoload-off__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  height: 5rem;
+  color: var(--color-ps-blue);
+  background: rgba(0, 149, 255, 0.1);
+  border: 1px solid rgba(0, 149, 255, 0.25);
+  border-radius: 1.25rem;
+}
+
+.cp-autoload-off__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 32rem;
+}
+
+.cp-autoload-off__title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+@media (min-width: 768px) {
+  .cp-autoload-off__title {
+    font-size: 2.75rem;
+  }
+  .cp-autoload-off__icon {
+    width: 5.5rem;
+    height: 5.5rem;
+  }
+}
+
+.cp-autoload-off__desc {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: #a1a1aa;
+}
+
+.cp-autoload-off__status {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #71717a;
+}
+
+.cp-autoload-off__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 22rem;
+}
+
+.cp-autoload-off__toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.cp-autoload-off__save {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ps-blue);
+  opacity: 0.85;
+}

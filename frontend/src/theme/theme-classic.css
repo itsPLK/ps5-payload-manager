@@ -108,13 +108,15 @@
   box-shadow: 0 0 20px rgba(220, 38, 38, 0.3) !important;
 }
 
-/* Classic brand toggle shouldn't flash yellow (cyber accent) */
-[data-theme="classic"] .cp-sidebar__brand button {
+/* Classic hamburger — PS blue hover */
+[data-theme="classic"] .cp-sidebar__toggle {
   border-radius: 0.75rem !important;
   border: none !important;
+  color: #a1a1aa;
 }
 
-[data-theme="classic"] .cp-sidebar__brand button:hover {
+[data-theme="classic"] .cp-sidebar__toggle:hover,
+[data-theme="classic"] .cp-sidebar__toggle:focus-visible {
   background: #0095ff !important;
   color: #ffffff !important;
 }
@@ -313,4 +315,15 @@
 
 [data-theme="classic"] .cp-log-line__prompt {
   color: rgba(0, 149, 255, 0.85);
+}
+
+[data-theme="classic"] .cp-autoload-off__panel {
+  border-radius: 1.5rem !important;
+}
+
+[data-theme="classic"] .cp-autoload-off__icon {
+  border-radius: 1.25rem !important;
+  color: #0095ff;
+  background: rgba(0, 149, 255, 0.1);
+  border-color: rgba(0, 149, 255, 0.25);
 }

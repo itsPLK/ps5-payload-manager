@@ -56,22 +56,33 @@
 }
 
 /*
- * Main-menu style nav (like CONTINUE):
- * - idle: red text, no frame
- * - active: cyan text + thin cyan rectangular frame only
- * - no cursor chip / no heavy fill
+ * Sidebar nav — same cut shape as payload cards:
+ * only bottom-right cut, stroke on the diagonal, yellow corners on hover.
  */
 [data-theme="cyberpunk"] .cp-sidebar__nav {
-  gap: 0.15rem !important;
+  gap: 0.35rem !important;
 }
 
 [data-theme="cyberpunk"] .cp-sidebar .cp-nav-item {
+  --cp-cut: 14px;
+  --cp-edge: transparent;
+  --cp-fill: transparent;
+  position: relative !important;
+  overflow: hidden !important;
   letter-spacing: 0.16em !important;
   border-radius: 0 !important;
-  border-width: 1px !important;
-  border-style: solid !important;
-  border-color: transparent !important;
-  background: transparent !important;
+  border: 1px solid var(--cp-edge) !important;
+  background-color: var(--cp-fill) !important;
+  background-image: linear-gradient(
+    135deg,
+    transparent calc(50% - 0.75px),
+    var(--cp-edge) calc(50% - 0.75px),
+    var(--cp-edge) calc(50% + 0.75px),
+    transparent calc(50% + 0.75px)
+  ) !important;
+  background-size: var(--cp-cut) var(--cp-cut) !important;
+  background-position: right bottom !important;
+  background-repeat: no-repeat !important;
   box-shadow: none !important;
   text-shadow: none !important;
   padding: 0.85rem 1.15rem !important;
@@ -80,20 +91,26 @@
   gap: 0.85rem !important;
   justify-content: flex-start !important;
   width: 100% !important;
-  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease !important;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--cp-cut)),
+    calc(100% - var(--cp-cut)) 100%,
+    0 100%
+  );
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease !important;
 }
 
 [data-theme="cyberpunk"] .cp-sidebar .cp-nav-item:hover:not(.is-active) {
+  --cp-edge: rgba(255, 60, 60, 0.6);
+  --cp-fill: rgba(255, 60, 60, 0.05);
   color: #ff9a9a !important;
-  background: transparent !important;
-  border-color: transparent !important;
 }
 
 [data-theme="cyberpunk"] .cp-sidebar .cp-nav-item.is-active {
+  --cp-edge: #00f0ff;
+  --cp-fill: rgba(0, 240, 255, 0.06);
   color: #00f0ff !important;
-  background: rgba(0, 240, 255, 0.04) !important;
-  border-color: #00f0ff !important;
-  box-shadow: none !important;
   text-shadow: 0 0 12px rgba(0, 240, 255, 0.35) !important;
 }
 
@@ -107,9 +124,49 @@
   opacity: 0.9;
 }
 
-/* Collapsed rail: square icon tiles that fully fit (no clipped borders) */
+/* Yellow L-ticks on 3 corners (TL / TR / BL) — nav hover + active */
+[data-theme="cyberpunk"] .cp-sidebar .cp-nav-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+  transition: opacity 0.15s ease;
+  background-repeat: no-repeat;
+  background-image:
+    linear-gradient(#fcee0a, #fcee0a),
+    linear-gradient(#fcee0a, #fcee0a),
+    linear-gradient(#fcee0a, #fcee0a),
+    linear-gradient(#fcee0a, #fcee0a),
+    linear-gradient(#fcee0a, #fcee0a),
+    linear-gradient(#fcee0a, #fcee0a);
+  background-size:
+    2px 12px,
+    12px 2px,
+    2px 12px,
+    12px 2px,
+    2px 12px,
+    12px 2px;
+  /* left/right/bottom keywords so TR + BL place correctly */
+  background-position:
+    left 4px top 4px,
+    left 4px top 4px,
+    right 4px top 4px,
+    right 4px top 4px,
+    left 4px bottom 4px,
+    left 4px bottom 4px;
+}
+
+[data-theme="cyberpunk"] .cp-sidebar .cp-nav-item:hover::before,
+[data-theme="cyberpunk"] .cp-sidebar .cp-nav-item.is-active::before {
+  opacity: 1;
+}
+
+/* Collapsed rail: icon tiles with same BR cut */
 [data-theme="cyberpunk"] .cp-sidebar--collapsed .cp-nav-item,
 [data-theme="cyberpunk"] .cp-sidebar .cp-nav-item.justify-center {
+  --cp-cut: 8px;
   justify-content: center !important;
   align-items: center !important;
   padding: 0 !important;
@@ -121,7 +178,7 @@
   margin: 0 auto !important;
   gap: 0 !important;
   box-sizing: border-box !important;
-  overflow: visible !important;
+  overflow: hidden !important;
 }
 
 [data-theme="cyberpunk"] .cp-sidebar--collapsed .cp-nav-item svg,
@@ -141,12 +198,27 @@
   padding: 0 !important;
 }
 
+/* Hamburger — yellow hover (not PS blue) */
+[data-theme="cyberpunk"] .cp-sidebar__toggle {
+  border: 1px solid rgba(255, 60, 60, 0.28);
+  border-radius: 0.35rem;
+  color: rgba(255, 90, 90, 0.85);
+  background: rgba(255, 255, 255, 0.04);
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+[data-theme="cyberpunk"] .cp-sidebar__toggle:hover,
+[data-theme="cyberpunk"] .cp-sidebar__toggle:focus-visible {
+  color: #0a0508 !important;
+  background: var(--color-ps-yellow, #fcee0a) !important;
+  border-color: var(--color-ps-yellow, #fcee0a) !important;
+  box-shadow: 0 0 16px rgba(252, 238, 10, 0.35);
+}
+
 [data-theme="cyberpunk"] .cp-sidebar--collapsed .cp-sidebar__toggle {
   width: 2.75rem;
   height: 2.75rem;
   padding: 0;
-  border: 1px solid rgba(255, 60, 60, 0.28);
-  border-radius: 0.35rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -185,74 +257,118 @@
 }
 
 /*
- * Angular notch-cut panels + HUD reticle brackets (from amilarajans
- * feature/cyberpunk-2077-theme). Classic stays fully rounded.
+ * Angular panels — ONLY bottom-right corner cut.
+ * Other 3 corners stay clean 90°.
+ *
+ * CSS border is clipped away on the diagonal, so we paint the cut
+ * edge with a 135° gradient in the BR corner square.
+ *
+ *        ┌──────────────┐
+ *        │              │
+ *        │              /
+ *        └─────────────/   ← stroke on this edge
  */
 [data-theme="cyberpunk"] .cp-clip,
 [data-theme="cyberpunk"] .glass-card,
 [data-theme="cyberpunk"] .glass-panel {
+  --cp-cut: 16px;
+  --cp-edge: rgba(255, 60, 60, 0.45);
+  --cp-fill: var(--color-ps-card);
   border-radius: 0 !important;
   clip-path: polygon(
     0 0,
-    calc(100% - 14px) 0,
-    100% 14px,
-    100% 100%,
-    14px 100%,
-    0 calc(100% - 14px)
+    100% 0,
+    100% calc(100% - var(--cp-cut)),
+    calc(100% - var(--cp-cut)) 100%,
+    0 100%
   );
+  border: 1px solid var(--cp-edge) !important;
+  box-shadow: none !important;
+  /* Fill + diagonal stroke on the cutout */
+  background-color: var(--cp-fill) !important;
+  background-image: linear-gradient(
+    135deg,
+    transparent calc(50% - 0.7px),
+    var(--cp-edge) calc(50% - 0.7px),
+    var(--cp-edge) calc(50% + 0.7px),
+    transparent calc(50% + 0.7px)
+  ) !important;
+  background-size: var(--cp-cut) var(--cp-cut) !important;
+  background-position: 100% 100% !important;
+  background-repeat: no-repeat !important;
 }
 
 [data-theme="cyberpunk"] .glass-card {
-  border: 1px solid rgba(255, 60, 60, 0.12) !important;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3) !important;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
 }
 
 [data-theme="cyberpunk"] .glass-card:hover,
 [data-theme="cyberpunk"] .glass-card:focus {
-  background: rgba(20, 10, 16, 0.95) !important;
-  border-color: rgba(0, 240, 255, 0.45) !important;
-  box-shadow: 0 0 24px rgba(0, 240, 255, 0.12) !important;
+  --cp-edge: rgba(0, 240, 255, 0.75);
+  --cp-fill: rgba(20, 10, 16, 0.95);
+  border-color: var(--cp-edge) !important;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.1) !important;
 }
 
-/* HUD targeting-reticle corner brackets — fade in on hover/focus */
-[data-theme="cyberpunk"] .glass-card::before,
-[data-theme="cyberpunk"] .glass-card::after {
+/*
+ * Yellow corner highlights on hover — 3 intact corners only:
+ *   TL ─── TR
+ *   │
+ *   BL         (BR = cut, no tick)
+ *
+ * Use left/right/bottom background-position so TR and BL
+ * place correctly (calc(100%-N) was mis-aligning those).
+ */
+[data-theme="cyberpunk"] .glass-card::before {
   content: "";
   position: absolute;
-  width: 14px;
-  height: 14px;
-  border: 2px solid var(--color-ps-yellow);
+  inset: 0;
+  width: auto;
+  height: auto;
+  border: none;
+  box-shadow: none;
   opacity: 0;
-  transition: opacity 0.2s ease;
   pointer-events: none;
   z-index: 20;
-}
-
-[data-theme="cyberpunk"] .glass-card::before {
-  top: 3px;
-  left: 3px;
-  border-right: none;
-  border-bottom: none;
+  transition: opacity 0.18s ease;
+  background-repeat: no-repeat;
+  background-image:
+    linear-gradient(#fcee0a, #fcee0a),
+    linear-gradient(#fcee0a, #fcee0a),
+    linear-gradient(#fcee0a, #fcee0a),
+    linear-gradient(#fcee0a, #fcee0a),
+    linear-gradient(#fcee0a, #fcee0a),
+    linear-gradient(#fcee0a, #fcee0a);
+  background-size:
+    2px 16px,
+    16px 2px,
+    2px 16px,
+    16px 2px,
+    2px 16px,
+    16px 2px;
+  background-position:
+    left 5px top 5px,
+    left 5px top 5px,
+    right 5px top 5px,
+    right 5px top 5px,
+    left 5px bottom 5px,
+    left 5px bottom 5px;
 }
 
 [data-theme="cyberpunk"] .glass-card::after {
-  bottom: 3px;
-  right: 3px;
-  border-left: none;
-  border-top: none;
+  content: none;
+  display: none;
 }
 
 [data-theme="cyberpunk"] .glass-card:hover::before,
-[data-theme="cyberpunk"] .glass-card:hover::after,
-[data-theme="cyberpunk"] .glass-card:focus::before,
-[data-theme="cyberpunk"] .glass-card:focus::after {
+[data-theme="cyberpunk"] .glass-card:focus::before {
   opacity: 1;
+  filter: drop-shadow(0 0 3px rgba(252, 238, 10, 0.65));
 }
 
 [data-theme="cyberpunk"] .glass-panel {
-  background: rgba(8, 4, 10, 0.75) !important;
+  --cp-fill: rgba(8, 4, 10, 0.75);
 }
 
 /* Yellow hazard stripe — sidebar top chrome (hidden height 0 in classic) */
@@ -939,4 +1055,47 @@
 
 [data-theme="cyberpunk"] .cp-log-viewer__empty {
   color: #7a6a68;
+}
+
+[data-theme="cyberpunk"] .cp-autoload-off__panel {
+  border-radius: 0 !important;
+  border-color: rgba(255, 60, 60, 0.3) !important;
+  background:
+    linear-gradient(180deg, rgba(40, 6, 10, 0.75) 0%, rgba(12, 4, 8, 0.9) 100%) !important;
+  box-shadow:
+    0 0 40px rgba(80, 0, 10, 0.25),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 18px) 0,
+    100% 18px,
+    100% 100%,
+    18px 100%,
+    0 calc(100% - 18px)
+  );
+}
+
+[data-theme="cyberpunk"] .cp-autoload-off__icon {
+  border-radius: 0 !important;
+  border-color: rgba(0, 240, 255, 0.45) !important;
+  background: rgba(0, 240, 255, 0.06) !important;
+  color: #00f0ff !important;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.12);
+}
+
+[data-theme="cyberpunk"] .cp-autoload-off__title {
+  font-family: var(--font-ui);
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+[data-theme="cyberpunk"] .cp-autoload-off__desc {
+  color: #7a6a68;
+  letter-spacing: 0.02em;
+}
+
+[data-theme="cyberpunk"] .cp-autoload-off__status {
+  color: rgba(255, 90, 90, 0.75);
+  letter-spacing: 0.18em;
 }
