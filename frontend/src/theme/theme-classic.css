@@ -1,0 +1,118 @@
+/**
+ * CLASSIC theme only — original PS blue manager.
+ * Nothing cyberpunk lives here. Scope: [data-theme="classic"]
+ */
+
+[data-theme="classic"] .ps5-bg {
+  background-image: none !important;
+  background-color: var(--color-ps-black) !important;
+}
+
+[data-theme="classic"] .ps5-bg::before {
+  content: none !important;
+  display: none !important;
+}
+
+[data-theme="classic"] .cp-sidebar {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: none !important;
+}
+
+[data-theme="classic"] .cp-brand {
+  letter-spacing: -0.02em !important;
+  text-transform: none !important;
+  color: #fff !important;
+  text-shadow: none !important;
+}
+
+[data-theme="classic"] .cp-brand-icon {
+  background: var(--color-ps-blue) !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0.75rem !important;
+}
+
+[data-theme="classic"] .cp-nav-item {
+  letter-spacing: 0.04em !important;
+  border-radius: 1rem !important;
+  text-shadow: none !important;
+}
+
+[data-theme="classic"] .cp-nav-item.is-active {
+  color: #fff !important;
+  background: var(--color-ps-blue) !important;
+  border-color: transparent !important;
+  box-shadow: 0 0 20px var(--color-ps-blue-glow) !important;
+  text-shadow: none !important;
+}
+
+[data-theme="classic"] .cp-nav-item:hover:not(.is-active) {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme="classic"] .glass-card {
+  box-shadow: none !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme="classic"] .glass-card:hover,
+[data-theme="classic"] .glass-card:focus {
+  background: rgba(40, 40, 45, 0.95) !important;
+  border-color: var(--color-ps-blue) !important;
+  box-shadow: none !important;
+}
+
+[data-theme="classic"] .cp-progress-fill {
+  background: var(--color-ps-blue) !important;
+  box-shadow: none !important;
+}
+
+[data-theme="classic"] .cp-title-accent {
+  text-shadow: none !important;
+}
+
+[data-theme="classic"] h1,
+[data-theme="classic"] h2,
+[data-theme="classic"] h3,
+[data-theme="classic"] h4 {
+  letter-spacing: -0.025em !important;
+  text-transform: none !important;
+}
+
+[data-theme="classic"] .label-caps {
+  color: #a1a1aa !important;
+  letter-spacing: 0.1em !important;
+}
+
+[data-theme="classic"] .ps5-robust-spinner {
+  border: 8px solid rgba(255, 255, 255, 0.05) !important;
+  border-left-color: var(--color-ps-blue) !important;
+  border-top-color: transparent !important;
+  box-shadow: none !important;
+}
+
+[data-theme="classic"] ::-webkit-scrollbar-thumb,
+[data-theme="classic"] .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-radius: 10px !important;
+}
+
+/* Classic never shows cyberpunk chrome (even if left in DOM) */
+[data-theme="classic"] .cp-atm,
+[data-theme="classic"] .cp-hudbar {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+}
+
+[data-theme="classic"] nav.fixed.bottom-0 {
+  border-top-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(8, 8, 10, 0.95) !important;
+}

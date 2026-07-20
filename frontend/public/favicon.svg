@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <rect width="512" height="512" rx="112" fill="#0095ff"/>
-  <g transform="translate(60, 64) scale(16)" fill="#ffffff">
+  <rect width="512" height="512" rx="112" fill="#0a080c"/>
+  <rect x="48" y="48" width="416" height="416" rx="80" fill="none" stroke="#fcee0a" stroke-width="24"/>
+  <g transform="translate(60, 64) scale(16)" fill="#fcee0a">
     <!-- Sidebar Line -->
     <rect x="2" y="4" width="2.5" height="16" rx="1"/>
     

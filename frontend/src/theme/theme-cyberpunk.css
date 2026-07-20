@@ -1,0 +1,559 @@
+/**
+ * CYBERPUNK theme only — Night City HUD.
+ * Scope: [data-theme="cyberpunk"]
+ * Classic must never import these visuals.
+ */
+
+[data-theme="cyberpunk"] .ps5-bg {
+  background-image:
+    radial-gradient(ellipse 70% 90% at 12% 40%, rgba(120, 12, 18, 0.4) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 50% at 88% 30%, rgba(0, 60, 80, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 40% at 50% 100%, rgba(80, 10, 20, 0.18) 0%, transparent 55%),
+    linear-gradient(180deg, #0a080c 0%, #06050a 50%, #05040a 100%) !important;
+}
+
+[data-theme="cyberpunk"] .ps5-bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.04;
+  background-image:
+    linear-gradient(rgba(255, 60, 60, 0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 60, 60, 0.5) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 45%, black 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 45%, black 20%, transparent 75%);
+}
+
+[data-theme="cyberpunk"] .cp-sidebar {
+  background: linear-gradient(
+    180deg,
+    rgba(40, 4, 8, 0.95) 0%,
+    rgba(12, 4, 8, 0.92) 50%,
+    rgba(8, 4, 10, 0.95) 100%
+  ) !important;
+  border-right: 1px solid rgba(255, 60, 60, 0.35) !important;
+  box-shadow:
+    4px 0 60px rgba(80, 0, 10, 0.35),
+    inset -1px 0 0 rgba(255, 60, 60, 0.08) !important;
+}
+
+[data-theme="cyberpunk"] .cp-brand {
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  color: var(--color-ps-red) !important;
+  text-shadow: 0 0 18px rgba(255, 60, 60, 0.55) !important;
+}
+
+[data-theme="cyberpunk"] .cp-brand-icon {
+  background: transparent !important;
+  color: var(--color-ps-red) !important;
+  border: 1px solid rgba(255, 60, 60, 0.5) !important;
+  box-shadow: 0 0 16px rgba(255, 60, 60, 0.25) !important;
+  border-radius: 0.35rem !important;
+}
+
+/*
+ * Main-menu style nav (like CONTINUE):
+ * - idle: red text, no frame
+ * - active: cyan text + thin cyan rectangular frame only
+ * - no cursor chip / no heavy fill
+ */
+[data-theme="cyberpunk"] .cp-sidebar .cp-nav-item {
+  letter-spacing: 0.16em !important;
+  border-radius: 0 !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  padding: 0.85rem 1.15rem !important;
+  min-height: 3rem;
+  gap: 0.85rem !important;
+  justify-content: flex-start !important;
+  width: 100% !important;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease !important;
+}
+
+[data-theme="cyberpunk"] .cp-sidebar .cp-nav-item:hover:not(.is-active) {
+  color: #ff9a9a !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+[data-theme="cyberpunk"] .cp-sidebar .cp-nav-item.is-active {
+  color: #00f0ff !important;
+  background: rgba(0, 240, 255, 0.04) !important;
+  border-color: #00f0ff !important;
+  box-shadow: none !important;
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.35) !important;
+}
+
+[data-theme="cyberpunk"] .cp-sidebar .cp-nav-item.is-active svg {
+  color: #00f0ff !important;
+  filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.5));
+}
+
+[data-theme="cyberpunk"] .cp-sidebar .cp-nav-item:not(.is-active) svg {
+  color: currentColor !important;
+  opacity: 0.9;
+}
+
+/* Collapsed rail: keep square frame around icon only */
+[data-theme="cyberpunk"] .cp-sidebar .cp-nav-item.justify-center {
+  justify-content: center !important;
+  padding: 0.75rem !important;
+  width: auto !important;
+  min-width: 3rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Donate uses same frame, warmer red when idle */
+[data-theme="cyberpunk"] .cp-sidebar .cp-nav-item.cp-nav-donate:not(.is-active) {
+  color: rgba(255, 90, 90, 0.85) !important;
+}
+
+[data-theme="cyberpunk"] .cp-sidebar .cp-nav-item.cp-nav-donate.is-active {
+  color: #ff6b6b !important;
+  border-color: #ff6b6b !important;
+  background: rgba(255, 60, 60, 0.06) !important;
+  text-shadow: 0 0 10px rgba(255, 60, 60, 0.35) !important;
+}
+
+[data-theme="cyberpunk"] .cp-sidebar .cp-nav-item.cp-nav-donate.is-active svg {
+  color: #ff6b6b !important;
+  filter: drop-shadow(0 0 4px rgba(255, 60, 60, 0.45));
+}
+
+/* Mobile bottom nav cyberpunk */
+[data-theme="cyberpunk"] nav.fixed.bottom-0 .cp-nav-item {
+  letter-spacing: 0.08em !important;
+  border-radius: 0 !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+}
+
+[data-theme="cyberpunk"] nav.fixed.bottom-0 .cp-nav-item.is-active {
+  color: #00f0ff !important;
+  border-color: #00f0ff !important;
+  background: rgba(0, 240, 255, 0.04) !important;
+  box-shadow: none !important;
+}
+
+/*
+ * Angular notch-cut panels + HUD reticle brackets (from amilarajans
+ * feature/cyberpunk-2077-theme). Classic stays fully rounded.
+ */
+[data-theme="cyberpunk"] .cp-clip,
+[data-theme="cyberpunk"] .glass-card,
+[data-theme="cyberpunk"] .glass-panel {
+  border-radius: 0 !important;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
+}
+
+[data-theme="cyberpunk"] .glass-card {
+  border: 1px solid rgba(255, 60, 60, 0.12) !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3) !important;
+  position: relative;
+  overflow: visible;
+}
+
+[data-theme="cyberpunk"] .glass-card:hover,
+[data-theme="cyberpunk"] .glass-card:focus {
+  background: rgba(20, 10, 16, 0.95) !important;
+  border-color: rgba(0, 240, 255, 0.45) !important;
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.12) !important;
+}
+
+/* HUD targeting-reticle corner brackets — fade in on hover/focus */
+[data-theme="cyberpunk"] .glass-card::before,
+[data-theme="cyberpunk"] .glass-card::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--color-ps-yellow);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  z-index: 20;
+}
+
+[data-theme="cyberpunk"] .glass-card::before {
+  top: 3px;
+  left: 3px;
+  border-right: none;
+  border-bottom: none;
+}
+
+[data-theme="cyberpunk"] .glass-card::after {
+  bottom: 3px;
+  right: 3px;
+  border-left: none;
+  border-top: none;
+}
+
+[data-theme="cyberpunk"] .glass-card:hover::before,
+[data-theme="cyberpunk"] .glass-card:hover::after,
+[data-theme="cyberpunk"] .glass-card:focus::before,
+[data-theme="cyberpunk"] .glass-card:focus::after {
+  opacity: 1;
+}
+
+[data-theme="cyberpunk"] .glass-panel {
+  background: rgba(8, 4, 10, 0.75) !important;
+}
+
+/* Yellow hazard stripe — sidebar top chrome (hidden height 0 in classic) */
+.cp-hazard {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.25s ease;
+}
+
+[data-theme="cyberpunk"] .cp-hazard {
+  height: 6px;
+  width: 100%;
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--color-ps-yellow) 0px,
+    var(--color-ps-yellow) 10px,
+    #0a0508 10px,
+    #0a0508 20px
+  );
+}
+
+/* Chromatic-aberration glitch text (cyan / magenta fringe) */
+.cp-glitch {
+  text-shadow: none;
+}
+
+[data-theme="cyberpunk"] .cp-glitch {
+  text-shadow:
+    -1px 0 var(--color-ps-blue),
+    1px 0 var(--color-ps-red);
+}
+
+/* Occasional flicker — loading overlay only, not persistent chrome */
+@keyframes cp-flicker {
+  0%, 91%, 100% { opacity: 1; transform: translateX(0); }
+  92% { opacity: 0.75; transform: translateX(-2px); }
+  93% { opacity: 1; transform: translateX(2px); }
+  94% { opacity: 0.85; transform: translateX(0); }
+}
+
+.cp-glitch-flicker {
+  animation: none;
+}
+
+[data-theme="cyberpunk"] .cp-glitch-flicker {
+  animation: cp-flicker 3.2s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="cyberpunk"] .cp-glitch-flicker {
+    animation: none;
+  }
+}
+
+[data-theme="cyberpunk"] .cp-progress-fill {
+  background: linear-gradient(90deg, #4a0010 0%, #ff3c3c 30%, #ff6a3a 55%, #fcee0a 85%, #fff6a0 100%) !important;
+  box-shadow: 0 0 16px rgba(252, 238, 10, 0.25) !important;
+}
+
+[data-theme="cyberpunk"] .cp-title-accent {
+  text-shadow: 0 0 14px rgba(255, 60, 60, 0.45) !important;
+}
+
+[data-theme="cyberpunk"] h1,
+[data-theme="cyberpunk"] h2,
+[data-theme="cyberpunk"] h3,
+[data-theme="cyberpunk"] h4 {
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  font-style: italic;
+}
+
+[data-theme="cyberpunk"] .label-caps {
+  color: #7a6a68 !important;
+  letter-spacing: 0.14em !important;
+}
+
+[data-theme="cyberpunk"] .ps5-robust-spinner {
+  border: 8px solid rgba(255, 60, 60, 0.12) !important;
+  border-left-color: var(--color-ps-yellow) !important;
+  border-top-color: var(--color-ps-blue) !important;
+  box-shadow: 0 0 24px rgba(252, 238, 10, 0.15) !important;
+}
+
+[data-theme="cyberpunk"] ::-webkit-scrollbar-thumb,
+[data-theme="cyberpunk"] .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 60, 60, 0.35) !important;
+  border-radius: 2px !important;
+}
+
+[data-theme="cyberpunk"] nav.fixed.bottom-0 {
+  border-top-color: rgba(255, 60, 60, 0.3) !important;
+  background: rgba(10, 5, 8, 0.95) !important;
+}
+
+/* ── HUD bar (only rendered when cyberpunk, styled here) ── */
+[data-theme="cyberpunk"] .cp-hudbar {
+  position: relative;
+  flex-shrink: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  padding: 10px 20px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-hud);
+  border-bottom: 1px solid rgba(255, 60, 60, 0.35);
+  background: linear-gradient(180deg, rgba(40, 4, 8, 0.92) 0%, rgba(12, 4, 8, 0.88) 100%);
+  pointer-events: none;
+}
+
+[data-theme="cyberpunk"] .cp-hudbar__left,
+[data-theme="cyberpunk"] .cp-hudbar__right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+[data-theme="cyberpunk"] .cp-hudbar__mid {
+  flex: 1;
+  text-align: center;
+  opacity: 0.7;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+[data-theme="cyberpunk"] .cp-hudbar__stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+[data-theme="cyberpunk"] .cp-hudbar__num {
+  color: var(--color-ps-red);
+  font-weight: 800;
+  font-size: 13px;
+  text-shadow: 0 0 10px rgba(255, 60, 60, 0.4);
+}
+
+[data-theme="cyberpunk"] .cp-hudbar__stat--cyan .cp-hudbar__num {
+  color: var(--color-ps-blue);
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+}
+
+[data-theme="cyberpunk"] .cp-hudbar__label {
+  opacity: 0.65;
+  font-size: 10px;
+}
+
+[data-theme="cyberpunk"] .cp-hudbar__sep {
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 60, 60, 0.35);
+}
+
+[data-theme="cyberpunk"] .cp-hudbar__meta {
+  color: rgba(255, 100, 100, 0.55);
+  font-size: 10px;
+}
+
+[data-theme="cyberpunk"] .cp-hudbar__meta--cyan {
+  color: rgba(0, 240, 255, 0.55);
+}
+
+[data-theme="cyberpunk"] .cp-hudbar__protocol {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+}
+
+/* ── Atmosphere ── */
+[data-theme="cyberpunk"] .cp-atm {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 1;
+}
+
+[data-theme="cyberpunk"] .cp-atm__haze {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(90, 8, 14, 0.55) 0%, transparent 38%, transparent 62%, rgba(40, 8, 20, 0.25) 100%),
+    radial-gradient(ellipse 90% 70% at 50% 40%, transparent 25%, rgba(0, 0, 0, 0.45) 100%);
+}
+
+[data-theme="cyberpunk"] .cp-atm__grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  background-image:
+    linear-gradient(rgba(255, 60, 60, 0.55) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 60, 60, 0.55) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+[data-theme="cyberpunk"] .cp-atm__vignette {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 180px 40px rgba(0, 0, 0, 0.55);
+}
+
+[data-theme="cyberpunk"] .cp-atm__scanlines {
+  position: absolute;
+  inset: 0;
+  opacity: 0.25;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.12) 2px,
+    rgba(0, 0, 0, 0.12) 4px
+  );
+}
+
+[data-theme="cyberpunk"] .cp-atm__rain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.22;
+  mask-image: linear-gradient(90deg, transparent 0%, black 20%, black 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 20%, black 80%, transparent 100%);
+}
+
+[data-theme="cyberpunk"] .cp-atm__col {
+  position: absolute;
+  top: -20%;
+  width: 5.5%;
+  margin: 0;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 11px;
+  line-height: 1.45;
+  letter-spacing: 0.06em;
+  color: rgba(255, 70, 70, 0.55);
+  white-space: pre;
+  animation: cp-atm-fall linear infinite;
+}
+
+[data-theme="cyberpunk"] .cp-atm__col--2 { color: rgba(255, 60, 60, 0.35); font-size: 10px; }
+[data-theme="cyberpunk"] .cp-atm__col--3 { color: rgba(180, 40, 50, 0.4); }
+
+@keyframes cp-atm-fall {
+  0% { transform: translateY(0); opacity: 0; }
+  8% { opacity: 0.7; }
+  92% { opacity: 0.4; }
+  100% { transform: translateY(140%); opacity: 0; }
+}
+
+/* Corner chips removed — they clipped headers / card top borders */
+
+/*
+ * OFF | ON segmented toggle (settings UI reference)
+ * Angular ends, dim OFF side, solid cyan ON side when selected.
+ */
+[data-theme="cyberpunk"] .cp-toggle {
+  display: inline-flex;
+  align-items: stretch;
+  width: 9.5rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid rgba(255, 60, 60, 0.35);
+  background: rgba(8, 2, 6, 0.9);
+  cursor: pointer;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  [data-theme="cyberpunk"] .cp-toggle {
+    width: 11rem;
+    height: 2.6rem;
+  }
+}
+
+[data-theme="cyberpunk"] .cp-toggle__seg {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1;
+  transition: background 0.15s ease, color 0.15s ease, text-shadow 0.15s ease;
+  user-select: none;
+}
+
+@media (min-width: 768px) {
+  [data-theme="cyberpunk"] .cp-toggle__seg {
+    font-size: 0.8rem;
+  }
+}
+
+/* Left OFF slab — angled cut on the right */
+[data-theme="cyberpunk"] .cp-toggle__seg--off {
+  color: rgba(255, 90, 90, 0.45);
+  background: rgba(50, 12, 18, 0.85);
+  clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%);
+  margin-right: -0.45rem;
+  z-index: 1;
+}
+
+/* Right ON slab — angled cut on the left */
+[data-theme="cyberpunk"] .cp-toggle__seg--on {
+  color: rgba(0, 240, 255, 0.4);
+  background: rgba(10, 20, 24, 0.75);
+  clip-path: polygon(12% 0, 100% 0, 100% 100%, 0 100%);
+  margin-left: -0.45rem;
+  z-index: 2;
+}
+
+[data-theme="cyberpunk"] .cp-toggle__seg--off.is-selected {
+  color: #0a0508;
+  background: #ff4a4a;
+  text-shadow: none;
+}
+
+[data-theme="cyberpunk"] .cp-toggle__seg--on.is-selected {
+  color: #0a0508;
+  background: #00f0ff;
+  text-shadow: none;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+}
+
+/* When OFF is selected, dim the ON side more */
+[data-theme="cyberpunk"] .cp-toggle.is-off .cp-toggle__seg--on {
+  color: rgba(0, 200, 210, 0.28);
+  background: rgba(8, 14, 18, 0.65);
+}
+
+/* When ON is selected, dim the OFF side */
+[data-theme="cyberpunk"] .cp-toggle.is-on .cp-toggle__seg--off {
+  color: rgba(255, 90, 90, 0.4);
+  background: rgba(40, 8, 14, 0.9);
+}

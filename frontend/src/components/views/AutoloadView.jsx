@@ -166,7 +166,7 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
       <div className="flex items-center justify-between shrink-0">
         <div className="flex flex-col">
           <h2 className="text-4xl font-extrabold text-white tracking-tight">
-            {t("autoload.sequence_title_1", "Autoload")} <span className="text-ps-blue">{t("autoload.sequence_title_2", "Sequence")}</span>
+            {t("autoload.sequence_title_1", "Autoload")} <span className="cp-title-accent">{t("autoload.sequence_title_2", "Sequence")}</span>
           </h2>
           <div className="h-6 mt-1 overflow-hidden">
             {saving ? (
@@ -245,7 +245,7 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
         </div>
         <div className="space-y-3 md:space-y-4 px-4 max-w-2xl">
           <h2 className="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter">
-            {t("autoload.sequence_title_1", "Autoload")} <span className="text-ps-blue">{t("autoload.sequence_title_2", "Sequence")}</span>
+            {t("autoload.sequence_title_1", "Autoload")} <span className="cp-title-accent">{t("autoload.sequence_title_2", "Sequence")}</span>
           </h2>
           <p className="text-md md:text-xl text-zinc-400 font-medium leading-relaxed">
             {t("autoload.enable_desc", "Chain multiple payloads to be executed automatically every time Payload Manager starts.")}

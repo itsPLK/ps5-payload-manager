@@ -1,24 +1,32 @@
+/* Theme packages must come first (CSS @import rule order) */
+@import './theme/theme-shared.css';
+@import './theme/theme-classic.css';
+@import './theme/theme-cyberpunk.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/** 
+/**
  * LEGACY FALLBACKS
- * These ensure basic functionality on PS5 firmware < 5.0 (Safari < 15.4)
- * which does not support CSS Cascading Layers (@layer).
+ * Basic utilities for PS5 firmware < 5.0 (Safari < 15.4) without CSS layers.
  */
 .hidden { display: none !important; }
 .flex { display: flex !important; }
-/* NOTE: flex-col must NOT have !important so md:flex-row can override it */
 .flex-col { flex-direction: column; }
 .items-center { align-items: center !important; }
 .justify-center { justify-content: center !important; }
+.min-h-0 { min-height: 0 !important; }
+.flex-1 { flex: 1 1 0% !important; }
+.overflow-hidden { overflow: hidden !important; }
+.overflow-y-auto { overflow-y: auto !important; }
 .ps5-bg { background-color: var(--color-ps-black) !important; }
 .text-white { color: #ffffff !important; }
 .text-zinc-100 { color: #f4f4f5 !important; }
 .text-zinc-300 { color: #d4d4d8 !important; }
 .text-zinc-400 { color: #a1a1aa !important; }
-.text-ps-blue { color: #0095ff !important; }
+.text-ps-blue { color: var(--color-ps-blue) !important; }
+
 @media (min-width: 768px) {
   .md\:hidden { display: none !important; }
   .md\:flex { display: flex !important; }
@@ -39,16 +47,13 @@
   .md\:space-y-6 > * + * { margin-top: 1.5rem !important; }
   .md\:space-y-8 > * + * { margin-top: 2rem !important; }
   .md\:space-y-12 > * + * { margin-top: 3rem !important; }
-  
   .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
   .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
   .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
-  
   .md\:gap-4 { gap: 1rem !important; }
   .md\:gap-6 { gap: 1.5rem !important; }
   .md\:gap-8 { gap: 2rem !important; }
   .md\:gap-12 { gap: 3rem !important; }
-  
   .md\:p-6 { padding: 1.5rem !important; }
   .md\:p-8 { padding: 2rem !important; }
   .md\:p-12 { padding: 3rem !important; }
@@ -65,179 +70,3 @@
   .lg\:block { display: block !important; }
   .lg\:hidden { display: none !important; }
 }
-
-:root {
-  --color-ps-blue: #0095ff;
-  --color-ps-blue-glow: rgba(0, 149, 255, 0.4);
-  --color-ps-black: #08080a;
-  --color-ps-surface: #101014;
-  --color-ps-card: rgba(24, 24, 28, 0.8);
-  --color-ps-border: rgba(255, 255, 255, 0.08);
-  
-  --font-inter: "Inter", system-ui, sans-serif;
-  
-  --radius-ps-xl: 1rem;
-  --radius-ps-2xl: 1.5rem;
-  --radius-ps-3xl: 2rem;
-}
-
-/* @theme removed - Tailwind 4 only directive, using tailwind.config.js instead */
-
-:root {
-  color-scheme: dark;
-}
-
-html, body {
-  height: 100%;
-  height: -webkit-fill-available;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  background-color: var(--color-ps-black);
-  color: #f4f4f5;
-  font-family: var(--font-inter);
-  font-size: 16px; /* Default for mobile/web */
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-@media (min-width: 768px) {
-  body {
-    overflow: hidden;
-    height: 100vh;
-    font-size: 20px; /* Larger for TV/Large Screens */
-  }
-}
-
-.ps5-bg {
-  background-color: var(--color-ps-black);
-  /* background-image: 
-    radial-gradient(circle at 0% 0%, rgba(0, 149, 255, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 100% 100%, rgba(0, 149, 255, 0.03) 0%, transparent 50%); */
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #444;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-ps-blue);
-}
-
-/* Glassmorphism & Cards */
-.glass-panel {
-  background: var(--color-ps-surface);
-  border-right: 1px solid var(--color-ps-border);
-/* backdrop-filter: blur(12px); */
-}
-
-.glass-card {
-  background: var(--color-ps-card);
-  border: 1px solid var(--color-ps-border);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-/* box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5); */
-}
-
-.glass-card:hover, .glass-card:focus {
-  background: rgba(40, 40, 45, 0.95);
-  border-color: var(--color-ps-blue);
-  transform: translateY(-2px);
-/* box-shadow: 0 0 30px var(--color-ps-blue-glow); */
-  outline: none;
-}
-
-/* Sidebar Item Focus */
-button:focus {
-  outline: none;
-}
-
-/* Neon Glows */
-.neon-text {
-/* text-shadow: 0 0 10px var(--color-ps-blue-glow); */
-}
-
-.neon-border {
-/* box-shadow: 0 0 15px var(--color-ps-blue-glow); */
-}
-
-/* Typography */
-h1, h2, h3, h4 {
-  font-weight: 800;
-  letter-spacing: -0.025em;
-}
-
-.label-caps {
-  text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  font-size: 0.85rem;
-  color: #a1a1aa; /* Increased contrast from #71717a */
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@-webkit-keyframes spin {
-  from { -webkit-transform: rotate(0deg); }
-  to { -webkit-transform: rotate(360deg); }
-}
-
-.animate-fade-in {
-  /* animation: fadeIn 0.4s ease-out forwards; */
-}
-
-.animate-spin {
-  /* animation: spin 1s linear infinite;
-  -webkit-animation: spin 1s linear infinite; */
-  transform-origin: center;
-  -webkit-transform-origin: center;
-  will-change: transform;
-}
-
-/* Robust PS5 Spinner - Using unique keyframe name and solid borders */
-.ps5-robust-spinner {
-  width: 6rem;
-  height: 6rem;
-  border: 8px solid rgba(255, 255, 255, 0.05);
-  border-left-color: var(--color-ps-blue);
-  border-radius: 50%;
-  animation: ps5-native-spin 1s linear infinite;
-  -webkit-animation: ps5-native-spin 1s linear infinite;
-  will-change: transform;
-}
-
-@keyframes ps5-native-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@-webkit-keyframes ps5-native-spin {
-  from { -webkit-transform: rotate(0deg); }
-  to { -webkit-transform: rotate(360deg); }
-}
-
-.hide-scrollbar::-webkit-scrollbar { display: none; }
-.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-

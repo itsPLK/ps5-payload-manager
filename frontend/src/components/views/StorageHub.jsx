@@ -197,7 +197,7 @@ const StorageHub = ({ payloads, payloadMeta, onInstall, onDelete, onUpload, onIm
     <div className="space-y-12">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
         <h2 className="text-4xl font-extrabold text-white tracking-tight">
-          {t("storage_hub.title_1", "Payload")} <span className="text-ps-blue">{t("storage_hub.title_2", "Management")}</span>
+          {t("storage_hub.title_1", "Payload")} <span className="cp-title-accent">{t("storage_hub.title_2", "Management")}</span>
         </h2>
 
         {!isPS5 && (

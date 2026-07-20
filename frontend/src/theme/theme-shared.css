@@ -1,0 +1,384 @@
+/**
+ * Shared layout shell only — NO theme-specific colors or chrome.
+ * Visual look lives in theme-classic.css / theme-cyberpunk.css.
+ */
+
+:root {
+  color-scheme: dark;
+  /* Fallback tokens before JS runs (cyberpunk is app default) */
+  --color-ps-blue: #00f0ff;
+  --color-ps-blue-glow: rgba(0, 240, 255, 0.45);
+  --color-ps-yellow: #fcee0a;
+  --color-ps-red: #ff3c3c;
+  --color-ps-black: #0a0508;
+  --color-ps-surface: rgba(12, 4, 8, 0.92);
+  --color-ps-card: rgba(18, 6, 10, 0.82);
+  --color-ps-border: rgba(255, 60, 60, 0.28);
+  --color-nav-idle: rgba(255, 90, 90, 0.75);
+  --color-nav-active: #00f0ff;
+  --color-nav-active-bg: rgba(0, 240, 255, 0.08);
+  --color-nav-active-border: rgba(0, 240, 255, 0.75);
+  --color-nav-hover: #ff8a8a;
+  --color-nav-hover-bg: rgba(255, 60, 60, 0.06);
+  --color-title-accent: #ff3c3c;
+  --color-title-glow: rgba(255, 60, 60, 0.45);
+  --color-hud: rgba(255, 80, 80, 0.55);
+  --color-text: #e8e4e0;
+  --color-muted: #7a6a68;
+  --color-scrollbar: rgba(255, 60, 60, 0.35);
+  --color-card-hover-bg: rgba(20, 10, 16, 0.95);
+  --color-card-hover-border: rgba(0, 240, 255, 0.45);
+  --color-card-hover-shadow: 0 0 24px rgba(0, 240, 255, 0.12);
+  --color-brand: #ff3c3c;
+  --color-brand-glow: rgba(255, 60, 60, 0.55);
+  --color-brand-icon-bg: transparent;
+  --color-brand-icon-fg: #ff3c3c;
+  --color-brand-icon-border: rgba(255, 60, 60, 0.5);
+  --color-brand-icon-shadow: 0 0 16px rgba(255, 60, 60, 0.25);
+  --font-ui: "Share Tech Mono", Consolas, "Courier New", monospace;
+  --font-display: "Share Tech Mono", Consolas, monospace;
+  --font-inter: var(--font-ui);
+  --radius-ps-xl: 0.25rem;
+  --radius-ps-2xl: 0.35rem;
+  --radius-ps-3xl: 0.5rem;
+  --radius-nav: 2px;
+  --letter-spacing-body: 0.02em;
+  --letter-spacing-heading: 0.04em;
+  --text-transform-heading: uppercase;
+  --theme-atmosphere: 1;
+}
+
+html, body, #root {
+  height: 100%;
+  height: -webkit-fill-available;
+  max-height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-ps-black);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  letter-spacing: var(--letter-spacing-body);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (min-width: 768px) {
+  body {
+    height: 100vh;
+    max-height: 100vh;
+    font-size: 20px;
+  }
+}
+
+/* Layout shell */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+@supports (height: 100dvh) {
+  .app-shell {
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+}
+
+.app-body {
+  display: flex;
+  flex: 1 1 0%;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  align-items: stretch;
+}
+
+.app-main-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0%;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.app-main {
+  flex: 1 1 0%;
+  min-height: 0;
+  width: 100%;
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
+  overflow-x: hidden;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.ps5-bg {
+  background-color: var(--color-ps-black);
+  position: relative;
+}
+
+.ps5-bg > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Structure-only sidebar */
+.cp-sidebar {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-self: stretch;
+  height: 100%;
+  min-height: 0;
+}
+
+.cp-sidebar__inner {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0%;
+  min-height: 0;
+  padding: 1.25rem 1.5rem;
+  box-sizing: border-box;
+}
+
+.cp-sidebar__brand {
+  display: flex;
+  align-items: center;
+  height: 2.5rem;
+  margin-bottom: 1.75rem;
+  flex-shrink: 0;
+}
+
+.cp-sidebar__nav {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 0.15rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cp-sidebar__nav > * {
+  flex: 0 0 auto !important;
+}
+
+.cp-sidebar__foot {
+  flex-shrink: 0;
+  margin-top: auto;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Token-driven shared components (both themes set these vars) */
+.glass-panel {
+  background: var(--color-ps-surface);
+  border-right: 1px solid var(--color-ps-border);
+}
+
+.glass-card {
+  background: var(--color-ps-card);
+  border: 1px solid var(--color-ps-border);
+  border-radius: var(--radius-ps-xl);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover,
+.glass-card:focus {
+  background: var(--color-card-hover-bg);
+  border-color: var(--color-card-hover-border);
+  box-shadow: var(--color-card-hover-shadow);
+  /* no translateY — lifts clip card top borders inside overflow scrollports */
+  outline: none;
+}
+
+.cp-brand {
+  font-weight: 800;
+  color: var(--color-brand);
+  text-shadow: 0 0 18px var(--color-brand-glow);
+  letter-spacing: var(--letter-spacing-heading);
+  text-transform: var(--text-transform-heading);
+}
+
+.cp-brand-icon {
+  background: var(--color-brand-icon-bg);
+  color: var(--color-brand-icon-fg);
+  border: 1px solid var(--color-brand-icon-border);
+  box-shadow: var(--color-brand-icon-shadow);
+  border-radius: var(--radius-ps-xl);
+}
+
+.cp-nav-item {
+  color: var(--color-nav-idle) !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: var(--radius-nav) !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.cp-nav-item:hover {
+  color: var(--color-nav-hover) !important;
+  background: var(--color-nav-hover-bg) !important;
+}
+
+.cp-nav-item.is-active {
+  color: var(--color-nav-active) !important;
+  background: var(--color-nav-active-bg) !important;
+  border-color: var(--color-nav-active-border) !important;
+}
+
+.cp-title-accent {
+  color: var(--color-title-accent);
+  text-shadow: 0 0 14px var(--color-title-glow);
+}
+
+.cp-progress-fill {
+  background: var(--color-ps-blue);
+}
+
+.label-caps {
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+h1, h2, h3, h4 {
+  font-weight: 800;
+  letter-spacing: var(--letter-spacing-heading);
+  text-transform: var(--text-transform-heading);
+}
+
+button:focus {
+  outline: none;
+}
+
+.neon-text {
+  text-shadow: 0 0 10px var(--color-ps-blue-glow);
+  color: var(--color-ps-blue);
+}
+
+.neon-border {
+  box-shadow: 0 0 15px var(--color-ps-blue-glow);
+  border-color: var(--color-ps-blue);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ps-blue);
+}
+
+.ps5-robust-spinner {
+  width: 6rem;
+  height: 6rem;
+  border: 8px solid rgba(255, 255, 255, 0.08);
+  border-left-color: var(--color-ps-blue);
+  border-radius: 50%;
+  animation: ps5-native-spin 1s linear infinite;
+  -webkit-animation: ps5-native-spin 1s linear infinite;
+  will-change: transform;
+}
+
+@keyframes ps5-native-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@-webkit-keyframes ps5-native-spin {
+  from { -webkit-transform: rotate(0deg); }
+  to { -webkit-transform: rotate(360deg); }
+}
+
+.animate-fade-in { }
+.animate-spin {
+  transform-origin: center;
+  -webkit-transform-origin: center;
+  will-change: transform;
+}
+
+/* Theme picker (token-driven) */
+.cp-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.cp-theme-card {
+  text-align: left;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--color-ps-border);
+  background: var(--color-ps-card);
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  font-family: var(--font-ui);
+  border-radius: var(--radius-ps-xl);
+}
+
+.cp-theme-card:hover {
+  border-color: var(--color-ps-blue);
+}
+
+.cp-theme-card.is-active {
+  border-color: var(--color-ps-blue);
+  box-shadow: 0 0 20px var(--color-ps-blue-glow);
+  background: var(--color-nav-active-bg);
+}
+
+.cp-theme-card__swatches {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.cp-theme-card__swatch {
+  width: 28px;
+  height: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.cp-theme-card__name {
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.cp-theme-card__desc {
+  font-size: 12px;
+  color: var(--color-muted);
+  line-height: 1.4;
+}

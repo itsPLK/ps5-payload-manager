@@ -25,6 +25,9 @@ import Modal from './components/ui/Modal'
 import NavButton from './components/ui/NavButton'
 import PayloadButton from './components/ui/PayloadButton'
 import LogoIcon from './components/ui/LogoIcon'
+import Atmosphere from './components/ui/Atmosphere'
+import HudBar from './components/ui/HudBar'
+import { useTheme } from './theme/ThemeContext'
 
 // Views
 import StorageHub from './components/views/StorageHub'
@@ -38,7 +41,9 @@ import ManageSourcesView from './components/views/ManageSourcesView'
 import ActiveProcessesView from './components/views/ActiveProcessesView'
 
 function App() {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
+  const { themeId } = useTheme()
+  const isCyberpunk = themeId === 'cyberpunk'
   const [view, setView] = useState('dashboard')
   const mainRef = useRef(null)
 
@@ -200,10 +205,10 @@ function App() {
     input.value = ''
     if (!file) return
 
-    const ext = file.name.split('.').pop().toLowerCase();
-    if (ext !== 'elf' && ext !== 'bin') {
-      addToast(t("app.toasts.unsupported_file", "Unsupported file type. Only .elf and .bin files are allowed."), "error");
-      return;
+    // Only allow .elf and .bin files (lua dropped in v0.3.3+)
+    if (!/\.(elf|bin)$/i.test(file.name)) {
+      addToast(t("app.toasts.unsupported_file", "Unsupported file type. Only .elf and .bin files are allowed."), "error")
+      return
     }
 
     try {
@@ -388,10 +393,15 @@ function App() {
   return (
 
 
-    <div className={cn(
-      "min-h-screen min-h-[100dvh] ps5-bg text-zinc-100 font-ps5 flex",
-      isPS5 ? "flex-row overflow-hidden" : "flex-col md:flex-row md:overflow-hidden"
-    )}>
+    <div className={cn("app-shell ps5-bg text-zinc-100 font-ps5", `theme-${themeId}`)}>
+      {/* Cyberpunk-only chrome ΓÇö unmounted on classic so no leftover layout/DOM */}
+      {isCyberpunk && <Atmosphere />}
+      {isCyberpunk && <HudBar version={version} ip={ip} />}
+
+      <div className={cn(
+        "app-body relative z-[1]",
+        isPS5 ? "flex-row" : "flex-col md:flex-row"
+      )}>
       {/* Toast Container */}
       <div className="fixed top-0 right-0 p-8 z-[2000] space-y-4 pointer-events-none">
         {toasts.map(t => (
@@ -407,7 +417,7 @@ function App() {
             <span className="text-white font-bold text-xl">{downloadModal.progress}%</span>
           </div>
           <div className="h-4 bg-white/5 rounded-full overflow-hidden border border-white/10 p-0.5">
-            <div className="h-full bg-ps-blue rounded-full transition-all duration-500" style={{ width: `${downloadModal.progress}%` }} />
+            <div className="h-full cp-progress-fill rounded-full transition-all duration-500" style={{ width: `${downloadModal.progress}%` }} />
           </div>
         </div>
       </Modal>
@@ -427,27 +437,29 @@ function App() {
       </Modal>
 
       <aside className={cn(
-        "flex-col bg-black/40 border-r border-white/5 transition-all duration-500 z-[100] h-screen",
+        "cp-sidebar transition-all duration-500 z-[100] shrink-0 self-stretch",
         isPS5 ? "flex" : "hidden md:flex",
         sidebarExpanded ? "w-80" : "w-24"
       )}>
-        <div className="p-6 flex flex-col h-full">
-          <div className="flex items-center mb-12 h-10">
+        {/* Yellow hazard stripe ΓÇö cyberpunk only (height 0 in classic via CSS) */}
+        <div className="cp-hazard shrink-0" aria-hidden="true" />
+        <div className="cp-sidebar__inner">
+          <div className="cp-sidebar__brand">
             <button
               onClick={() => setSidebarExpanded(!sidebarExpanded)}
-              className="p-3 bg-white/5 hover:bg-ps-blue hover:text-white rounded-xl transition-all mr-4 shrink-0"
+              className="p-3 bg-white/5 hover:bg-ps-yellow hover:text-black rounded-lg transition-all mr-4 shrink-0 border border-white/10"
             >
               <Menu className="w-6 h-6" />
             </button>
             <div className={cn("flex items-center space-x-3 transition-all duration-500", sidebarExpanded ? "opacity-100 scale-100" : "opacity-0 scale-90 absolute pointer-events-none")}>
-              <div className="p-2 bg-ps-blue rounded-xl">
-                <LogoIcon className="w-6 h-6 text-white" />
+              <div className="p-2 rounded-lg cp-brand-icon">
+                <LogoIcon className="w-6 h-6" />
               </div>
-              <span className="text-2xl font-bold tracking-tight text-white">PLDMGR</span>
+              <span className="text-xl cp-brand cp-glitch">PLDMGR</span>
             </div>
           </div>
 
-          <nav className="flex-1 space-y-2">
+          <nav className="cp-sidebar__nav">
             <NavButton sidebar sidebarExpanded={sidebarExpanded} active={view === 'dashboard'} onClick={() => setView('dashboard')} icon={LayoutDashboard} label={t("app.nav.dashboard", "Dashboard")} />
             <NavButton sidebar sidebarExpanded={sidebarExpanded} active={view === 'storage'} onClick={() => setView('storage')} icon={Database} label={t("app.nav.storage", "Manage Payloads")} />
             <NavButton sidebar sidebarExpanded={sidebarExpanded} active={view === 'autoload'} onClick={() => setView('autoload')} icon={RefreshCw} label={t("app.nav.autoload", "Autoload")} />
@@ -455,7 +467,7 @@ function App() {
             <NavButton sidebar sidebarExpanded={sidebarExpanded} active={view === 'settings'} onClick={() => setView('settings')} icon={Settings} label={t("app.nav.settings", "Settings")} />
           </nav>
 
-          <div className="pt-6 border-t border-white/5">
+          <div className="cp-sidebar__foot">
             <NavButton
               sidebar
               sidebarExpanded={sidebarExpanded}
@@ -463,7 +475,6 @@ function App() {
               onClick={() => setView('donate')}
               icon={Heart}
               label={t("app.nav.donate", "Donate")}
-              className={view === 'donate' ? "bg-red-600" : "text-red-500 hover:bg-red-600/10"}
               isDonate
             />
           </div>
@@ -472,7 +483,7 @@ function App() {
 
       {/* MOBILE BOTTOM NAV */}
       <nav className={cn(
-        "fixed bottom-0 inset-x-0 z-[100] bg-black/80 border-t border-white/5 h-[calc(5rem+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] flex items-center overflow-x-auto hide-scrollbar",
+        "fixed bottom-0 inset-x-0 z-[100] bg-[#0a0508]/95 border-t border-red-500/30 h-[calc(5rem+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] flex items-center overflow-x-auto hide-scrollbar",
         isPS5 ? "hidden" : "md:hidden"
       )}>
         <NavButton active={view === 'dashboard'} onClick={() => setView('dashboard')} icon={LayoutDashboard} label={t("app.nav.dashboard", "Dashboard")} mobileLabel={t("app.nav.home_mobile", "Home")} />
@@ -491,19 +502,24 @@ function App() {
         />
       </nav>
 
-      {/* MAIN CONTENT AREA */}
-      <div className={cn(
-        "flex flex-col relative",
-        isPS5 ? "h-screen flex-1 min-h-0" : "md:h-screen md:flex-1 md:min-h-0"
-      )}>
-        <main ref={mainRef} className={cn(
-          "custom-scrollbar max-w-[1800px] mx-auto w-full flex flex-col",
-          isPS5 ? "pt-16 px-16 pb-12 flex-1 overflow-y-auto" : "pt-6 px-6 pb-36 md:pt-16 md:px-16 md:pb-12 md:flex-1 md:overflow-y-auto"
-        )}>
+      {/* MAIN CONTENT AREA ΓÇö app-main is the only vertical scrollport */}
+      <div className="app-main-wrap">
+        <main
+          ref={mainRef}
+          className={cn(
+            "app-main custom-scrollbar",
+            isPS5
+              ? "pt-8 px-16 pb-12"
+              : isCyberpunk
+                ? "pt-8 px-6 pb-36 md:pt-10 md:px-16 md:pb-12"
+                : "pt-6 px-6 pb-36 md:pt-10 md:px-16 md:pb-12"
+          )}
+        >
           {view === 'dashboard' && (
             <div className="space-y-8 md:space-y-12">
-              <h2 className="text-4xl font-extrabold text-white tracking-tight">
-                {t("app.dashboard.title_1", "Launch")} <span className="text-ps-blue">{t("app.dashboard.title_2", "Payload")}</span>
+              <h2 className="text-4xl font-extrabold tracking-widest">
+                <span className="cp-title-accent">{t("app.dashboard.title_1", "Launch")}</span>{' '}
+                <span className="text-white">{t("app.dashboard.title_2", "Payload")}</span>
               </h2>
               <div className={cn(
                 "grid gap-4 md:gap-6",
@@ -615,12 +631,13 @@ function App() {
           {view === 'donate' && <DonateView />}
         </main>
       </div>
+      </div>{/* end body row under HUD */}
 
       {loading && (
         <div className="fixed inset-0 bg-ps-black/95 z-[9999] flex flex-col items-center justify-center space-y-12">
           <div className="ps5-robust-spinner" />
           <div className="text-center">
-            <h4 className="text-4xl font-extrabold text-white tracking-tight mb-4 uppercase italic">{activeLoadingName || t("app.loading.title", "Launching...")}</h4>
+            <h4 className="cp-glitch cp-glitch-flicker text-4xl font-extrabold text-white tracking-tight mb-4 uppercase italic">{activeLoadingName || t("app.loading.title", "Launching...")}</h4>
             <p className="label-caps !text-ps-blue tracking-[0.3em] font-black">{t("app.loading.subtitle", "LAUNCHING PAYLOAD...")}</p>
           </div>
         </div>

@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
-import { Terminal, ChevronRight, Globe, Languages } from 'lucide-react'
+import { Terminal, ChevronRight, Globe, Languages, Palette } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '../../utils/helpers'
+import { useTheme } from '../../theme/ThemeContext'
+import ToggleSwitch from '../ui/ToggleSwitch'
 
 const FOLLOW_BROWSER_LANGUAGE = '__auto__'
 
@@ -42,6 +44,7 @@ const SettingRow = ({ title, description, children, icon: Icon, vertical }) => (
 
 const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
   const { t, i18n } = useTranslation()
+  const { themeId, setThemeId, themes } = useTheme()
   const autoOpen = config.AUTO_BROWSER_OPEN !== false
   const autoInstall = config.AUTO_INSTALL_APP !== false
   const autoloadDelay = config.AUTOLOAD_DELAY || 5
@@ -88,6 +91,44 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
         </h2>
       </div>
 
+      {/* Appearance / theme */}
+      <section className="space-y-8">
+        <h3 className="label-caps !text-ps-blue !opacity-100 flex items-center space-x-4 text-xl tracking-[0.2em]">
+          <Palette className="w-6 h-6" />
+          <span>{t("settings.appearance_title", "Appearance")}</span>
+        </h3>
+        <div className="cp-theme-grid">
+          {Object.values(themes).map((th) => (
+            <button
+              key={th.id}
+              type="button"
+              onClick={() => setThemeId(th.id)}
+              className={cn('cp-theme-card', themeId === th.id && 'is-active')}
+            >
+              <div className="cp-theme-card__swatches">
+                {th.id === 'cyberpunk' ? (
+                  <>
+                    <span className="cp-theme-card__swatch" style={{ background: '#ff3c3c' }} />
+                    <span className="cp-theme-card__swatch" style={{ background: '#00f0ff' }} />
+                    <span className="cp-theme-card__swatch" style={{ background: '#fcee0a' }} />
+                    <span className="cp-theme-card__swatch" style={{ background: '#0a0508' }} />
+                  </>
+                ) : (
+                  <>
+                    <span className="cp-theme-card__swatch" style={{ background: '#0095ff' }} />
+                    <span className="cp-theme-card__swatch" style={{ background: '#101014' }} />
+                    <span className="cp-theme-card__swatch" style={{ background: '#ffffff' }} />
+                    <span className="cp-theme-card__swatch" style={{ background: '#08080a' }} />
+                  </>
+                )}
+              </div>
+              <div className="cp-theme-card__name">{th.label}</div>
+              <div className="cp-theme-card__desc">{th.description}</div>
+            </button>
+          ))}
+        </div>
+      </section>
+
       {/* Startup Settings */}
       <section className="space-y-8">
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
@@ -128,72 +169,40 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
             title={t("settings.auto_open_title", "Auto-open Browser")}
             description={t("settings.auto_open_desc", "Automatically launch the browser when Payload Manager payload is executed.")}
           >
-            <button
-              onClick={() => onSaveConfig({ AUTO_BROWSER_OPEN: !autoOpen })}
-              className={cn(
-                "w-14 h-7 md:w-20 md:h-10 rounded-full transition-all relative p-1 md:p-1.5",
-                autoOpen ? "bg-ps-blue" : "bg-white/10"
-              )}
-            >
-              <div className={cn(
-                "w-5 h-5 md:w-7 md:h-7 bg-white rounded-full transition-all",
-                autoOpen ? "translate-x-7 md:translate-x-10" : "translate-x-0"
-              )} />
-            </button>
+            <ToggleSwitch
+              on={autoOpen}
+              onChange={(v) => onSaveConfig({ AUTO_BROWSER_OPEN: v })}
+            />
           </SettingRow>
 
           <SettingRow
             title={t("settings.auto_install_title", "Auto-install App Launcher")}
             description={t("settings.auto_install_desc", "Automatically install the Payload Manager app to the PS5 home screen.")}
           >
-            <button
-              onClick={() => onSaveConfig({ AUTO_INSTALL_APP: !autoInstall })}
-              className={cn(
-                "w-14 h-7 md:w-20 md:h-10 rounded-full transition-all relative p-1 md:p-1.5",
-                autoInstall ? "bg-ps-blue" : "bg-white/10"
-              )}
-            >
-              <div className={cn(
-                "w-5 h-5 md:w-7 md:h-7 bg-white rounded-full transition-all",
-                autoInstall ? "translate-x-7 md:translate-x-10" : "translate-x-0"
-              )} />
-            </button>
+            <ToggleSwitch
+              on={autoInstall}
+              onChange={(v) => onSaveConfig({ AUTO_INSTALL_APP: v })}
+            />
           </SettingRow>
 
           <SettingRow
             title={t("settings.kill_disc_title", "Kill Disc Player")}
             description={t("settings.kill_disc_desc", "Automatically terminate the Disc Player application on startup (for BD-JB users).")}
           >
-            <button
-              onClick={() => onSaveConfig({ KILL_DISC_PLAYER_ON_STARTUP: !config.KILL_DISC_PLAYER_ON_STARTUP })}
-              className={cn(
-                "w-14 h-7 md:w-20 md:h-10 rounded-full transition-all relative p-1 md:p-1.5",
-                config.KILL_DISC_PLAYER_ON_STARTUP !== false ? "bg-ps-blue" : "bg-white/10"
-              )}
-            >
-              <div className={cn(
-                "w-5 h-5 md:w-7 md:h-7 bg-white rounded-full transition-all",
-                config.KILL_DISC_PLAYER_ON_STARTUP !== false ? "translate-x-7 md:translate-x-10" : "translate-x-0"
-              )} />
-            </button>
+            <ToggleSwitch
+              on={config.KILL_DISC_PLAYER_ON_STARTUP !== false}
+              onChange={(v) => onSaveConfig({ KILL_DISC_PLAYER_ON_STARTUP: v })}
+            />
           </SettingRow>
 
           <SettingRow
             title={t("settings.scan_usb_title", "Scan USB Payloads")}
             description={t("settings.scan_usb_desc", "Enable scanning for .elf and .bin files in the root directory of USB drives (/mnt/usb0-7).")}
           >
-            <button
-              onClick={() => onSaveConfig({ SCAN_USB_PAYLOADS: !config.SCAN_USB_PAYLOADS })}
-              className={cn(
-                "w-14 h-7 md:w-20 md:h-10 rounded-full transition-all relative p-1 md:p-1.5",
-                config.SCAN_USB_PAYLOADS ? "bg-ps-blue" : "bg-white/10"
-              )}
-            >
-              <div className={cn(
-                "w-5 h-5 md:w-7 md:h-7 bg-white rounded-full transition-all",
-                config.SCAN_USB_PAYLOADS ? "translate-x-7 md:translate-x-10" : "translate-x-0"
-              )} />
-            </button>
+            <ToggleSwitch
+              on={!!config.SCAN_USB_PAYLOADS}
+              onChange={(v) => onSaveConfig({ SCAN_USB_PAYLOADS: v })}
+            />
           </SettingRow>
 
           <div className="flex flex-col justify-between p-8 bg-white/[0.03] rounded-3xl border border-white/10 space-y-8 h-full">
@@ -238,18 +247,10 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
             description={t("settings.multi_sources_desc", "Enable third-party payload repositories. Payloads from multiple sources are grouped by catalog in the Manage tab.")}
             icon={Globe}
           >
-            <button
-              onClick={() => onSaveConfig({ MULTI_SOURCES_ENABLED: !multiSources })}
-              className={cn(
-                "w-14 h-7 md:w-20 md:h-10 rounded-full transition-all relative p-1 md:p-1.5",
-                multiSources ? "bg-ps-blue" : "bg-white/10"
-              )}
-            >
-              <div className={cn(
-                "w-5 h-5 md:w-7 md:h-7 bg-white rounded-full transition-all",
-                multiSources ? "translate-x-7 md:translate-x-10" : "translate-x-0"
-              )} />
-            </button>
+            <ToggleSwitch
+              on={multiSources}
+              onChange={(v) => onSaveConfig({ MULTI_SOURCES_ENABLED: v })}
+            />
           </SettingRow>
 
           {multiSources && (

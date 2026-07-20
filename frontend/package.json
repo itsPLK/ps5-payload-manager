@@ -9,8 +9,8 @@
   ],
   "scripts": {
     "dev": "vite",
-    "mock": "node mock-server.js",
-    "dev:mock": "concurrently \"npm run mock\" \"npm run dev\"",
+    "mock": "bun mock-server.js",
+    "dev:mock": "concurrently -k \"bun run mock\" \"bun run dev\"",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",

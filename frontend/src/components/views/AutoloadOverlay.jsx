@@ -135,7 +135,7 @@ const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
             {isDone ? (
               <button
                 onClick={onFinish}
-                className="w-full py-8 bg-ps-blue text-white text-3xl font-extrabold rounded-3xl hover:bg-[#007acc] transition-all transform active:scale-95 shadow-[0_0_30px_rgba(0,149,255,0.2)]"
+                className="w-full py-8 bg-ps-blue text-black text-3xl font-extrabold rounded-xl hover:bg-ps-yellow transition-all transform active:scale-95 shadow-[0_0_30px_rgba(0,240,255,0.25)]"
               >
                 {t("autoload_overlay.return_btn", "Return to Dashboard")}
               </button>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { Cpu, RefreshCw, XCircle, Search, AlertTriangle, Activity, Loader2, Info, Trash2 } from 'lucide-react'
 import { useTranslation, Trans } from 'react-i18next'
 import { cn, isPS5 } from '../../utils/helpers'
+import ToggleSwitch from '../ui/ToggleSwitch'
 
 const ActiveProcessesView = ({ ip, addToast, showConfirm }) => {
   const { t } = useTranslation()
@@ -83,27 +84,14 @@ const ActiveProcessesView = ({ ip, addToast, showConfirm }) => {
     <div className="space-y-12">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
         <h2 className="text-4xl font-extrabold text-white tracking-tight">
-          {t("active_processes.title_active", "Active")} <span className="text-ps-blue">{t("active_processes.title_processes", "Processes")}</span>
+          {t("active_processes.title_active", "Active")} <span className="cp-title-accent">{t("active_processes.title_processes", "Processes")}</span>
         </h2>
         <div className="flex items-center space-x-4">
-          <label className="flex items-center space-x-3 cursor-pointer group">
-            <div className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-ps-blue focus:ring-offset-2 focus:ring-offset-black bg-white/10 group-hover:bg-white/20">
-              <input
-                type="checkbox"
-                className="sr-only"
-                checked={showAll}
-                onChange={(e) => setShowAll(e.target.checked)}
-              />
-              <span
-                className={cn(
-                  "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
-                  showAll ? "translate-x-6 bg-ps-blue" : "translate-x-1"
-                )}
-              />
-            </div>
+          <label className="flex items-center space-x-3 cursor-pointer group gap-3">
             <span className="text-sm font-bold text-zinc-300 select-none cursor-pointer">
               {t("active_processes.show_all", "Show All System Processes")}
             </span>
+            <ToggleSwitch on={showAll} onChange={setShowAll} />
           </label>
         </div>
       </div>

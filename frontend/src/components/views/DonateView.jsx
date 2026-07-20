@@ -6,7 +6,7 @@ import { isPS5 } from '../../utils/helpers'
 
 const DonateView = () => {
   const { t } = useTranslation()
-  const donateUrl = 'https://github.com/itsPLK/ps5-payload-manager/blob/main/DONATE.md';
+  const donateUrl = 'https://github.com/amilarajans/ps5-payload-manager/blob/main/DONATE.md';
   return (
     <div className="flex flex-col xl:flex-row items-center justify-center min-h-[60vh] animate-fade-in max-w-6xl mx-auto py-10 xl:py-20 gap-12 xl:gap-24">
       {/* Left Column */}
