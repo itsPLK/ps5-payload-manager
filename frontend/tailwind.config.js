@@ -7,24 +7,24 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Kept as ps-* so existing classes work — values are Night City palette
-        'ps-blue': '#00f0ff',
-        'ps-blue-glow': 'rgba(0, 240, 255, 0.4)',
-        'ps-yellow': '#fcee0a',
-        'ps-red': '#ff3c3c',
-        'ps-black': '#05040a',
-        'ps-surface': '#0a080c',
-        'ps-card': 'rgba(12, 8, 14, 0.88)',
-        'ps-border': 'rgba(255, 60, 60, 0.18)',
+        // Resolve through CSS custom properties so Classic/Cyberpunk switch works
+        'ps-blue': 'var(--color-ps-blue)',
+        'ps-blue-glow': 'var(--color-ps-blue-glow)',
+        'ps-yellow': 'var(--color-ps-yellow)',
+        'ps-red': 'var(--color-ps-red)',
+        'ps-black': 'var(--color-ps-black)',
+        'ps-surface': 'var(--color-ps-surface)',
+        'ps-card': 'var(--color-ps-card)',
+        'ps-border': 'var(--color-ps-border)',
       },
       borderRadius: {
-        'ps-xl': '0.75rem',
-        'ps-2xl': '1rem',
-        'ps-3xl': '1.25rem',
+        'ps-xl': 'var(--radius-ps-xl)',
+        'ps-2xl': 'var(--radius-ps-2xl)',
+        'ps-3xl': 'var(--radius-ps-3xl)',
       },
       fontFamily: {
-        'ps5': ['"Share Tech Mono"', 'Consolas', 'monospace'],
-        'display': ['Orbitron', 'Oxanium', 'system-ui', 'sans-serif'],
+        'ps5': 'var(--font-ui)',
+        'display': 'var(--font-display)',
       },
       boxShadow: {
         'cp-cyan': '0 0 24px rgba(0, 240, 255, 0.25)',
