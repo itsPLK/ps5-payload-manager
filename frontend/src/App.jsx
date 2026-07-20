@@ -28,6 +28,7 @@ import LogoIcon from './components/ui/LogoIcon'
 import Atmosphere from './components/ui/Atmosphere'
 import HudBar from './components/ui/HudBar'
 import HudButton from './components/ui/HudButton'
+import FlatlinedScreen from './components/ui/FlatlinedScreen'
 import { useTheme } from './theme/ThemeContext'
 
 // Views
@@ -372,12 +373,8 @@ function App() {
 
   if (isOffline) {
     return (
-      <div className="min-h-screen ps5-bg text-zinc-100 font-ps5 flex flex-col items-center justify-center p-4 text-center">
-        <div className="max-w-lg p-12 bg-black/40 rounded-3xl border border-white/5">
-          <div className="text-7xl font-light text-zinc-400 mb-12 font-mono">:(</div>
-          <h1 className="text-2xl font-bold mb-4 text-zinc-300">{t("app.offline.title", "Payload Manager is not running...")}</h1>
-          <p className="text-lg text-zinc-400 leading-relaxed">{t("app.offline.message_1", "Please ensure you have loaded")} <strong>pldmgr.elf</strong> {t("app.offline.message_2", "on your PS5 before launching this application.")}</p>
-        </div>
+      <div className={cn('app-shell ps5-bg', `theme-${themeId}`)} data-theme={themeId}>
+        <FlatlinedScreen onRetry={() => window.location.reload()} />
       </div>
     )
   }

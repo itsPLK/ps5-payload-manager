@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Cpu, RefreshCw, XCircle, Search, AlertTriangle, Activity, Loader2, Info, Trash2 } from 'lucide-react'
+import { Cpu, Search, Loader2, Info, Trash2 } from 'lucide-react'
 import { useTranslation, Trans } from 'react-i18next'
 import { cn, isPS5 } from '../../utils/helpers'
 import ToggleSwitch from '../ui/ToggleSwitch'
 import HudButton from '../ui/HudButton'
+import FlatlinedScreen from '../ui/FlatlinedScreen'
 
 const ActiveProcessesView = ({ ip, addToast, showConfirm }) => {
   const { t } = useTranslation()
@@ -115,13 +116,18 @@ const ActiveProcessesView = ({ ip, addToast, showConfirm }) => {
             <p className="label-caps animate-pulse text-zinc-500">{t("active_processes.fetching", "Fetching process list...")}</p>
           </div>
         ) : error ? (
-          <div className="py-12 bg-red-500/10 border border-red-500/20 rounded-2xl flex flex-col items-center justify-center space-y-4">
-            <AlertTriangle className="w-10 h-10 text-red-500" />
-            <p className="text-red-400 font-bold">{t("active_processes.error_loading", "Failed to load processes")}</p>
-            <HudButton onClick={fetchProcesses} variant="danger" size="sm">
-              {t("active_processes.retry", "Retry")}
-            </HudButton>
-          </div>
+          <FlatlinedScreen
+            embedded
+            showReload={false}
+            onRetry={() => fetchProcesses()}
+            chipLabel={t("active_processes.error_chip", "PROCESS SCAN FAILED")}
+            message={t("active_processes.error_loading", "Failed to load processes")}
+            detail={t(
+              "active_processes.error_detail",
+              "Could not read the process list from the console. The daemon may be busy, offline, or the endpoint timed out."
+            )}
+            retryLabel={t("active_processes.retry", "RETRY SCAN")}
+          />
         ) : filteredProcesses.length === 0 ? (
           <div className="py-20 flex flex-col items-center justify-center space-y-6 bg-white/[0.02] border-2 border-dashed border-white/5 rounded-2xl">
             <Cpu className="w-12 h-12 text-zinc-600" />

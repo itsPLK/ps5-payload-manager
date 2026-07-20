@@ -1099,3 +1099,37 @@
   color: rgba(255, 90, 90, 0.75);
   letter-spacing: 0.18em;
 }
+
+/* FLATLINED — cyberpunk intensifies the death-menu look */
+[data-theme="cyberpunk"] .cp-flatlined,
+.cp-flatlined--cyber {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 40%, rgba(120, 0, 20, 0.35) 0%, transparent 55%),
+    linear-gradient(180deg, #120308 0%, #050204 100%);
+  font-family: var(--font-ui);
+}
+
+[data-theme="cyberpunk"] .cp-flatlined__panel,
+.cp-flatlined--cyber .cp-flatlined__panel {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 18px),
+    calc(100% - 18px) 100%,
+    0 100%
+  );
+  border-color: rgba(255, 60, 60, 0.5);
+}
+
+[data-theme="cyberpunk"] .cp-flatlined__title,
+.cp-flatlined--cyber .cp-flatlined__title {
+  font-family: var(--font-display), var(--font-ui);
+  letter-spacing: 0.12em;
+}
+
+[data-theme="cyberpunk"] .cp-flatlined__primary.cp-btn,
+.cp-flatlined--cyber .cp-flatlined__primary.cp-btn {
+  border-color: #00f0ff !important;
+  color: #00f0ff !important;
+  background-color: rgba(0, 40, 50, 0.35) !important;
+}

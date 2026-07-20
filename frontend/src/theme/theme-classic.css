@@ -327,3 +327,24 @@
   background: rgba(0, 149, 255, 0.1);
   border-color: rgba(0, 149, 255, 0.25);
 }
+
+[data-theme="classic"] .cp-flatlined {
+  background: #08080a;
+}
+
+[data-theme="classic"] .cp-flatlined__panel {
+  border-radius: 1rem;
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(16, 16, 20, 0.9);
+}
+
+[data-theme="classic"] .cp-flatlined__title {
+  color: #ef4444;
+  text-shadow: none;
+  letter-spacing: -0.02em;
+}
+
+[data-theme="classic"] .cp-flatlined__skull {
+  color: #ef4444;
+  filter: none;
+}
