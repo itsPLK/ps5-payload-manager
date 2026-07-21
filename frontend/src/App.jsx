@@ -39,6 +39,7 @@ import ActiveProcessesView from './components/views/ActiveProcessesView'
 
 function App() {
   const [view, setView] = useState('dashboard')
+  const [isFavoriteEditMode, setIsFavoriteEditMode] = useState(false)
   const mainRef = useRef(null)
 
   useEffect(() => {
@@ -72,20 +73,33 @@ function App() {
   const [storageScrollTarget, setStorageScrollTarget] = useState(null)
   const [showLogs, setShowLogs] = useState(false)
   const [payloadMeta, setPayloadMeta] = useState({})
-  const [pinnedPayloads, setPinnedPayloads] = useState(() => {
+  const [favoritePayloads, setFavoritePayloads] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('pinnedPayloads') || '[]')
+      return JSON.parse(localStorage.getItem('favoritePayloads') || '[]')
     } catch { return [] }
   })
 
   useEffect(() => {
-    localStorage.setItem('pinnedPayloads', JSON.stringify(pinnedPayloads))
-  }, [pinnedPayloads])
+    localStorage.setItem('favoritePayloads', JSON.stringify(favoritePayloads))
+  }, [favoritePayloads])
 
-  const togglePin = (path) => {
-    setPinnedPayloads(prev =>
+  const toggleFavorite = (path) => {
+    setFavoritePayloads(prev =>
       prev.includes(path) ? prev.filter(p => p !== path) : [...prev, path]
     )
+  }
+
+  const moveFavorite = (path, direction) => {
+    setFavoritePayloads(prev => {
+      const idx = prev.indexOf(path)
+      if (idx === -1) return prev
+      const newIdx = idx + direction
+      if (newIdx < 0 || newIdx >= prev.length) return prev
+      const newFavorites = [...prev]
+      newFavorites[idx] = newFavorites[newIdx]
+      newFavorites[newIdx] = path
+      return newFavorites
+    })
   }
 
   useEffect(() => {
@@ -513,29 +527,54 @@ function App() {
         )}>
           {view === 'dashboard' && (() => {
             const visiblePayloads = payloads.filter(p => !isSystemPayload(p))
-            const activePins = pinnedPayloads.filter(p => visiblePayloads.includes(p))
-            const unpinned = visiblePayloads.filter(p => !pinnedPayloads.includes(p))
+            const activeFavorites = favoritePayloads.filter(p => visiblePayloads.includes(p))
+            const unfavorited = visiblePayloads.filter(p => !favoritePayloads.includes(p))
             const gridCols = cn(
-              "grid gap-4 md:gap-6",
+              "grid gap-4 md:gap-6 transition-all",
               isPS5 ? "grid-cols-3 xl:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             )
             const makeCard = (p) => (
               <PayloadButton
                 key={p}
                 path={p}
-                onClick={() => loadPayload(p)}
+                onClick={() => isFavoriteEditMode ? toggleFavorite(p) : loadPayload(p)}
                 isLoading={loading && activeLoadingName === p.split('/').pop().replace(/\.(elf|bin)$/i, '').replace(/_/g, ' ')}
                 sourceName={config.MULTI_SOURCES_ENABLED ? (payloadMeta[p.split('/').pop()]?.source_name || null) : null}
                 version={payloadMeta[p.split('/').pop()]?.version || null}
-                isPinned={pinnedPayloads.includes(p)}
-                onTogglePin={togglePin}
+                isFavorite={favoritePayloads.includes(p)}
+                isEditMode={isFavoriteEditMode}
+                onMoveFavorite={moveFavorite}
+                canMoveLeft={activeFavorites.indexOf(p) > 0}
+                canMoveRight={activeFavorites.indexOf(p) < activeFavorites.length - 1}
               />
             )
             return (
-              <div className="space-y-8 md:space-y-12">
-                <h2 className="text-4xl font-extrabold text-white tracking-tight">
-                  Launch <span className="text-ps-blue">Payload</span>
-                </h2>
+              <div className={cn(
+                "space-y-8 md:space-y-12 transition-all",
+                isFavoriteEditMode && "-m-4 md:-m-6 p-4 md:p-6 border-2 border-yellow-400/50 bg-yellow-400/5 rounded-ps-2xl"
+              )}>
+                <div className="flex items-center justify-between">
+                  <h2 className={cn(
+                    "text-4xl font-extrabold tracking-tight",
+                    isFavoriteEditMode ? "text-yellow-400" : "text-white"
+                  )}>
+                    {isFavoriteEditMode ? (
+                      "Edit Favorites"
+                    ) : (
+                      <>Launch <span className="text-ps-blue">Payload</span></>
+                    )}
+                  </h2>
+                  <button
+                    onClick={() => setIsFavoriteEditMode(!isFavoriteEditMode)}
+                    className={cn(
+                      "p-3 rounded-full transition-colors flex items-center justify-center",
+                      isFavoriteEditMode ? "bg-yellow-400/20 text-yellow-400" : "bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10"
+                    )}
+                    title="Edit Favorites"
+                  >
+                    <Star className={cn("w-6 h-6", isFavoriteEditMode && "fill-yellow-400")} />
+                  </button>
+                </div>
                 {loadingPayloads ? (
                   <div className={gridCols}>
                     {Array.from({ length: 4 }).map((_, i) => (
@@ -557,30 +596,30 @@ function App() {
                     </div>
                   </div>
                 ) : (
-                  <>
-                    {activePins.length > 0 && (
+                  <div className="space-y-8 md:space-y-12">
+                    {activeFavorites.length > 0 && (
                       <div className="space-y-4">
                         <div className="flex items-center gap-3">
                           <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
                           <span className="text-sm font-bold tracking-widest uppercase text-yellow-400">Favorites</span>
                         </div>
                         <div className={gridCols}>
-                          {activePins.map(makeCard)}
+                          {activeFavorites.map(makeCard)}
                         </div>
                         <div className="border-t border-white/5 pt-8">
                           <p className="text-sm font-bold tracking-widest uppercase text-zinc-500 mb-4">All Payloads</p>
                           <div className={gridCols}>
-                            {unpinned.map(makeCard)}
+                            {unfavorited.map(makeCard)}
                           </div>
                         </div>
                       </div>
                     )}
-                    {activePins.length === 0 && (
+                    {activeFavorites.length === 0 && (
                       <div className={gridCols}>
                         {visiblePayloads.map(makeCard)}
                       </div>
                     )}
-                  </>
+                  </div>
                 )}
               </div>
             )
