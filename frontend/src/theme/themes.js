@@ -5,7 +5,7 @@
  */
 
 export const THEME_STORAGE_KEY = 'pldmgr-theme'
-export const DEFAULT_THEME = 'cyberpunk'
+export const DEFAULT_THEME = 'classic'
 
 /** Shared token keys — both themes must define every key. */
 export const THEME_VAR_KEYS = [
