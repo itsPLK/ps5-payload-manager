@@ -58,7 +58,7 @@ frontend-build:
 	TITLE="Payload Manager v$$VERSION by PLK ($$COMMIT, built at $$DATE)"; \
 	echo "Updating title in index.html to: $$TITLE"; \
 	TMP=$$(mktemp "$${TMPDIR:-/tmp}/pldmgr.XXXXXX"); \
-	sed "s|\[\[TITLE_PLACEHOLDER\]\]|$$TITLE|g" frontend/dist/index.html > $$TMP; \
+	sed "s|<title>Payload Manager</title>|<title>$$TITLE</title>|g" frontend/dist/index.html > $$TMP; \
 	mv $$TMP frontend/dist/index.html; \
 	echo "Updating build date in cache.appcache to: $$DATE"; \
 	TMP=$$(mktemp "$${TMPDIR:-/tmp}/pldmgr.XXXXXX"); \

@@ -405,18 +405,21 @@ button:focus {
  */
 .setting-row {
   display: grid;
-  grid-template-columns: auto minmax(12rem, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-areas: "icon copy control";
   column-gap: 1rem;
   row-gap: 0.75rem;
   align-items: center;
   height: 100%;
+  min-width: 0; /* allow grid cell to shrink — long i18n must not widen the column */
+  max-width: 100%;
   padding: 1.25rem 1.25rem;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1.5rem;
   transition: border-color 0.2s ease, background 0.2s ease;
   box-sizing: border-box;
+  overflow: hidden; /* keep controls inside the card */
 }
 
 @media (min-width: 768px) {
@@ -489,7 +492,7 @@ button:focus {
   max-width: 36rem;
 }
 
-/* Control column — reserved width, never squeezes the copy column */
+/* Control column — fixed-ish width for toggles; never grow from long labels */
 .setting-row__control {
   grid-area: control;
   flex-shrink: 0;
@@ -497,7 +500,8 @@ button:focus {
   align-items: center;
   justify-content: flex-end;
   align-self: center;
-  min-width: max-content;
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* Vertical variant (language picker): control under copy, full width */
@@ -512,11 +516,71 @@ button:focus {
 .setting-row--vertical .setting-row__control {
   justify-content: stretch;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   padding-top: 0.25rem;
 }
 
 .setting-row--vertical .setting-row__control > * {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* Language <select> face — cap width, truncate long locale names */
+.cp-lang-select {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  transition: background 0.15s ease;
+}
+
+.cp-lang-select:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cp-lang-select__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cp-lang-select__chevron {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #71717a;
+  transform: rotate(90deg);
+}
+
+.cp-lang-select__native {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  /* prevent native control from imposing option-list min-width on the layout */
+  min-width: 0;
+  font-size: 16px; /* avoid iOS zoom; does not expand our face */
 }
 
 /* Narrow cards (two-up grid): stack control under text so titles keep room */

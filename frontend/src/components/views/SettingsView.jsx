@@ -134,35 +134,38 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
 
       {/* Startup Settings */}
       <section className="space-y-8">
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-w-0 [&>*]:min-w-0">
           <SettingRow
             title={t("settings.language_title", "Language")}
             description={t("settings.language_desc", "Change the display language of the application.")}
             icon={Languages}
             vertical
           >
-            <div className="flex flex-col items-start space-y-2 w-full">
-              <div className="relative w-full bg-black/50 border border-white/10 text-white rounded-xl px-4 py-3 font-bold tracking-tight hover:bg-white/5 transition-all overflow-hidden flex items-center justify-between">
-                <span>
+            <div className="flex flex-col items-stretch gap-2 w-full min-w-0 max-w-full">
+              <div className="cp-lang-select">
+                <span className="cp-lang-select__label">
                   {followBrowserLanguage
                     ? t("settings.language_system_default", "System Default")
                     : getLanguageDisplayName(currentLang)}
                 </span>
-                <ChevronRight className="w-5 h-5 text-zinc-500 rotate-90" />
+                <ChevronRight className="cp-lang-select__chevron" aria-hidden />
                 <select
                   value={selectedLanguage}
                   onChange={handleLanguageChange}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  className="cp-lang-select__native"
+                  aria-label={t("settings.language_title", "Language")}
                 >
                   <option value={FOLLOW_BROWSER_LANGUAGE} className="bg-[#121214]">
                     {t("settings.language_system_default", "System Default")}
                   </option>
-                  {Object.keys(i18n.store.data).map(lang => (
-                    <option key={lang} value={lang} className="bg-[#121214]">{getLanguageDisplayName(lang)}</option>
+                  {Object.keys(i18n.store.data).map((lang) => (
+                    <option key={lang} value={lang} className="bg-[#121214]">
+                      {getLanguageDisplayName(lang)}
+                    </option>
                   ))}
                 </select>
               </div>
-              <p className="text-sm text-zinc-500 leading-relaxed text-left w-full mt-1">
+              <p className="text-sm text-zinc-500 leading-relaxed text-left w-full min-w-0">
                 {t("settings.language_disclaimer", "Translations are community-driven and may contain errors.")}
               </p>
             </div>
