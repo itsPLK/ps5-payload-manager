@@ -7,8 +7,8 @@ import HudButton from './HudButton'
 
 /**
  * Error / offline screen.
- * - classic: clean rounded error card (no CP death-menu chrome)
- * - cyberpunk: CP2077 "FLATLINED" death screen
+ * - flatlinedError off: clean rounded error card
+ * - flatlinedError on: "FLATLINED" death screen (CP2077-style chrome)
  *
  * @param {object} props
  * @param {() => void} [props.onRetry]
@@ -31,11 +31,11 @@ export default function FlatlinedScreen({
   showReload = true,
 }) {
   const { t } = useTranslation()
-  const { themeId } = useTheme()
-  const isCyber = themeId === 'cyberpunk'
+  const { hasFeature } = useTheme()
+  const useFlatlined = hasFeature('flatlinedError')
 
   const rain = useMemo(() => {
-    if (!isCyber) return []
+    if (!useFlatlined) return []
     const cols = []
     for (let i = 0; i < 18; i++) {
       const digits = Array.from({ length: 28 }, () =>
@@ -50,7 +50,7 @@ export default function FlatlinedScreen({
       })
     }
     return cols
-  }, [isCyber])
+  }, [useFlatlined])
 
   const deckId = useMemo(
     () => `0.${String(Math.floor(Math.random() * 99999)).padStart(5, '0')}`,
@@ -84,7 +84,7 @@ export default function FlatlinedScreen({
     ) : null
 
   /* ── Classic: clean PS-style error card ── */
-  if (!isCyber) {
+  if (!useFlatlined) {
     const classicTitle =
       title ?? t('app.offline.error_title', 'Something went wrong')
     return (

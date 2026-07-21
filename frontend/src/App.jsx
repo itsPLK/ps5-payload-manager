@@ -44,8 +44,7 @@ import ActiveProcessesView from './components/views/ActiveProcessesView'
 
 function App() {
   const { t } = useTranslation()
-  const { themeId } = useTheme()
-  const isCyberpunk = themeId === 'cyberpunk'
+  const { themeId, hasFeature } = useTheme()
   const [view, setView] = useState('dashboard')
   const mainRef = useRef(null)
 
@@ -372,8 +371,8 @@ function App() {
 
 
   if (isOffline) {
-    /* Classic: original simple offline card. Cyberpunk: FLATLINED death screen. */
-    if (!isCyberpunk) {
+    /* flatlinedError themes get the death screen; others keep the simple card. */
+    if (!hasFeature('flatlinedError')) {
       return (
         <div className="min-h-screen ps5-bg text-zinc-100 font-ps5 flex flex-col items-center justify-center p-4 text-center" data-theme={themeId}>
           <div className="max-w-lg p-12 bg-black/40 rounded-3xl border border-white/5">
@@ -416,9 +415,9 @@ function App() {
 
 
     <div className={cn("app-shell ps5-bg text-zinc-100 font-ps5", `theme-${themeId}`)}>
-      {/* Cyberpunk-only chrome ΓÇö unmounted on classic so no leftover layout/DOM */}
-      {isCyberpunk && <Atmosphere />}
-      {isCyberpunk && <HudBar version={version} ip={ip} />}
+      {/* Feature-gated chrome — unmounted when the theme pack disables them */}
+      {hasFeature('atmosphere') && <Atmosphere />}
+      {hasFeature('hudBar') && <HudBar version={version} ip={ip} />}
 
       <div className={cn(
         "app-body relative z-[1]",
@@ -467,8 +466,10 @@ function App() {
         isPS5 ? "flex" : "hidden md:flex",
         sidebarExpanded ? "w-80 cp-sidebar--expanded" : "w-[4.75rem] cp-sidebar--collapsed"
       )}>
-        {/* Yellow hazard stripe — cyberpunk only (height 0 in classic via CSS) */}
-        <div className="cp-hazard shrink-0" aria-hidden="true" />
+        {/* Yellow hazard stripe — feature-gated chrome */}
+        {hasFeature('hazardStripe') && (
+          <div className="cp-hazard shrink-0" aria-hidden="true" />
+        )}
         <div className="cp-sidebar__inner">
           <div className={cn(
             "cp-sidebar__brand",
@@ -546,7 +547,7 @@ function App() {
             "app-main custom-scrollbar",
             isPS5
               ? "pt-8 px-16 pb-12"
-              : isCyberpunk
+              : hasFeature('densePadding')
                 ? "pt-8 px-6 pb-36 md:pt-10 md:px-16 md:pb-12"
                 : "pt-6 px-6 pb-36 md:pt-10 md:px-16 md:pb-12"
           )}

@@ -9,8 +9,9 @@ import { useTheme } from '../../theme/ThemeContext'
 
 const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
   const { t } = useTranslation()
-  const { themeId } = useTheme()
-  const isCyber = themeId === 'cyberpunk'
+  const { themeId, hasFeature } = useTheme()
+  const showAtmosphere = hasFeature('atmosphere')
+  const showHazard = hasFeature('hazardStripe')
 
   const isCountdown = status.remaining > 0 || (status.remaining === 0 && !status.current)
   const isExecuting = status.remaining === 0 && !!status.current && status.current !== 'DONE'
@@ -60,11 +61,11 @@ const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
 
   return (
     <div
-      className={cn('cp-autoload-overlay', isCyber && 'ps5-bg')}
+      className={cn('cp-autoload-overlay', showAtmosphere && 'ps5-bg')}
       data-theme={themeId}
     >
-      {isCyber && <Atmosphere />}
-      {isCyber && <div className="cp-hazard shrink-0" aria-hidden="true" />}
+      {showAtmosphere && <Atmosphere />}
+      {showHazard && <div className="cp-hazard shrink-0" aria-hidden="true" />}
 
       <div
         className={cn(

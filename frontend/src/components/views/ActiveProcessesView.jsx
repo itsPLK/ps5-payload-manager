@@ -9,8 +9,8 @@ import { useTheme } from '../../theme/ThemeContext'
 
 const ActiveProcessesView = ({ ip, addToast, showConfirm }) => {
   const { t } = useTranslation()
-  const { themeId } = useTheme()
-  const isCyber = themeId === 'cyberpunk'
+  const { hasFeature } = useTheme()
+  const useFlatlined = hasFeature('flatlinedError')
   const [processes, setProcesses] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -119,7 +119,7 @@ const ActiveProcessesView = ({ ip, addToast, showConfirm }) => {
             <p className="label-caps animate-pulse text-zinc-500">{t("active_processes.fetching", "Fetching process list...")}</p>
           </div>
         ) : error ? (
-          isCyber ? (
+          useFlatlined ? (
             <FlatlinedScreen
               embedded
               showReload={false}
@@ -133,7 +133,7 @@ const ActiveProcessesView = ({ ip, addToast, showConfirm }) => {
               retryLabel={t("active_processes.retry", "RETRY SCAN")}
             />
           ) : (
-            /* Original classic error panel (pre-FLATLINED) */
+            /* Classic error panel when flatlinedError is off */
             <div className="py-12 bg-red-500/10 border border-red-500/20 rounded-2xl flex flex-col items-center justify-center space-y-4">
               <AlertTriangle className="w-10 h-10 text-red-500" />
               <p className="text-red-400 font-bold">

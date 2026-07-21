@@ -1,27 +1,27 @@
 /**
  * CLASSIC theme only — original PS blue manager.
- * Nothing cyberpunk lives here. Scope: [data-theme="classic"]
+ * Nothing cyberpunk lives here. Scope: [data-skin="classic"]
  */
 
-[data-theme="classic"] .ps5-bg {
+[data-skin="classic"] .ps5-bg {
   background-image: none !important;
   background-color: var(--color-ps-black) !important;
 }
 
-[data-theme="classic"] .ps5-bg::before {
+[data-skin="classic"] .ps5-bg::before {
   content: none !important;
   display: none !important;
 }
 
-[data-theme="classic"] .cp-sidebar {
+[data-skin="classic"] .cp-sidebar {
   background: rgba(0, 0, 0, 0.4) !important;
   border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
   box-shadow: none !important;
 }
 
 /* Classic collapsed: circular-ish icon pills that fit the rail */
-[data-theme="classic"] .cp-sidebar--collapsed .cp-nav-item,
-[data-theme="classic"] .cp-sidebar .cp-nav-item.justify-center {
+[data-skin="classic"] .cp-sidebar--collapsed .cp-nav-item,
+[data-skin="classic"] .cp-sidebar .cp-nav-item.justify-center {
   justify-content: center !important;
   width: 2.75rem !important;
   min-width: 2.75rem !important;
@@ -33,11 +33,11 @@
   gap: 0 !important;
 }
 
-[data-theme="classic"] .cp-sidebar--collapsed .cp-nav-item > span {
+[data-skin="classic"] .cp-sidebar--collapsed .cp-nav-item > span {
   display: none !important;
 }
 
-[data-theme="classic"] .cp-sidebar--collapsed .cp-sidebar__toggle {
+[data-skin="classic"] .cp-sidebar--collapsed .cp-sidebar__toggle {
   width: 2.75rem;
   height: 2.75rem;
   padding: 0;
@@ -46,14 +46,14 @@
   justify-content: center;
 }
 
-[data-theme="classic"] .cp-brand {
+[data-skin="classic"] .cp-brand {
   letter-spacing: -0.02em !important;
   text-transform: none !important;
   color: #fff !important;
   text-shadow: none !important;
 }
 
-[data-theme="classic"] .cp-brand-icon {
+[data-skin="classic"] .cp-brand-icon {
   background: var(--color-ps-blue) !important;
   color: #fff !important;
   border: none !important;
@@ -62,7 +62,7 @@
 }
 
 /* Classic sidebar — original PS blue pill buttons */
-[data-theme="classic"] .cp-sidebar .cp-nav-item {
+[data-skin="classic"] .cp-sidebar .cp-nav-item {
   letter-spacing: -0.01em !important;
   border-radius: 1rem !important;
   border: none !important;
@@ -75,12 +75,12 @@
   font-family: system-ui, "Segoe UI", sans-serif !important;
 }
 
-[data-theme="classic"] .cp-sidebar .cp-nav-item:not(.is-active) {
+[data-skin="classic"] .cp-sidebar .cp-nav-item:not(.is-active) {
   color: #a1a1aa !important;
   background: transparent !important;
 }
 
-[data-theme="classic"] .cp-sidebar .cp-nav-item.is-active {
+[data-skin="classic"] .cp-sidebar .cp-nav-item.is-active {
   color: #ffffff !important;
   background: #0095ff !important;
   border-color: transparent !important;
@@ -88,82 +88,82 @@
   text-shadow: none !important;
 }
 
-[data-theme="classic"] .cp-sidebar .cp-nav-item.is-active svg {
+[data-skin="classic"] .cp-sidebar .cp-nav-item.is-active svg {
   color: #ffffff !important;
   filter: none !important;
 }
 
-[data-theme="classic"] .cp-sidebar .cp-nav-item:hover:not(.is-active) {
+[data-skin="classic"] .cp-sidebar .cp-nav-item:hover:not(.is-active) {
   color: #ffffff !important;
   background: rgba(255, 255, 255, 0.05) !important;
 }
 
-[data-theme="classic"] .cp-sidebar .cp-nav-item.cp-nav-donate:not(.is-active) {
+[data-skin="classic"] .cp-sidebar .cp-nav-item.cp-nav-donate:not(.is-active) {
   color: rgba(239, 68, 68, 0.7) !important;
 }
 
-[data-theme="classic"] .cp-sidebar .cp-nav-item.cp-nav-donate.is-active {
+[data-skin="classic"] .cp-sidebar .cp-nav-item.cp-nav-donate.is-active {
   color: #ffffff !important;
   background: #dc2626 !important;
   box-shadow: 0 0 20px rgba(220, 38, 38, 0.3) !important;
 }
 
 /* Classic hamburger — PS blue hover */
-[data-theme="classic"] .cp-sidebar__toggle {
+[data-skin="classic"] .cp-sidebar__toggle {
   border-radius: 0.75rem !important;
   border: none !important;
   color: #a1a1aa;
 }
 
-[data-theme="classic"] .cp-sidebar__toggle:hover,
-[data-theme="classic"] .cp-sidebar__toggle:focus-visible {
+[data-skin="classic"] .cp-sidebar__toggle:hover,
+[data-skin="classic"] .cp-sidebar__toggle:focus-visible {
   background: #0095ff !important;
   color: #ffffff !important;
 }
 
-[data-theme="classic"] .glass-card {
+[data-skin="classic"] .glass-card {
   box-shadow: none !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-[data-theme="classic"] .glass-card:hover,
-[data-theme="classic"] .glass-card:focus {
+[data-skin="classic"] .glass-card:hover,
+[data-skin="classic"] .glass-card:focus {
   background: rgba(40, 40, 45, 0.95) !important;
   border-color: var(--color-ps-blue) !important;
   box-shadow: none !important;
 }
 
-[data-theme="classic"] .cp-progress-fill {
+[data-skin="classic"] .cp-progress-fill {
   background: var(--color-ps-blue) !important;
   box-shadow: none !important;
 }
 
-[data-theme="classic"] .cp-title-accent {
+[data-skin="classic"] .cp-title-accent {
   text-shadow: none !important;
 }
 
-[data-theme="classic"] h1,
-[data-theme="classic"] h2,
-[data-theme="classic"] h3,
-[data-theme="classic"] h4 {
+[data-skin="classic"] h1,
+[data-skin="classic"] h2,
+[data-skin="classic"] h3,
+[data-skin="classic"] h4 {
   letter-spacing: -0.025em !important;
   text-transform: none !important;
 }
 
-[data-theme="classic"] .label-caps {
+[data-skin="classic"] .label-caps {
   color: #a1a1aa !important;
   letter-spacing: 0.1em !important;
 }
 
-[data-theme="classic"] .ps5-robust-spinner {
+[data-skin="classic"] .ps5-robust-spinner {
   border: 8px solid rgba(255, 255, 255, 0.05) !important;
   border-left-color: var(--color-ps-blue) !important;
   border-top-color: transparent !important;
   box-shadow: none !important;
 }
 
-[data-theme="classic"] ::-webkit-scrollbar-thumb,
-[data-theme="classic"] .custom-scrollbar::-webkit-scrollbar-thumb {
+[data-skin="classic"] ::-webkit-scrollbar-thumb,
+[data-skin="classic"] .custom-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15) !important;
   border-radius: 10px !important;
 }
@@ -172,7 +172,7 @@
  * Classic .cp-btn fallbacks — when markup uses HudButton classes (e.g. <label>),
  * still render as original rounded PS blue pills.
  */
-[data-theme="classic"] .cp-btn {
+[data-skin="classic"] .cp-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -190,40 +190,40 @@
   transition: background 0.15s ease, transform 0.1s ease;
 }
 
-[data-theme="classic"] .cp-btn:hover {
+[data-skin="classic"] .cp-btn:hover {
   background: rgba(0, 149, 255, 0.85);
 }
 
-[data-theme="classic"] .cp-btn--lg {
+[data-skin="classic"] .cp-btn--lg {
   padding: 1.15rem 2.25rem;
   font-size: 1.15rem;
   border-radius: 1.25rem;
 }
 
-[data-theme="classic"] .cp-btn--sm {
+[data-skin="classic"] .cp-btn--sm {
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   border-radius: 0.75rem;
 }
 
-[data-theme="classic"] .cp-btn--primary {
+[data-skin="classic"] .cp-btn--primary {
   background: #0095ff;
   color: #fff;
 }
 
-[data-theme="classic"] .cp-btn--secondary,
-[data-theme="classic"] .cp-btn--ghost {
+[data-skin="classic"] .cp-btn--secondary,
+[data-skin="classic"] .cp-btn--ghost {
   background: rgba(255, 255, 255, 0.05);
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-[data-theme="classic"] .cp-btn--danger {
+[data-skin="classic"] .cp-btn--danger {
   background: #dc2626;
   color: #fff;
 }
 
-[data-theme="classic"] .cp-btn--dangerSoft {
+[data-skin="classic"] .cp-btn--dangerSoft {
   background: rgba(239, 68, 68, 0.1);
   color: #ef4444;
   border: 1px solid rgba(239, 68, 68, 0.1);
@@ -231,42 +231,42 @@
   border-radius: 0.75rem;
 }
 
-[data-theme="classic"] .cp-btn--success {
+[data-skin="classic"] .cp-btn--success {
   background: #059669;
   color: #fff;
 }
 
-[data-theme="classic"] .cp-btn--block,
-[data-theme="classic"] .cp-btn--bar {
+[data-skin="classic"] .cp-btn--block,
+[data-skin="classic"] .cp-btn--bar {
   width: 100%;
 }
 
-[data-theme="classic"] .cp-btn__label {
+[data-skin="classic"] .cp-btn__label {
   font-weight: inherit;
 }
 
 /* Classic settings cards — soft blue hover (match original) */
-[data-theme="classic"] .setting-row {
+[data-skin="classic"] .setting-row {
   border-radius: 1.5rem !important;
 }
 
-[data-theme="classic"] .setting-row:hover {
+[data-skin="classic"] .setting-row:hover {
   border-color: rgba(0, 149, 255, 0.3) !important;
 }
 
-[data-theme="classic"] .setting-row:hover .setting-row__icon {
+[data-skin="classic"] .setting-row:hover .setting-row__icon {
   background: rgba(0, 149, 255, 0.1) !important;
   color: #0095ff !important;
 }
 
-[data-theme="classic"] .setting-row__title {
+[data-skin="classic"] .setting-row__title {
   letter-spacing: -0.01em !important;
   font-family: system-ui, "Segoe UI", sans-serif !important;
 }
 
 /* Classic never shows cyberpunk chrome (even if left in DOM) */
-[data-theme="classic"] .cp-atm,
-[data-theme="classic"] .cp-hudbar {
+[data-skin="classic"] .cp-atm,
+[data-skin="classic"] .cp-hudbar {
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
@@ -276,52 +276,52 @@
   opacity: 0 !important;
 }
 
-[data-theme="classic"] nav.fixed.bottom-0 {
+[data-skin="classic"] nav.fixed.bottom-0 {
   border-top-color: rgba(255, 255, 255, 0.08) !important;
   background: rgba(8, 8, 10, 0.95) !important;
 }
 
-[data-theme="classic"] .cp-delay-card {
+[data-skin="classic"] .cp-delay-card {
   border-radius: 1.5rem !important;
 }
 
-[data-theme="classic"] .cp-btn.is-selected,
-[data-theme="classic"] .cp-btn--selected {
+[data-skin="classic"] .cp-btn.is-selected,
+[data-skin="classic"] .cp-btn--selected {
   background: #0095ff !important;
   color: #fff !important;
   border-color: #0095ff !important;
   transform: scale(1.02);
 }
 
-[data-theme="classic"] .cp-log-overlay {
+[data-skin="classic"] .cp-log-overlay {
   background: #08080a;
 }
 
-[data-theme="classic"] .cp-log-overlay__header {
+[data-skin="classic"] .cp-log-overlay__header {
   border-bottom-color: rgba(255, 255, 255, 0.08);
   background: rgba(8, 8, 10, 0.96);
 }
 
-[data-theme="classic"] .cp-log-overlay__title h3 {
+[data-skin="classic"] .cp-log-overlay__title h3 {
   font-style: italic;
   letter-spacing: -0.03em;
   color: #fff;
   text-shadow: none;
 }
 
-[data-theme="classic"] .cp-log-line:hover {
+[data-skin="classic"] .cp-log-line:hover {
   border-left-color: #0095ff;
 }
 
-[data-theme="classic"] .cp-log-line__prompt {
+[data-skin="classic"] .cp-log-line__prompt {
   color: rgba(0, 149, 255, 0.85);
 }
 
-[data-theme="classic"] .cp-autoload-off__panel {
+[data-skin="classic"] .cp-autoload-off__panel {
   border-radius: 1.5rem !important;
 }
 
-[data-theme="classic"] .cp-autoload-off__icon {
+[data-skin="classic"] .cp-autoload-off__icon {
   border-radius: 1.25rem !important;
   color: #0095ff;
   background: rgba(0, 149, 255, 0.1);
@@ -329,21 +329,21 @@
 }
 
 /* Classic error screen — clean card, no death-menu chrome */
-[data-theme="classic"] .cp-flatlined,
-[data-theme="classic"] .cp-flatlined--classic {
+[data-skin="classic"] .cp-flatlined,
+[data-skin="classic"] .cp-flatlined--classic {
   background: transparent;
   justify-content: center;
   padding: 1.5rem 1rem;
 }
 
-[data-theme="classic"] .cp-flatlined--embedded {
+[data-skin="classic"] .cp-flatlined--embedded {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 1.25rem;
   background: rgba(255, 255, 255, 0.02);
   min-height: 20rem;
 }
 
-[data-theme="classic"] .cp-flatlined__panel {
+[data-skin="classic"] .cp-flatlined__panel {
   margin-left: 0;
   max-width: 28rem;
   border-radius: 1.5rem;
@@ -353,13 +353,13 @@
   padding: 2rem 1.75rem 1.75rem;
 }
 
-[data-theme="classic"] .cp-flatlined__brand {
+[data-skin="classic"] .cp-flatlined__brand {
   gap: 1rem;
   margin-bottom: 1.25rem;
   align-items: flex-start;
 }
 
-[data-theme="classic"] .cp-flatlined__icon-wrap {
+[data-skin="classic"] .cp-flatlined__icon-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -371,14 +371,14 @@
   flex-shrink: 0;
 }
 
-[data-theme="classic"] .cp-flatlined__skull {
+[data-skin="classic"] .cp-flatlined__skull {
   width: 1.75rem;
   height: 1.75rem;
   color: #f87171;
   filter: none;
 }
 
-[data-theme="classic"] .cp-flatlined__title {
+[data-skin="classic"] .cp-flatlined__title {
   font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -388,7 +388,7 @@
   line-height: 1.25;
 }
 
-[data-theme="classic"] .cp-flatlined__deck {
+[data-skin="classic"] .cp-flatlined__deck {
   margin-top: 0.35rem;
   font-size: 0.7rem;
   letter-spacing: 0.06em;
@@ -396,26 +396,26 @@
   color: #a1a1aa;
 }
 
-[data-theme="classic"] .cp-flatlined__msg {
+[data-skin="classic"] .cp-flatlined__msg {
   font-size: 1.05rem;
   font-weight: 700;
   color: #fafafa;
   margin-bottom: 0.5rem;
 }
 
-[data-theme="classic"] .cp-flatlined__detail {
+[data-skin="classic"] .cp-flatlined__detail {
   color: #a1a1aa;
   font-size: 0.95rem;
   line-height: 1.55;
   margin-bottom: 1.5rem;
 }
 
-[data-theme="classic"] .cp-flatlined__detail strong {
+[data-skin="classic"] .cp-flatlined__detail strong {
   color: #0095ff;
   font-weight: 700;
 }
 
-[data-theme="classic"] .cp-flatlined__classic-btn {
+[data-skin="classic"] .cp-flatlined__classic-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -433,15 +433,15 @@
   transition: background 0.15s ease, transform 0.1s ease;
 }
 
-[data-theme="classic"] .cp-flatlined__classic-btn:hover {
+[data-skin="classic"] .cp-flatlined__classic-btn:hover {
   background: #33aaff;
 }
 
-[data-theme="classic"] .cp-flatlined__classic-btn:active {
+[data-skin="classic"] .cp-flatlined__classic-btn:active {
   transform: scale(0.98);
 }
 
-[data-theme="classic"] .cp-flatlined__menu-item {
+[data-skin="classic"] .cp-flatlined__menu-item {
   text-align: center;
   letter-spacing: 0.04em;
   text-transform: none;
@@ -450,17 +450,17 @@
   border-radius: 0.75rem;
 }
 
-[data-theme="classic"] .cp-flatlined__menu-item:hover {
+[data-skin="classic"] .cp-flatlined__menu-item:hover {
   color: #0095ff;
   border-color: rgba(0, 149, 255, 0.35);
   background: rgba(0, 149, 255, 0.06);
 }
 
 /* Hide any residual cyber chrome if class leaks */
-[data-theme="classic"] .cp-flatlined__rain,
-[data-theme="classic"] .cp-flatlined__scan,
-[data-theme="classic"] .cp-flatlined__vignette,
-[data-theme="classic"] .cp-flatlined__top,
-[data-theme="classic"] .cp-flatlined__foot {
+[data-skin="classic"] .cp-flatlined__rain,
+[data-skin="classic"] .cp-flatlined__scan,
+[data-skin="classic"] .cp-flatlined__vignette,
+[data-skin="classic"] .cp-flatlined__top,
+[data-skin="classic"] .cp-flatlined__foot {
   display: none !important;
 }

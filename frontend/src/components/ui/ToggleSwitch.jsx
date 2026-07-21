@@ -4,14 +4,14 @@ import { useTheme } from '../../theme/ThemeContext'
 
 /**
  * Theme-aware boolean control.
- * Cyberpunk: segmented OFF | ON bar (game settings style).
- * Classic: pill switch.
+ * hudControls on: segmented OFF | ON bar (game settings style).
+ * hudControls off: pill switch.
  */
 export default function ToggleSwitch({ on = false, onChange, className, labels = { off: 'OFF', on: 'ON' } }) {
-  const { themeId } = useTheme()
-  const isCyber = themeId === 'cyberpunk'
+  const { hasFeature } = useTheme()
+  const hudControls = hasFeature('hudControls')
 
-  if (!isCyber) {
+  if (!hudControls) {
     return (
       <button
         type="button"

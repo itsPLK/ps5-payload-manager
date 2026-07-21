@@ -109,21 +109,21 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
               className={cn('cp-theme-card', themeId === th.id && 'is-active')}
             >
               <div className="cp-theme-card__swatches">
-                {th.id === 'cyberpunk' ? (
-                  <>
-                    <span className="cp-theme-card__swatch" style={{ background: '#ff3c3c' }} />
-                    <span className="cp-theme-card__swatch" style={{ background: '#00f0ff' }} />
-                    <span className="cp-theme-card__swatch" style={{ background: '#fcee0a' }} />
-                    <span className="cp-theme-card__swatch" style={{ background: '#0a0508' }} />
-                  </>
-                ) : (
-                  <>
-                    <span className="cp-theme-card__swatch" style={{ background: '#0095ff' }} />
-                    <span className="cp-theme-card__swatch" style={{ background: '#101014' }} />
-                    <span className="cp-theme-card__swatch" style={{ background: '#ffffff' }} />
-                    <span className="cp-theme-card__swatch" style={{ background: '#08080a' }} />
-                  </>
-                )}
+                {(th.swatches?.length
+                  ? th.swatches.slice(0, 4)
+                  : [
+                      th.vars?.['--color-ps-blue'] || '#0095ff',
+                      th.vars?.['--color-ps-surface'] || '#101014',
+                      th.vars?.['--color-text'] || '#ffffff',
+                      th.vars?.['--color-ps-black'] || '#08080a',
+                    ]
+                ).map((color, i) => (
+                  <span
+                    key={`${th.id}-swatch-${i}`}
+                    className="cp-theme-card__swatch"
+                    style={{ background: color }}
+                  />
+                ))}
               </div>
               <div className="cp-theme-card__name">{th.label}</div>
               <div className="cp-theme-card__desc">{th.description}</div>

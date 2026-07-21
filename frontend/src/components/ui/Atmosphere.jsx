@@ -1,6 +1,7 @@
 /**
- * Cyberpunk atmosphere: red haze, code rain, grid — like Flatlined / pause menu.
- * Only visible when data-theme=cyberpunk (opacity via CSS).
+ * Atmosphere chrome: haze, code rain, grid.
+ * Mounted only when the active theme has feature `atmosphere`.
+ * Visuals come from [data-skin="…"] CSS (e.g. cyberpunk).
  */
 
 const COLS = 18

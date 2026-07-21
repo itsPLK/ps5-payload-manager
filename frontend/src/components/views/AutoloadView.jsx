@@ -10,8 +10,8 @@ import { useTheme } from '../../theme/ThemeContext'
 
 const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) => {
   const { t } = useTranslation()
-  const { themeId } = useTheme()
-  const isCyberpunk = themeId === 'cyberpunk'
+  const { hasFeature } = useTheme()
+  const hudControls = hasFeature('hudControls')
   const [subView, setSubView] = useState('list')
   const [enabled, setEnabled] = useState(false)
   const [autoloadList, setAutoloadList] = useState([])
@@ -201,7 +201,7 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
             ) : null}
           </div>
         </div>
-        {isCyberpunk ? (
+        {hudControls ? (
           <div className="flex items-center gap-4 shrink-0">
             <span className="label-caps !text-zinc-400 !opacity-100 text-xs md:text-sm tracking-[0.16em] whitespace-nowrap">
               {t("autoload.enable_btn", "Enable Autoload")}
@@ -286,7 +286,7 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
               variant="primary"
               size="lg"
               block
-              className={isCyberpunk ? 'cp-btn--bar' : undefined}
+              className={hudControls ? 'cp-btn--bar' : undefined}
             >
               {t("autoload.enable_btn", "Enable Autoload")}
             </HudButton>

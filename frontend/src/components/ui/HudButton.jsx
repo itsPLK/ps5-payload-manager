@@ -3,8 +3,7 @@ import { cn } from '../../utils/helpers'
 import { useTheme } from '../../theme/ThemeContext'
 
 /**
- * Action button — Cyberpunk 2077 menu bar style when cyberpunk theme is active.
- * Classic falls back to original rounded pills so dual themes stay isolated.
+ * Action button — HUD bar style when theme has `hudControls`, else classic pills.
  *
  * variants: primary | secondary | danger | dangerSoft | success | ghost
  * sizes: sm | md | lg
@@ -49,11 +48,11 @@ export default function HudButton({
   type = 'button',
   ...props
 }) {
-  const { themeId } = useTheme()
-  const isCyber = themeId === 'cyberpunk'
+  const { hasFeature } = useTheme()
+  const hudControls = hasFeature('hudControls')
   const iconSpin = Icon && (Icon.displayName === 'Loader2' || Icon.name === 'Loader2')
 
-  if (!isCyber) {
+  if (!hudControls) {
     return (
       <button
         type={type}
