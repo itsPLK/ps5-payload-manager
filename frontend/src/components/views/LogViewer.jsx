@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { ChevronDown } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const LogViewer = ({ logs }) => {
+  const { t } = useTranslation()
   const scrollRef = useRef(null)
   const [isAtBottom, setIsAtBottom] = useState(true)
   const [hasNewLogs, setHasNewLogs] = useState(false)
@@ -51,7 +53,7 @@ const LogViewer = ({ logs }) => {
           className="absolute bottom-10 inset-x-0 mx-auto w-max px-8 py-4 bg-ps-blue text-white rounded-full font-black uppercase tracking-[0.2em] text-[11px] z-50 flex items-center space-x-3 border border-white/20 shadow-[0_0_50px_rgba(0,149,255,0.4)] animate-bounce hover:scale-105 active:scale-95 transition-transform"
         >
           <ChevronDown className="w-5 h-5" />
-          <span>New Activity Below</span>
+          <span>{t("logs.new_activity_btn", "New Activity Below")}</span>
         </button>
       )}
     </div>

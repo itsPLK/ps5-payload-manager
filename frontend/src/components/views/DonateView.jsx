@@ -1,9 +1,11 @@
 import React from 'react'
 import { Heart } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
+import { useTranslation } from 'react-i18next'
 import { isPS5 } from '../../utils/helpers'
 
 const DonateView = () => {
+  const { t } = useTranslation()
   const donateUrl = 'https://github.com/itsPLK/ps5-payload-manager/blob/main/DONATE.md';
   return (
     <div className="flex flex-col xl:flex-row items-center justify-center min-h-[60vh] animate-fade-in max-w-6xl mx-auto py-10 xl:py-20 gap-12 xl:gap-24">
@@ -14,10 +16,10 @@ const DonateView = () => {
         </div>
         <div className="space-y-4 md:space-y-6">
           <h3 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter">
-            Support <span className="text-red-500">Project</span>
+            {t("donate.title_1", "Support")} <span className="text-red-500">{t("donate.title_2", "Project")}</span>
           </h3>
           <p className="text-lg md:text-2xl text-zinc-400 font-medium leading-relaxed italic">
-            If you'd like to support my work or just say thanks, you can buy me a coffee. It's much appreciated!
+            {t("donate.description", "If you'd like to support my work or just say thanks, you can buy me a coffee. It's much appreciated!")}
           </p>
         </div>
       </div>
@@ -35,7 +37,7 @@ const DonateView = () => {
             rel="noopener noreferrer"
             className="px-10 md:px-16 py-6 md:py-8 bg-red-600 text-white text-xl md:text-3xl font-black uppercase rounded-2xl md:rounded-[2rem] hover:bg-red-500 transition-all transform active:scale-95 shadow-[0_0_50px_rgba(220,38,38,0.4)] text-center block"
           >
-            View Donation Options
+            {t("donate.view_options_btn", "View Donation Options")}
           </a>
         )}
       </div>

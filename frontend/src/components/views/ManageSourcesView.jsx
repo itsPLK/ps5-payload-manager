@@ -4,9 +4,11 @@ import {
   Lock, Globe, Loader2, AlertTriangle
 } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
+import { useTranslation } from 'react-i18next'
 import { cn, isPS5 } from '../../utils/helpers'
 
 const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
+  const { t } = useTranslation()
   const [sources, setSources] = useState([])
   const [loading, setLoading] = useState(true)
   const [newUrl, setNewUrl] = useState('')
@@ -32,12 +34,12 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
         body: JSON.stringify({ sources: updated })
       })
       if (res.ok) {
-        addToast('Sources saved')
+        addToast(t("manage_sources.saved", "Sources saved"))
       } else {
-        addToast('Failed to save sources', 'error')
+        addToast(t("manage_sources.save_failed", "Failed to save sources"), 'error')
       }
     } catch {
-      addToast('Failed to save sources', 'error')
+      addToast(t("manage_sources.save_failed", "Failed to save sources"), 'error')
     }
   }
 
@@ -53,8 +55,8 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
     if (idx === 0) return
     const src = sources[idx]
     showConfirm(
-      'Remove Source',
-      `Remove "${src.name}" from your sources?`,
+      t("manage_sources.remove_title", "Remove Source"),
+      t("manage_sources.remove_message", "Remove \"{{name}}\" from your sources?", { name: src.name }),
       () => {
         const updated = sources.filter((_, i) => i !== idx)
         setSources(updated)
@@ -78,12 +80,12 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
         if (listData?.sources) setSources(listData.sources)
         setNewUrl('')
         setShowAddForm(false)
-        addToast(`"${data.name}" added`)
+        addToast(t("manage_sources.added", "\"{{name}}\" added", { name: data.name }))
       } else {
-        setAddError(data.message || 'Failed to add source')
+        setAddError(data.message || t("manage_sources.add_failed", "Failed to add source"))
       }
     } catch {
-      setAddError('Request failed. Check the URL and try again.')
+      setAddError(t("manage_sources.add_request_failed", "Request failed. Check the URL and try again."))
     }
     setAdding(false)
   }
@@ -100,7 +102,7 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
             <ArrowLeft className="w-7 h-7" />
           </button>
           <h2 className="text-4xl font-extrabold text-white tracking-tight">
-            Manage <span className="text-ps-blue">Sources</span>
+            {t("manage_sources.ps5_title_1", "Manage")} <span className="text-ps-blue">{t("manage_sources.ps5_title_2", "Sources")}</span>
           </h2>
         </div>
 
@@ -112,7 +114,7 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
             {ip}:8084
           </code>
           <p className="text-zinc-400 text-center text-lg leading-relaxed max-w-md">
-            Open this address on your phone or PC to manage payload sources.
+            {t("manage_sources.ps5_description", "Open this address on your phone or PC to manage payload sources.")}
           </p>
         </div>
       </div>
@@ -131,7 +133,7 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
           <ArrowLeft className="w-7 h-7" />
         </button>
         <h2 className="text-4xl font-extrabold text-white tracking-tight">
-          Payload <span className="text-ps-blue">Sources</span>
+          {t("manage_sources.web_title_1", "Payload")} <span className="text-ps-blue">{t("manage_sources.web_title_2", "Sources")}</span>
         </h2>
       </div>
       {/* Sources list */}
@@ -184,7 +186,7 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
                         onClick={() => move(idx, -1)}
                         disabled={idx <= 1}
                         className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
-                        title="Move up"
+                        title={t("manage_sources.move_up_btn", "Move up")}
                       >
                         <ChevronUp className="w-4 h-4" />
                       </button>
@@ -192,14 +194,14 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
                         onClick={() => move(idx, 1)}
                         disabled={idx === sources.length - 1}
                         className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
-                        title="Move down"
+                        title={t("manage_sources.move_down_btn", "Move down")}
                       >
                         <ChevronDown className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => remove(idx)}
                         className="p-2 rounded-xl bg-red-950/20 text-red-500 border border-red-500/10 hover:bg-red-500 hover:text-white transition-all"
-                        title="Remove source"
+                        title={t("manage_sources.remove_btn", "Remove source")}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -207,7 +209,7 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
                   )}
                   {!src.removable && (
                     <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-ps-blue border border-ps-blue/20 bg-ps-blue/5">
-                      Default
+                      {t("manage_sources.default_badge", "Default")}
                     </span>
                   )}
                 </div>
@@ -222,7 +224,7 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
               {/* Mobile-only URL row (separated for more vertical height and scrollable view) */}
               <div className="lg:hidden w-full min-w-0 max-w-full overflow-hidden">
                 <div className="bg-white/[0.02] border border-white/5 rounded-xl p-3.5 flex flex-col gap-1 min-w-0 max-w-full overflow-hidden">
-                  <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Source URL</span>
+                  <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">{t("manage_sources.source_url_label", "Source URL")}</span>
                   <div className="overflow-x-auto py-0.5 custom-scrollbar min-w-0 w-full max-w-full">
                     <p className="text-xs text-zinc-400 font-mono whitespace-nowrap min-w-0">{src.url}</p>
                   </div>
@@ -237,7 +239,7 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
                       onClick={() => move(idx, -1)}
                       disabled={idx <= 1}
                       className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
-                      title="Move up"
+                      title={t("manage_sources.move_up_btn", "Move up")}
                     >
                       <ChevronUp className="w-4 h-4" />
                     </button>
@@ -245,14 +247,14 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
                       onClick={() => move(idx, 1)}
                       disabled={idx === sources.length - 1}
                       className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
-                      title="Move down"
+                      title={t("manage_sources.move_down_btn", "Move down")}
                     >
                       <ChevronDown className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => remove(idx)}
                       className="p-2 rounded-xl bg-red-950/20 text-red-500 border border-red-500/10 hover:bg-red-500 hover:text-white transition-all"
-                      title="Remove source"
+                      title={t("manage_sources.remove_btn", "Remove source")}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -260,7 +262,7 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
                 )}
                 {!src.removable && (
                   <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-ps-blue border border-ps-blue/20 bg-ps-blue/5">
-                    Default
+                    {t("manage_sources.default_badge", "Default")}
                   </span>
                 )}
               </div>
@@ -276,13 +278,13 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
           className="w-full flex items-center justify-center space-x-3 py-5 border-2 border-dashed border-white/10 rounded-2xl text-zinc-500 hover:text-ps-blue hover:border-ps-blue/30 transition-all font-bold"
         >
           <Plus className="w-5 h-5" />
-          <span>Add Source</span>
+          <span>{t("manage_sources.add_source_btn", "Add Source")}</span>
         </button>
       ) : (
         <form onSubmit={handleAdd} className="p-6 glass-card rounded-2xl border border-white/10 space-y-4">
-          <p className="font-bold text-white text-lg">Add a New Source</p>
+          <p className="font-bold text-white text-lg">{t("manage_sources.add_new_title", "Add a New Source")}</p>
           <p className="text-sm text-zinc-500">
-            Paste the URL to a JSON file.
+            {t("manage_sources.add_new_desc", "Paste the URL to a JSON file.")}
           </p>
           <div className="flex flex-col lg:flex-row gap-3">
             <input
@@ -301,7 +303,7 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
                 className="flex-1 md:flex-initial flex items-center justify-center space-x-2 px-6 py-3 bg-ps-blue hover:bg-ps-blue/80 disabled:opacity-50 text-white rounded-xl font-bold transition-all whitespace-nowrap"
               >
                 {adding ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                <span>{adding ? 'Validating...' : 'Add'}</span>
+                <span>{adding ? t("manage_sources.validating", "Validating...") : t("manage_sources.add_btn", "Add")}</span>
               </button>
               <button
                 type="button"
@@ -309,7 +311,7 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
                 disabled={adding}
                 className="flex-1 md:flex-initial px-5 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl font-bold transition-all text-center whitespace-nowrap"
               >
-                Cancel
+                {t("manage_sources.cancel_btn", "Cancel")}
               </button>
             </div>
           </div>

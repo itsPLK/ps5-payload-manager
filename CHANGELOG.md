@@ -1,3 +1,42 @@
+## v0.4.2
+
+### 🚀 Features & UX Improvements
+* **System Language Support**: Added a "System Default" option in Settings to dynamically follow the OS/browser language ([#69](https://github.com/itsPLK/ps5-payload-manager/pull/69)).
+* **New Languages**:
+  * **German** (thanks to xEasy4Breezy)
+  * **Persian** (thanks to Epinor)
+  * **Spanish** (thanks to Slayver95, kXmpX)
+  * **Turkish** (thanks to Sezar61)
+  * **Ukrainian** (thanks to Mikeeee)
+
+### 🛠️ Backend & Bug Fixes
+* **Build Script**: Fixed an issue where translation files could sometimes be missing when compiling releases from source (thanks to @owendswang).
+
+**Full Changelog**: [v0.4.1...v0.4.2](https://github.com/itsPLK/ps5-payload-manager/compare/v0.4.1...v0.4.2)
+
+## v0.4.1
+### 🚀 Features & UX Improvements
+* **Translations**: Updated existing translations and added new languages.
+* **New Languages**:
+  * **Italian** (thanks to Leon90)
+  * **Portuguese (Brazilian)** (thanks to matmarson, slipttees, marcusvrb)
+  * **Russian** (thanks to Akela-1979)
+
+**Full Changelog**: [v0.4.0...v0.4.1](https://github.com/itsPLK/ps5-payload-manager/compare/v0.4.0...v0.4.1)
+
+## v0.4.0
+
+### 🚀 Features & UX Improvements
+* **Translations**: Added localization support (i18n) for the web dashboard.
+* **New Languages**: 
+  * **Chinese Simplified** (thanks to @owendswang)
+  * **Polish**
+
+### 🛠️ Backend & Bug Fixes
+* **Static Linking**: Statically link third-party dependencies in the build script to prevent dynamic linking issues (thanks to @owendswang in [#66](https://github.com/itsPLK/ps5-payload-manager/pull/66)).
+
+**Full Changelog**: [v0.3.3...v0.4.0](https://github.com/itsPLK/ps5-payload-manager/compare/v0.3.3...v0.4.0)
+
 ## v0.3.3
 
 ### 🚀 Features & UX Improvements

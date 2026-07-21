@@ -1,10 +1,9 @@
 import React from 'react'
 import { cn, isPS5 } from '../../utils/helpers'
 
-const NavButton = ({ active, onClick, icon: Icon, label, mobileLabel, className, sidebar, sidebarExpanded, showSeparator }) => {
-  const isDonate = label === 'Donate';
+const NavButton = ({ active, onClick, icon: Icon, label, mobileLabel, className, sidebar, sidebarExpanded, showSeparator, isDonate }) => {
   return (
-    <div className="flex items-center flex-1 md:flex-none">
+    <div className="flex items-center flex-1 md:flex-none min-w-max">
       {showSeparator && <div className="w-px h-6 bg-white/10 md:hidden" />}
       <button
         onClick={onClick}

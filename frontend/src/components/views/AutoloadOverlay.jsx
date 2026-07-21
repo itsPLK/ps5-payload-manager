@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '../../utils/helpers'
 import PayloadName from '../ui/PayloadName'
 
 const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
+  const { t } = useTranslation()
   const isCountdown = status.remaining > 0 || (status.remaining === 0 && !status.current);
   const isExecuting = status.remaining === 0 && !!status.current && status.current !== 'DONE';
   const isDone = status.current === 'DONE';
@@ -65,7 +67,7 @@ const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
             payloadList.some(p => p.toLowerCase().includes('kstuff'))) && (
               <div className="w-full p-4 bg-amber-500/10 border border-amber-500/50 rounded-2xl flex items-center justify-center space-x-3 text-amber-500 animate-in fade-in">
                 <AlertTriangle className="w-5 h-5" />
-                <span className="font-bold uppercase tracking-tight text-xs">Conflict: etaHEN + KStuff active</span>
+                <span className="font-bold uppercase tracking-tight text-xs">{t("autoload_overlay.conflict", "Conflict: etaHEN + KStuff active")}</span>
               </div>
             )}
 
@@ -73,7 +75,7 @@ const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
           <div className="h-[320px] w-full flex flex-col items-center justify-center">
             {isCountdown && (
               <div className="space-y-8 animate-in fade-in zoom-in duration-300 text-center">
-                <p className="text-ps-blue font-extrabold tracking-[0.2em] uppercase text-xl">Autoloading</p>
+                <p className="text-ps-blue font-extrabold tracking-[0.2em] uppercase text-xl">{t("autoload_overlay.autoloading", "Autoloading")}</p>
                 <div className="relative h-56 w-56 mx-auto flex items-center justify-center">
                   <svg className="absolute inset-0 w-full h-full -rotate-90 scale-110">
                     <circle cx="112" cy="112" r="100" fill="none" stroke="currentColor" strokeWidth="8" className="text-white/5" />
@@ -89,13 +91,13 @@ const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
                     {Math.ceil(localMs / 1000)}
                   </span>
                 </div>
-                <p className="text-zinc-500 font-bold uppercase tracking-widest text-sm">Waiting for manual abort...</p>
+                <p className="text-zinc-500 font-bold uppercase tracking-widest text-sm">{t("autoload_overlay.waiting", "Waiting for manual abort...")}</p>
               </div>
             )}
 
             {isExecuting && (
               <div className="space-y-8 animate-in fade-in zoom-in duration-300 text-center">
-                <p className="text-ps-blue font-black tracking-[0.4em] uppercase text-xl">Executing</p>
+                <p className="text-ps-blue font-black tracking-[0.4em] uppercase text-xl">{t("autoload_overlay.executing", "Executing")}</p>
                 <div className="relative h-56 w-56 mx-auto flex items-center justify-center">
                   <svg className="absolute inset-0 w-full h-full -rotate-90 scale-110">
                     <circle cx="112" cy="112" r="100" fill="none" stroke="currentColor" strokeWidth="8" className="text-white/5" />
@@ -111,7 +113,7 @@ const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
                     {Math.round(progress * 100)}%
                   </span>
                 </div>
-                <p className="text-zinc-500 font-bold uppercase tracking-widest text-sm italic">Loading Payloads...</p>
+                <p className="text-zinc-500 font-bold uppercase tracking-widest text-sm italic">{t("autoload_overlay.loading", "Loading Payloads...")}</p>
               </div>
             )}
 
@@ -121,8 +123,8 @@ const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
                   <CheckCircle2 className="w-20 h-20" />
                 </div>
                 <div className="text-center space-y-2">
-                  <h2 className="text-5xl md:text-6xl font-black text-white uppercase tracking-tighter">Autoload<br />Done</h2>
-                  <p className="text-zinc-500 font-bold uppercase text-sm tracking-[0.2em]">All payloads loaded</p>
+                  <h2 className="text-5xl md:text-6xl font-black text-white uppercase tracking-tighter">{t("autoload_overlay.done_title_1", "Autoload")}<br />{t("autoload_overlay.done_title_2", "Done")}</h2>
+                  <p className="text-zinc-500 font-bold uppercase text-sm tracking-[0.2em]">{t("autoload_overlay.all_loaded", "All payloads loaded")}</p>
                 </div>
               </div>
             )}
@@ -135,7 +137,7 @@ const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
                 onClick={onFinish}
                 className="w-full py-8 bg-ps-blue text-white text-3xl font-extrabold rounded-3xl hover:bg-[#007acc] transition-all transform active:scale-95 shadow-[0_0_30px_rgba(0,149,255,0.2)]"
               >
-                Return to Dashboard
+                {t("autoload_overlay.return_btn", "Return to Dashboard")}
               </button>
             ) : isCountdown ? (
               <button
@@ -143,7 +145,7 @@ const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
                 autoFocus
                 className="w-full py-8 bg-white/10 text-white border border-white/10 text-3xl font-black uppercase rounded-3xl hover:bg-red-600 hover:border-red-600 transition-all transform active:scale-95"
               >
-                Abort Autoload
+                {t("autoload_overlay.abort_btn", "Abort Autoload")}
               </button>
             ) : (
               <div className="h-[92px] w-full flex items-center justify-center">
@@ -167,7 +169,7 @@ const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
           >
             <div className="flex items-center justify-between mb-6 px-2 sticky top-0 bg-black/20 py-4 z-10 rounded-2xl border-b border-white/5">
               <h3 className="label-caps !text-white !opacity-100 text-sm tracking-widest flex items-center space-x-3">
-                <span>Payload List</span>
+                <span>{t("autoload_overlay.payload_list", "Payload List")}</span>
               </h3>
               <span className="bg-white/10 px-4 py-1 rounded-full text-zinc-300 font-black text-xs">
                 {isDone ? displayTotal : status.done} / {displayTotal}
@@ -199,7 +201,7 @@ const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
                     </div>
                     {done && (
                       <span className="text-emerald-500 text-[10px] font-black uppercase tracking-widest italic">
-                        Success
+                        {t("autoload_overlay.success", "Success")}
                       </span>
                     )}
                   </div>

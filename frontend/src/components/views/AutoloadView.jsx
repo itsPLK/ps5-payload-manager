@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { RefreshCw, ArrowLeft, ArrowRight, Activity, Zap, ChevronUp, ChevronDown, Trash2, CheckCircle2 } from 'lucide-react'
 import { cn, isPS5, isSystemPayload } from '../../utils/helpers'
+import { useTranslation } from 'react-i18next'
 import PayloadName from '../ui/PayloadName'
 import Modal from '../ui/Modal'
 
 const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) => {
+  const { t } = useTranslation()
   const [subView, setSubView] = useState('list')
   const [enabled, setEnabled] = useState(false)
   const [autoloadList, setAutoloadList] = useState([])
@@ -68,7 +70,7 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
     if (isKstuff) {
       const existing = autoloadList.find(x => x.toLowerCase().includes('kstuff'));
       if (existing) {
-        onToast(`Conflict: Multiple KStuff payloads detected.`, 'error');
+        onToast(t("autoload.conflict_kstuff", "Conflict: Multiple KStuff payloads detected."), 'error');
         return;
       }
     }
@@ -105,7 +107,7 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
               <ArrowLeft className="w-5 h-5" />
             </button>
           )}
-          <h3 className="label-caps !text-white !opacity-100 text-xl tracking-widest">Available Payloads</h3>
+          <h3 className="label-caps !text-white !opacity-100 text-xl tracking-widest">{t("autoload.available_title", "Available Payloads")}</h3>
         </div>
       </div>
       <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar min-h-0 pb-6">
@@ -137,21 +139,21 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
             >
               <div className="flex items-center space-x-4">
                 <Zap className="w-6 h-6 text-ps-blue" />
-                <span className="font-bold text-white uppercase tracking-tight text-xl">Add Delay</span>
+                <span className="font-bold text-white uppercase tracking-tight text-xl">{t("autoload.add_delay_btn", "Add Delay")}</span>
               </div>
               <ArrowRight className="w-6 h-6 text-zinc-500 group-hover:text-ps-blue group-hover:translate-x-2 transition-all" />
             </button>
           </div>
           <div className="pt-8 border-t border-white/5 mt-8 text-center space-y-4">
-            <p className="text-zinc-500 text-sm font-bold uppercase tracking-widest opacity-60">Missing a payload?</p>
+            <p className="text-zinc-500 text-sm font-bold uppercase tracking-widest opacity-60">{t("autoload.missing_payload", "Missing a payload?")}</p>
             <button
               onClick={() => onRedirect('storage', 'usb-storage')}
               className="group flex flex-col items-center mx-auto space-y-3"
             >
               <div className="flex items-center space-x-3 text-ps-blue group-hover:text-white transition-colors">
-                <span className="font-black italic text-lg uppercase tracking-tight">Move from USB to Internal</span>
+                <span className="font-black italic text-lg uppercase tracking-tight">{t("autoload.move_usb_btn", "Move from USB to Internal")}</span>
               </div>
-              <p className="text-xs text-zinc-600 max-w-[200px] leading-relaxed">Required for payloads you want to use in the Autoload sequence.</p>
+              <p className="text-xs text-zinc-600 max-w-[200px] leading-relaxed">{t("autoload.move_usb_desc", "Required for payloads you want to use in the Autoload sequence.")}</p>
             </button>
           </div>
         </div>
@@ -164,18 +166,18 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
       <div className="flex items-center justify-between shrink-0">
         <div className="flex flex-col">
           <h2 className="text-4xl font-extrabold text-white tracking-tight">
-            Autoload <span className="text-ps-blue">Sequence</span>
+            {t("autoload.sequence_title_1", "Autoload")} <span className="text-ps-blue">{t("autoload.sequence_title_2", "Sequence")}</span>
           </h2>
           <div className="h-6 mt-1 overflow-hidden">
             {saving ? (
               <div className="flex items-center space-x-2 text-ps-blue/60 text-xs font-bold uppercase tracking-widest">
                 <RefreshCw className="w-3 h-3 animate-spin" />
-                <span>Saving Changes...</span>
+                <span>{t("autoload.saving", "Saving Changes...")}</span>
               </div>
             ) : saved ? (
               <div className="flex items-center space-x-2 text-emerald-500 text-xs font-bold uppercase tracking-widest animate-in slide-in-from-bottom-2">
                 <CheckCircle2 className="w-3 h-3" />
-                <span>All Changes Saved</span>
+                <span>{t("autoload.saved", "All Changes Saved")}</span>
               </div>
             ) : null}
           </div>
@@ -184,7 +186,7 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
           onClick={() => handleToggle(false)}
           className="px-4 py-2 rounded-xl font-black uppercase italic tracking-tighter bg-red-600/10 text-red-500 border border-red-500/30 hover:bg-red-600 hover:text-white transition-all shadow-lg text-xs"
         >
-          Disable Autoload
+          {t("autoload.disable_btn", "Disable Autoload")}
         </button>
       </div>
 
@@ -214,7 +216,7 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
           {autoloadList.length === 0 && (
             <div className="flex-1 flex flex-col items-center justify-center opacity-10 italic py-20">
               <RefreshCw className="w-16 h-16 mb-4" />
-              <p className="text-2xl font-bold">Sequence Empty</p>
+              <p className="text-2xl font-bold">{t("autoload.sequence_empty", "Sequence Empty")}</p>
             </div>
           )}
 
@@ -224,7 +226,7 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
               className="w-full flex items-center justify-center space-x-4 p-6 bg-ps-blue/10 hover:bg-ps-blue text-ps-blue hover:text-white rounded-2xl border border-dashed border-ps-blue/30 hover:border-ps-blue transition-all group shadow-lg"
             >
               <Activity className="w-6 h-6" />
-              <span className="font-black italic text-xl uppercase tracking-tighter">Add Item to Sequence</span>
+              <span className="font-black italic text-xl uppercase tracking-tighter">{t("autoload.add_item_btn", "Add Item to Sequence")}</span>
             </button>
           </div>
         </div>
@@ -243,17 +245,17 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
         </div>
         <div className="space-y-3 md:space-y-4 px-4 max-w-2xl">
           <h2 className="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter">
-            Autoload <span className="text-ps-blue">Sequence</span>
+            {t("autoload.sequence_title_1", "Autoload")} <span className="text-ps-blue">{t("autoload.sequence_title_2", "Sequence")}</span>
           </h2>
           <p className="text-md md:text-xl text-zinc-400 font-medium leading-relaxed">
-            Chain multiple payloads to be executed automatically every time Payload Manager starts.
+            {t("autoload.enable_desc", "Chain multiple payloads to be executed automatically every time Payload Manager starts.")}
           </p>
         </div>
         <button
           onClick={() => handleToggle(true)}
           className="px-8 md:px-12 py-5 md:py-6 bg-ps-blue text-white text-lg md:text-2xl font-extrabold rounded-2xl md:rounded-[1.5rem] hover:bg-ps-blue/80 transition-all transform active:scale-95 shadow-[0_0_40px_rgba(0,149,255,0.3)]"
         >
-          Enable Autoload
+          {t("autoload.enable_btn", "Enable Autoload")}
         </button>
       </div>
     )
@@ -279,14 +281,14 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
 
       <Modal
         show={showDelayModal}
-        title="Configure Delay"
+        title={t("autoload.delay_modal.title", "Configure Delay")}
         onClose={() => setShowDelayModal(false)}
         footer={
           <button
             onClick={() => setShowDelayModal(false)}
             className="w-full py-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl font-bold uppercase tracking-tight transition-all"
           >
-            Cancel
+            {t("autoload.delay_modal.cancel", "Cancel")}
           </button>
         }
       >
@@ -304,11 +306,11 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
           </div>
 
           <div className="space-y-3 md:space-y-4">
-            <p className="label-caps !text-zinc-500 text-sm md:text-base">Custom Delay (ms)</p>
+            <p className="label-caps !text-zinc-500 text-sm md:text-base">{t("autoload.delay_modal.custom_delay_label", "Custom Delay (ms)")}</p>
             <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="number"
-                placeholder="e.g. 2500"
+                placeholder={t("autoload.delay_modal.placeholder", "e.g. 2500")}
                 value={customDelay}
                 onChange={(e) => setCustomDelay(e.target.value)}
                 className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-4 md:p-5 text-white font-mono text-xl md:text-2xl focus:border-ps-blue outline-none transition-all"
@@ -317,7 +319,7 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
                 onClick={() => customDelay && addDelay(parseInt(customDelay))}
                 className="py-4 md:py-0 px-8 md:px-10 bg-ps-blue text-white rounded-2xl font-black uppercase italic tracking-tighter text-lg md:text-xl shadow-2xl hover:bg-ps-blue/80 transition-all shrink-0"
               >
-                Add
+                {t("autoload.delay_modal.add_btn", "Add")}
               </button>
             </div>
           </div>
