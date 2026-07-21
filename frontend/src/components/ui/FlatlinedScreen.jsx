@@ -1,22 +1,24 @@
 import React, { useMemo } from 'react'
-import { Skull, RefreshCw, AlertTriangle } from 'lucide-react'
+import { Skull, RefreshCw, AlertTriangle, AlertCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '../../utils/helpers'
 import { useTheme } from '../../theme/ThemeContext'
 import HudButton from './HudButton'
 
 /**
- * CP2077-style death / error screen ("FLATLINED").
+ * Error / offline screen.
+ * - classic: clean rounded error card (no CP death-menu chrome)
+ * - cyberpunk: CP2077 "FLATLINED" death screen
  *
  * @param {object} props
  * @param {() => void} [props.onRetry]
- * @param {string} [props.title] — big FLATLINED heading (default)
- * @param {string} [props.message] — primary status line
- * @param {string} [props.detail] — secondary explanation (string or leave default offline copy)
+ * @param {string} [props.title]
+ * @param {string} [props.message]
+ * @param {string} [props.detail]
  * @param {string} [props.retryLabel]
- * @param {string} [props.chipLabel] — top-left warn chip
- * @param {boolean} [props.embedded] — fit inside a view (not full-viewport takeover)
- * @param {boolean} [props.showReload] — secondary RELOAD INTERFACE row
+ * @param {string} [props.chipLabel]
+ * @param {boolean} [props.embedded]
+ * @param {boolean} [props.showReload]
  */
 export default function FlatlinedScreen({
   onRetry,
@@ -33,6 +35,7 @@ export default function FlatlinedScreen({
   const isCyber = themeId === 'cyberpunk'
 
   const rain = useMemo(() => {
+    if (!isCyber) return []
     const cols = []
     for (let i = 0; i < 18; i++) {
       const digits = Array.from({ length: 28 }, () =>
@@ -47,7 +50,7 @@ export default function FlatlinedScreen({
       })
     }
     return cols
-  }, [])
+  }, [isCyber])
 
   const deckId = useMemo(
     () => `0.${String(Math.floor(Math.random() * 99999)).padStart(5, '0')}`,
@@ -59,17 +62,90 @@ export default function FlatlinedScreen({
     else window.location.reload()
   }
 
-  const flatTitle = title ?? t('app.offline.flatlined', 'FLATLINED')
   const flatMessage =
     message ?? t('app.offline.title', 'Payload Manager is not running...')
   const flatRetry = retryLabel ?? t('app.offline.retry', 'RETRY CONNECTION')
   const flatChip = chipLabel ?? t('app.offline.connection_lost', 'CONNECTION LOST')
 
+  const detailBody =
+    detail !== null ? (
+      detail !== undefined ? (
+        detail
+      ) : (
+        <>
+          {t('app.offline.message_1', 'Please ensure you have loaded')}{' '}
+          <strong>pldmgr.elf</strong>{' '}
+          {t(
+            'app.offline.message_2',
+            'on your PS5 before launching this application.'
+          )}
+        </>
+      )
+    ) : null
+
+  /* ── Classic: clean PS-style error card ── */
+  if (!isCyber) {
+    const classicTitle =
+      title ?? t('app.offline.error_title', 'Something went wrong')
+    return (
+      <div
+        className={cn(
+          'cp-flatlined cp-flatlined--classic',
+          embedded && 'cp-flatlined--embedded'
+        )}
+      >
+        <div className="cp-flatlined__panel">
+          <div className="cp-flatlined__brand">
+            <div className="cp-flatlined__icon-wrap">
+              <AlertCircle className="cp-flatlined__skull" strokeWidth={1.75} />
+            </div>
+            <div className="cp-flatlined__titles">
+              <h1 className="cp-flatlined__title">{classicTitle}</h1>
+              {flatChip && (
+                <p className="cp-flatlined__deck">{flatChip}</p>
+              )}
+            </div>
+          </div>
+
+          <p className="cp-flatlined__msg">{flatMessage}</p>
+
+          {detailBody != null && (
+            <p className="cp-flatlined__detail">{detailBody}</p>
+          )}
+
+          <div className="cp-flatlined__menu">
+            <button
+              type="button"
+              onClick={handleRetry}
+              className="cp-flatlined__classic-btn"
+            >
+              <RefreshCw className="w-5 h-5" />
+              {flatRetry}
+            </button>
+
+            {showReload && (
+              <button
+                type="button"
+                className="cp-flatlined__menu-item"
+                onClick={() => window.location.reload()}
+              >
+                {t('app.offline.reload', 'Reload page')}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  /* ── Cyberpunk: FLATLINED death screen ── */
+  const flatTitle = title ?? t('app.offline.flatlined', 'FLATLINED')
+
   return (
     <div
       className={cn(
         'cp-flatlined',
-        isCyber && 'cp-flatlined--cyber',
+        'cp-flatlined--cyber',
         embedded && 'cp-flatlined--embedded'
       )}
     >
@@ -111,21 +187,8 @@ export default function FlatlinedScreen({
 
         <p className="cp-flatlined__msg">{flatMessage}</p>
 
-        {detail !== null && (
-          <p className="cp-flatlined__detail">
-            {detail !== undefined ? (
-              detail
-            ) : (
-              <>
-                {t('app.offline.message_1', 'Please ensure you have loaded')}{' '}
-                <strong>pldmgr.elf</strong>{' '}
-                {t(
-                  'app.offline.message_2',
-                  'on your PS5 before launching this application.'
-                )}
-              </>
-            )}
-          </p>
+        {detailBody != null && (
+          <p className="cp-flatlined__detail">{detailBody}</p>
         )}
 
         <div className="cp-flatlined__menu">

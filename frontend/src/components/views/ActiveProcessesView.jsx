@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Cpu, Search, Loader2, Info, Trash2 } from 'lucide-react'
+import { Cpu, Search, Loader2, Info, Trash2, AlertTriangle } from 'lucide-react'
 import { useTranslation, Trans } from 'react-i18next'
 import { cn, isPS5 } from '../../utils/helpers'
 import ToggleSwitch from '../ui/ToggleSwitch'
 import HudButton from '../ui/HudButton'
 import FlatlinedScreen from '../ui/FlatlinedScreen'
+import { useTheme } from '../../theme/ThemeContext'
 
 const ActiveProcessesView = ({ ip, addToast, showConfirm }) => {
   const { t } = useTranslation()
+  const { themeId } = useTheme()
+  const isCyber = themeId === 'cyberpunk'
   const [processes, setProcesses] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -116,18 +119,35 @@ const ActiveProcessesView = ({ ip, addToast, showConfirm }) => {
             <p className="label-caps animate-pulse text-zinc-500">{t("active_processes.fetching", "Fetching process list...")}</p>
           </div>
         ) : error ? (
-          <FlatlinedScreen
-            embedded
-            showReload={false}
-            onRetry={() => fetchProcesses()}
-            chipLabel={t("active_processes.error_chip", "PROCESS SCAN FAILED")}
-            message={t("active_processes.error_loading", "Failed to load processes")}
-            detail={t(
-              "active_processes.error_detail",
-              "Could not read the process list from the console. The daemon may be busy, offline, or the endpoint timed out."
-            )}
-            retryLabel={t("active_processes.retry", "RETRY SCAN")}
-          />
+          isCyber ? (
+            <FlatlinedScreen
+              embedded
+              showReload={false}
+              onRetry={() => fetchProcesses()}
+              chipLabel={t("active_processes.error_chip", "PROCESS SCAN FAILED")}
+              message={t("active_processes.error_loading", "Failed to load processes")}
+              detail={t(
+                "active_processes.error_detail",
+                "Could not read the process list from the console. The daemon may be busy, offline, or the endpoint timed out."
+              )}
+              retryLabel={t("active_processes.retry", "RETRY SCAN")}
+            />
+          ) : (
+            /* Original classic error panel (pre-FLATLINED) */
+            <div className="py-12 bg-red-500/10 border border-red-500/20 rounded-2xl flex flex-col items-center justify-center space-y-4">
+              <AlertTriangle className="w-10 h-10 text-red-500" />
+              <p className="text-red-400 font-bold">
+                {t("active_processes.error_loading", "Failed to load processes")}
+              </p>
+              <button
+                type="button"
+                onClick={() => fetchProcesses()}
+                className="px-6 py-2 bg-red-500 hover:bg-red-400 text-white rounded-xl font-bold transition-colors"
+              >
+                {t("active_processes.retry", "Retry")}
+              </button>
+            </div>
+          )
         ) : filteredProcesses.length === 0 ? (
           <div className="py-20 flex flex-col items-center justify-center space-y-6 bg-white/[0.02] border-2 border-dashed border-white/5 rounded-2xl">
             <Cpu className="w-12 h-12 text-zinc-600" />
