@@ -50,11 +50,18 @@ export const THEME_VAR_KEYS = [
   '--theme-atmosphere',
 ]
 
+/** Favicon per theme (served from /public). */
+export const THEME_FAVICONS = {
+  classic: '/favicon-classic.svg',
+  cyberpunk: '/favicon-cyberpunk.svg',
+}
+
 export const THEMES = {
   classic: {
     id: 'classic',
     label: 'Classic',
     description: 'Original PS blue manager look',
+    favicon: THEME_FAVICONS.classic,
     vars: {
       '--color-ps-blue': '#0095ff',
       '--color-ps-blue-glow': 'rgba(0, 149, 255, 0.4)',
@@ -101,6 +108,7 @@ export const THEMES = {
     id: 'cyberpunk',
     label: 'Cyberpunk 2077',
     description: 'Night City HUD — red chrome, cyan select, code rain',
+    favicon: THEME_FAVICONS.cyberpunk,
     vars: {
       '--color-ps-blue': '#00f0ff',
       '--color-ps-blue-glow': 'rgba(0, 240, 255, 0.45)',
@@ -150,11 +158,43 @@ export function getTheme(id) {
 }
 
 /**
+ * Swap tab favicon for the active theme.
+ * Cache-bust so browsers actually repaint when switching.
+ */
+export function applyThemeFavicon(themeId) {
+  if (typeof document === 'undefined') return
+  const theme = getTheme(themeId)
+  const href =
+    theme.favicon ||
+    THEME_FAVICONS[theme.id] ||
+    THEME_FAVICONS[DEFAULT_THEME] ||
+    '/favicon-classic.svg'
+  // query param forces refresh when theme flips
+  const bust = `${href}?theme=${encodeURIComponent(theme.id)}`
+
+  let link = document.querySelector('link[rel="icon"][data-theme-favicon]')
+  if (!link) {
+    link = document.querySelector('link[rel="icon"][type="image/svg+xml"]')
+  }
+  if (!link) {
+    link = document.createElement('link')
+    link.setAttribute('rel', 'icon')
+    link.setAttribute('type', 'image/svg+xml')
+    link.setAttribute('data-theme-favicon', '1')
+    document.head.appendChild(link)
+  }
+  link.setAttribute('type', 'image/svg+xml')
+  link.setAttribute('data-theme-favicon', '1')
+  link.setAttribute('href', bust)
+}
+
+/**
  * Apply a theme with full isolation:
  * - removes every known theme class
  * - rewrites ALL theme CSS variables (complete set)
  * - sets data-theme for CSS selectors
  * - syncs body typography
+ * - swaps favicon for the selected theme
  */
 export function applyThemeVars(themeId) {
   const theme = getTheme(themeId)
@@ -181,4 +221,6 @@ export function applyThemeVars(themeId) {
     document.body.style.color = theme.vars['--color-text'] || ''
     document.body.style.backgroundColor = theme.vars['--color-ps-black'] || ''
   }
+
+  applyThemeFavicon(theme.id)
 }
