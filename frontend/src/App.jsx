@@ -11,7 +11,8 @@ import {
   Menu,
   Terminal,
   X,
-  Star
+  Star,
+  Layers
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -37,6 +38,7 @@ import MoveFromUsbView from './components/views/MoveFromUsbView'
 import LogViewer from './components/views/LogViewer'
 import ManageSourcesView from './components/views/ManageSourcesView'
 import ActiveProcessesView from './components/views/ActiveProcessesView'
+import CombosView from './components/views/CombosView'
 
 function App() {
   const { t } = useTranslation();
@@ -491,6 +493,7 @@ function App() {
             <NavButton sidebar sidebarExpanded={sidebarExpanded} active={view === 'dashboard'} onClick={() => setView('dashboard')} icon={LayoutDashboard} label={t("app.nav.dashboard", "Dashboard")} />
             <NavButton sidebar sidebarExpanded={sidebarExpanded} active={view === 'storage'} onClick={() => setView('storage')} icon={Database} label={t("app.nav.storage", "Manage Payloads")} />
             <NavButton sidebar sidebarExpanded={sidebarExpanded} active={view === 'autoload'} onClick={() => setView('autoload')} icon={RefreshCw} label={t("app.nav.autoload", "Autoload")} />
+            <NavButton sidebar sidebarExpanded={sidebarExpanded} active={view === 'combos'} onClick={() => setView('combos')} icon={Layers} label="Combos" />
             <NavButton sidebar sidebarExpanded={sidebarExpanded} active={view === 'processes'} onClick={() => setView('processes')} icon={Cpu} label={t("app.nav.processes", "Active Processes")} />
             <NavButton sidebar sidebarExpanded={sidebarExpanded} active={view === 'settings'} onClick={() => setView('settings')} icon={Settings} label={t("app.nav.settings", "Settings")} />
           </nav>
@@ -518,6 +521,7 @@ function App() {
         <NavButton active={view === 'dashboard'} onClick={() => setView('dashboard')} icon={LayoutDashboard} label={t("app.nav.dashboard", "Dashboard")} mobileLabel={t("app.nav.home_mobile", "Home")} />
         <NavButton showSeparator active={view === 'storage'} onClick={() => setView('storage')} icon={Database} label={t("app.nav.storage", "Manage Payloads")} mobileLabel={t("app.nav.manage_mobile", "Manage")} />
         <NavButton showSeparator active={view === 'autoload'} onClick={() => setView('autoload')} icon={RefreshCw} label={t("app.nav.autoload", "Autoload")} mobileLabel={t("app.nav.auto_mobile", "Auto")} />
+        <NavButton showSeparator active={view === 'combos'} onClick={() => setView('combos')} icon={Layers} label="Combos" mobileLabel="Combos" />
         <NavButton showSeparator active={view === 'processes'} onClick={() => setView('processes')} icon={Cpu} label={t("app.nav.processes", "Active Processes")} mobileLabel={t("app.nav.processes_mobile", "Processes")} />
         <NavButton showSeparator active={view === 'settings'} onClick={() => setView('settings')} icon={Settings} label={t("app.nav.settings", "Settings")} mobileLabel={t("app.nav.settings", "Settings")} />
         <NavButton
@@ -684,6 +688,13 @@ function App() {
                 if (target) setStorageScrollTarget(target)
                 setView(v)
               }}
+            />
+          )}
+
+          {view === 'combos' && (
+            <CombosView
+              payloads={payloads}
+              addToast={addToast}
             />
           )}
 
