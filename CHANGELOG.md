@@ -1,3 +1,13 @@
+## v0.5.1
+
+### 🚀 Features & UX Improvements
+* **Translations**: Updated localization files across supported languages.
+* **New Languages**:
+  * **Arabic** (thanks to mohamad.z.k28, abdoulacadat, DumDum143, HoussamLovy, c0ncerta, sgs2ofameer)
+  * **Thai** (thanks to Modmycon, hpokemon776)
+
+**Full Changelog**: [v0.5.0...v0.5.1](https://github.com/itsPLK/ps5-payload-manager/compare/v0.5.0...v0.5.1)
+
 ## v0.5.0
 
 ### 🚀 Features & UX Improvements
