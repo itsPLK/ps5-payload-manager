@@ -13,6 +13,7 @@
     "dev:mock": "concurrently \"npm run mock\" \"npm run dev\"",
     "build": "vite build",
     "lint": "eslint .",
+    "test": "node --test src/utils/payloadStatus.test.js",
     "preview": "vite preview",
     "extract": "i18next"
   },
