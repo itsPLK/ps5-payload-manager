@@ -3,6 +3,7 @@ import { CloudDownload, Upload, Package, Database, RefreshCw, Trash2, Loader2, A
 import { useTranslation } from 'react-i18next'
 import { QRCodeSVG } from 'qrcode.react'
 import { cn, isPS5, isIOS, parsePayloadName } from '../../utils/helpers'
+import { getInstalledPayloads, getPayloadStatus, isUsbPayloadPath } from '../../utils/payloadStatus'
 import PayloadName from '../ui/PayloadName'
 
 const PayloadItem = ({ p, multiSources, isPS5, onInstall, srcId, srcUrl }) => {
@@ -136,26 +137,12 @@ const StorageHub = ({ payloads, payloadMeta, onInstall, onDelete, onUpload, onIm
     }
   }, [scrollTarget]);
 
-  const localFilenames = useMemo(() => payloads.map(p => p.split('/').pop()), [payloads])
-  const internalPayloads = payloads.filter(p => !p.includes('/mnt/usb'))
-
-  const getBaseName = (filename) => {
-    if (!filename) return '';
-    let clean = filename.replace(/\.(elf|bin)$/i, '');
-    const versionMatch = clean.match(/[_-]v?(\d+[\d.a-z-]+)/i);
-    if (versionMatch) clean = clean.replace(versionMatch[0], '');
-    return clean.replace(/[_-]ps[45]$/i, '');
-  }
+  const installedPayloads = useMemo(() => getInstalledPayloads(payloads, payloadMeta), [payloads, payloadMeta])
+  const internalPayloads = payloads.filter(p => !isUsbPayloadPath(p))
 
   /* ---- Derive remote status for a flat list of payloads ---- */
   const enrichPayloads = (list) =>
-    list.map(p => {
-      const isInstalled = p.filename ? localFilenames.includes(p.filename) : false
-      const baseName = getBaseName(p.filename)
-      const installedVersion = localFilenames.find(f => getBaseName(f) === baseName)
-      const isUpdate = !isInstalled && !!installedVersion
-      return { ...p, isInstalled, isUpdate, installedFilename: installedVersion }
-    }).sort((a, b) => {
+    list.map(p => getPayloadStatus(p, installedPayloads)).sort((a, b) => {
       if (a.isUpdate && !b.isUpdate) return -1
       if (!a.isUpdate && b.isUpdate) return 1
       
@@ -170,7 +157,12 @@ const StorageHub = ({ payloads, payloadMeta, onInstall, onDelete, onUpload, onIm
       return repoData.sources.map(src => ({
         ...src,
         id: src.id || src.url,
-        payloads: enrichPayloads(src.payloads || [])
+        payloads: enrichPayloads((src.payloads || []).map(p => ({
+          ...p,
+          source_id: p.source_id || src.id,
+          source_name: p.source_name || src.name,
+          source_url: p.source_url || src.url || ''
+        })))
       }))
     } else if (!multiSources && repoData?.payloads) {
       return [{
@@ -178,11 +170,16 @@ const StorageHub = ({ payloads, payloadMeta, onInstall, onDelete, onUpload, onIm
         name: t("storage_hub.default_repository", "Default Repository"),
         url: repoData.repo_url || '',
         last_update: repoData.last_update || 0,
-        payloads: enrichPayloads(repoData.payloads)
+        payloads: enrichPayloads(repoData.payloads.map(p => ({
+          ...p,
+          source_id: p.source_id || 'legacy-repo',
+          source_name: p.source_name || t("storage_hub.default_repository", "Default Repository"),
+          source_url: p.source_url || repoData.repo_url || ''
+        })))
       }]
     }
     return []
-  }, [repoData, multiSources, localFilenames, t])
+  }, [repoData, multiSources, installedPayloads, t])
 
   const legacyRepoUrl = repoData?.repo_url || ''
 
@@ -233,7 +230,7 @@ const StorageHub = ({ payloads, payloadMeta, onInstall, onDelete, onUpload, onIm
               const sourceBadge = getSourceBadge(fileName)
               // Find update in all sources (multi or legacy)
               const allRemote = enrichedSources.flatMap(s => s.payloads)
-              const remoteMatch = allRemote.find(rp => rp.filename === fileName || rp.installedFilename === fileName)
+              const remoteMatch = allRemote.find(rp => rp.isUpdate && rp.installedFilename === fileName)
               const remoteVersion = remoteMatch?.version || (remoteMatch?.filename ? parsePayloadName(remoteMatch.filename).version : null)
               return (
                 <div key={path} className="group flex flex-col justify-center p-4 md:p-6 glass-card rounded-ps-2xl border-white/10 hover:border-ps-blue/30 gap-3 md:gap-4 relative overflow-hidden">
@@ -264,7 +261,7 @@ const StorageHub = ({ payloads, payloadMeta, onInstall, onDelete, onUpload, onIm
                   </div>
                   {remoteMatch?.isUpdate && (
                     <button
-                      onClick={() => onInstall(remoteMatch, remoteMatch.source_id, legacyRepoUrl)}
+                      onClick={() => onInstall(remoteMatch, remoteMatch.source_id, remoteMatch.source_url || legacyRepoUrl)}
                       className="w-full flex items-center justify-center space-x-2 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs md:text-sm transition-all"
                     >
                       <RefreshCw className="w-4 h-4 md:w-5 md:h-5" />
