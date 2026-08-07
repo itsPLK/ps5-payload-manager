@@ -38,6 +38,10 @@ import LogViewer from './components/views/LogViewer'
 import ManageSourcesView from './components/views/ManageSourcesView'
 import ActiveProcessesView from './components/views/ActiveProcessesView'
 
+// Convert a payload path to its display name (e.g., "/data/pldmgr/ftp_srv/ftp_srv_v1.elf" → "ftp srv v1")
+const getDisplayName = (path) =>
+  path.split('/').pop().replace(/\.(elf|bin)$/i, '').replace(/_/g, ' ')
+
 function App() {
   const { t } = useTranslation();
   const [view, setView] = useState('dashboard')
@@ -201,7 +205,7 @@ function App() {
   }
 
   const loadPayload = async (path) => {
-    const name = path.split('/').pop().replace(/\.(elf|bin)$/i, '').replace(/_/g, ' ')
+    const name = getDisplayName(path)
     setLoading(true)
     setActiveLoadingName(name)
     try {
@@ -553,22 +557,26 @@ function App() {
               "grid gap-4 md:gap-6 transition-all",
               isPS5 ? "grid-cols-3 xl:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             )
-            const makeCard = (p) => (
-              <PayloadButton
-                key={p}
-                path={p}
-                onClick={() => isFavoriteEditMode ? toggleFavorite(p) : loadPayload(p)}
-                isLoading={loading && activeLoadingName === p.split('/').pop().replace(/\.(elf|bin)$/i, '').replace(/_/g, ' ')}
-                sourceName={config.MULTI_SOURCES_ENABLED ? (payloadMeta[p.split('/').pop()]?.source_name || null) : null}
-                version={payloadMeta[p.split('/').pop()]?.version || null}
-                isFavorite={favoritePayloads.includes(p)}
-                isLaunched={launchHistory.includes(p)}
-                isEditMode={isFavoriteEditMode}
-                onMoveFavorite={moveFavorite}
-                canMoveLeft={activeFavorites.indexOf(p) > 0}
-                canMoveRight={activeFavorites.indexOf(p) < activeFavorites.length - 1}
-              />
-            )
+            const makeCard = (p) => {
+              const fileName = p.split('/').pop()
+              const meta = payloadMeta[fileName]
+              return (
+                <PayloadButton
+                  key={p}
+                  path={p}
+                  onClick={() => isFavoriteEditMode ? toggleFavorite(p) : loadPayload(p)}
+                  isLoading={loading && activeLoadingName === getDisplayName(p)}
+                  sourceName={config.MULTI_SOURCES_ENABLED ? (meta?.source_name || null) : null}
+                  version={meta?.version || null}
+                  isFavorite={favoritePayloads.includes(p)}
+                  isLaunched={launchHistory.includes(p)}
+                  isEditMode={isFavoriteEditMode}
+                  onMoveFavorite={moveFavorite}
+                  canMoveLeft={activeFavorites.indexOf(p) > 0}
+                  canMoveRight={activeFavorites.indexOf(p) < activeFavorites.length - 1}
+                />
+              )
+            }
             return (
               <div className={cn(
                 "space-y-8 md:space-y-12 transition-all",

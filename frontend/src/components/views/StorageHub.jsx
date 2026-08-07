@@ -243,7 +243,7 @@ const StorageHub = ({ payloads, payloadMeta, onInstall, onDelete, onUpload, onIm
                         <Package className="w-6 h-6 md:w-8 md:h-8 text-zinc-400 group-hover:text-ps-blue transition-colors" />
                       </div>
                       <div className="min-w-0 flex-1 space-y-1">
-                        <PayloadName path={fileName} className="text-xl md:text-2xl text-white" stacked />
+                        <PayloadName path={fileName} version={payloadMeta[fileName]?.version || null} className="text-xl md:text-2xl text-white" stacked />
                         {sourceBadge && (
                           <div className="flex items-center gap-1 text-zinc-500 text-[11px] select-none font-medium">
                             <Globe className="w-3.5 h-3.5" />
