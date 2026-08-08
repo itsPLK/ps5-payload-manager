@@ -685,6 +685,7 @@ function App() {
           {view === 'autoload' && (
             <AutoloadView
               payloads={payloads}
+              payloadMeta={payloadMeta}
               config={config}
               onSaveConfig={handleSaveConfig}
               onToast={addToast}

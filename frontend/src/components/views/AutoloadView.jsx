@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import PayloadName from '../ui/PayloadName'
 import Modal from '../ui/Modal'
 
-const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) => {
+const AutoloadView = ({ payloads, payloadMeta = {}, config, onSaveConfig, onToast, onRedirect }) => {
   const { t } = useTranslation()
   const [subView, setSubView] = useState('list')
   const [enabled, setEnabled] = useState(false)
@@ -127,7 +127,7 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
                   isBlocked ? "opacity-40 cursor-not-allowed" : "bg-white/[0.03] hover:border-ps-blue group"
                 )}
               >
-                <PayloadName path={p} className={cn("text-xl", isBlocked ? "text-zinc-500" : "text-white")} stacked />
+                <PayloadName path={p} version={payloadMeta[p]?.version || null} className={cn("text-xl", isBlocked ? "text-zinc-500" : "text-white")} stacked />
                 <ArrowRight className={cn("w-6 h-6 transition-all shrink-0 mt-1", isBlocked ? "text-zinc-800" : "text-zinc-500 group-hover:text-ps-blue group-hover:translate-x-2")} />
               </button>
             )
@@ -198,7 +198,7 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
                 <span className="text-gray-500 text-[12px] font-black">{i + 1}</span>
               </div>
               <div className="flex items-center min-w-0 pl-2">
-                <PayloadName path={p} className="text-white" stacked />
+                <PayloadName path={p} version={payloadMeta[p]?.version || null} className="text-white" stacked />
               </div>
               <div className="flex items-center space-x-2">
                 <button onClick={() => moveUp(i)} disabled={i === 0} className="p-2 bg-white/10 text-zinc-400 hover:bg-ps-blue hover:text-white rounded-xl disabled:opacity-20">
