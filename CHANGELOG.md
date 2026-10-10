@@ -1,3 +1,6 @@
+## v0.5.2
+- Rebuilt with latest SDK
+
 ## v0.5.1
 
 ### 🚀 Features & UX Improvements
