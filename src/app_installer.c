@@ -138,6 +138,12 @@ int pldmgr_install_app_if_needed(void) {
     return -1;
   }
 
+  if (mkdir("/user/app", 0770) && errno != EEXIST) {
+    pldmgr_log("[PLDMGR] Failed to create /user/app (errno: %d)\n", errno);
+    sceAppInstUtilTerminate();
+    return -1;
+  }
+
   if (mkdir(base_dir, 0755) && errno != EEXIST) {
     pldmgr_log("[PLDMGR] Failed to create app dir: %s (errno: %d)\n", base_dir,
            errno);
