@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -186,7 +187,13 @@ void* pldmgr_autoload_worker(void* arg) {
                 pldmgr_log("[Autoload] Launching: %s\n", full_path);
                 ps5_launch_elf(full_path);
                 autoload_done_count++;
-                usleep(500000); /* UI visibility */
+                if (strcasestr(line, "kstuff") != NULL) {
+                    /* Allow kstuff to finish installing kernel traps and patching
+                     * SceShellCore before subsequent payloads attach to it. */
+                    usleep(3000000);
+                } else {
+                    usleep(500000); /* UI visibility */
+                }
             } else {
                 pldmgr_log("[Autoload] !!! Payload not found: %s\n", line);
             }

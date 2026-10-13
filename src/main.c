@@ -148,9 +148,6 @@ int main(int argc, char *argv[]) {
 
     pldmgr_log("[PLDMGR] Server is running. Visit /shutdown to exit.\n");
 
-    /* Try cache refresh */
-    repository_ensure_fresh(0);
-
     /* Startup Notification - Only show if browser autostart is off */
     char current_ip[64] = "unknown";
     pldmgr_get_local_ip(current_ip, sizeof(current_ip));
@@ -164,7 +161,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    /* Start Autoload Sequence (if config exists) */
+    /* Start Autoload Sequence (if config exists) before any network repo check */
     pldmgr_autoload_start();
 
     if (cfg.auto_browser_open) {
@@ -172,6 +169,9 @@ int main(int argc, char *argv[]) {
         snprintf(browser_url, sizeof(browser_url), "http://127.0.0.1:%d", port);
         ps5_launch_browser(browser_url);
     }
+
+    /* Try cache refresh */
+    repository_ensure_fresh(0);
 
     /* Watchdog and main loop */
     int network_check_timer = 0;

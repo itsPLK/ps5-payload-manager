@@ -11,6 +11,8 @@
 #include <stdint.h>
 
 #include "process_mgr.h"
+#include "history_mgr.h"
+#include "payload_mgr.h"
 #include "json_helpers.h"
 #include "pldmgr.h"
 
@@ -38,6 +40,84 @@ static int is_user_daemon(const char *name, uint32_t app_id) {
     if (ext && strcasecmp(ext, ".elf") == 0) return 1;
 
     return 0;
+}
+
+static void get_pid_comm(int pid, char *out_comm, size_t out_size) {
+    int mib[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC, 0};
+    size_t buf_size = 0;
+    void *sysctl_buf = NULL;
+
+    out_comm[0] = '\0';
+    if (sysctl(mib, 4, NULL, &buf_size, NULL, 0) != 0 || buf_size == 0)
+        return;
+
+    sysctl_buf = malloc(buf_size);
+    if (!sysctl_buf)
+        return;
+
+    if (sysctl(mib, 4, sysctl_buf, &buf_size, NULL, 0) == 0) {
+        for (void *ptr = sysctl_buf; ptr < (sysctl_buf + buf_size);) {
+            struct kinfo_proc *ki = (struct kinfo_proc *)ptr;
+            if (ki->ki_structsize == 0) break;
+            ptr += ki->ki_structsize;
+
+            if ((int)ki->ki_pid == pid) {
+                strncpy(out_comm, ki->ki_comm, out_size - 1);
+                out_comm[out_size - 1] = '\0';
+                break;
+            }
+        }
+    }
+    free(sysctl_buf);
+}
+
+void process_sync_daemons_to_history(void) {
+    int mib[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC, 0};
+    size_t buf_size = 0;
+    void *sysctl_buf = NULL;
+
+    if (sysctl(mib, 4, NULL, &buf_size, NULL, 0) != 0 || buf_size == 0)
+        return;
+
+    sysctl_buf = malloc(buf_size);
+    if (!sysctl_buf)
+        return;
+
+    if (sysctl(mib, 4, sysctl_buf, &buf_size, NULL, 0) == 0) {
+        for (void *ptr = sysctl_buf; ptr < (sysctl_buf + buf_size);) {
+            struct kinfo_proc *ki = (struct kinfo_proc *)ptr;
+            if (ki->ki_structsize == 0) break;
+            ptr += ki->ki_structsize;
+
+            if (strcmp(ki->ki_comm, "pldmgr.elf") == 0 ||
+                strcmp(ki->ki_comm, "elfldr.elf") == 0) {
+                continue;
+            }
+
+            app_info_t appinfo;
+            if (sceKernelGetAppInfo(ki->ki_pid, &appinfo)) {
+                memset(&appinfo, 0, sizeof(appinfo));
+            }
+            if (!is_user_daemon(ki->ki_comm, appinfo.app_id))
+                continue;
+
+            char resolved[512];
+            if (payload_mgr_resolve_path(ki->ki_comm, resolved, sizeof(resolved)) == 0) {
+                history_mgr_add(resolved);
+            } else {
+                const char *ext = strrchr(ki->ki_comm, '.');
+                if (ext && strcasecmp(ext, ".elf") == 0) {
+                    char alt_name[256];
+                    size_t stem_len = (size_t)(ext - ki->ki_comm);
+                    snprintf(alt_name, sizeof(alt_name), "%.*s-ps5.elf", (int)stem_len, ki->ki_comm);
+                    if (payload_mgr_resolve_path(alt_name, resolved, sizeof(resolved)) == 0) {
+                        history_mgr_add(resolved);
+                    }
+                }
+            }
+        }
+    }
+    free(sysctl_buf);
 }
 
 size_t process_list_json(char *buf, size_t max_size) {
@@ -94,7 +174,14 @@ int process_kill(int pid) {
     /* Prevent killing our own process */
     if (pid == getpid()) return -1;
 
+    char comm[64] = {0};
+    get_pid_comm(pid, comm, sizeof(comm));
+
     if (kill(pid, SIGKILL) == 0) {
+        if (comm[0] != '\0') {
+            usleep(50000); /* Allow kernel to reap process before next history sync */
+            history_mgr_remove_by_name(comm);
+        }
         return 0;
     }
     return -1;
