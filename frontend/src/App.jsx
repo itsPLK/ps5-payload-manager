@@ -196,6 +196,7 @@ function App() {
 
   const handleFinish = async () => {
     await fetch('/autoload_clear').catch(() => { })
+    await refreshHistory()
     setAutoloadStatus(null)
     window.location.reload()
   }
@@ -371,7 +372,9 @@ function App() {
 
 
   useEffect(() => {
-    if (view === 'autoload' || view === 'storage') {
+    if (view === 'dashboard') {
+      refreshHistory()
+    } else if (view === 'autoload' || view === 'storage') {
       refreshConfig()
       refreshPayloads()
     }
@@ -385,6 +388,9 @@ function App() {
         if (res.ok) {
           const data = await res.json()
           setAutoloadStatus(data)
+          if (data?.current === 'DONE') {
+            refreshHistory()
+          }
 
           // Poll as long as autoload is active (remaining >= 0), including DONE state
           // Only stop when remaining goes negative (after /autoload_clear is called)
