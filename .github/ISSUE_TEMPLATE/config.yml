@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Download the Latest Version of Payload Manager
+    url: https://github.com/itsPLK/ps5-payload-manager/releases
+    about: Make sure you're using the latest version before reporting an issue.

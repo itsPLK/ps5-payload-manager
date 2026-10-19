@@ -1,0 +1,137 @@
+name: Bug report
+description: Report a bug in Payload Manager.
+title: "[Bug]: "
+labels: [bug]
+projects: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug!
+        Please provide as much detail as possible so we can reproduce and investigate the issue.
+
+  - type: textarea
+    id: describe
+    attributes:
+      label: Describe the bug
+      description: Provide a clear and concise description of the problem.
+      placeholder: Describe what went wrong.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Provide the steps needed to reproduce the issue.
+      placeholder: |
+        1. Open Payload Manager.
+        2. Select a payload.
+        3. Perform the action.
+        4. Observe the issue.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: Describe what you expected to happen.
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Include any other information that may help investigate the issue.
+
+  - type: dropdown
+    id: version
+    attributes:
+      label: Payload Manager version
+      description: Which version are you using?
+      options:
+        - "0.6.3"
+        - "0.6.2"
+        - "0.5.2"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: firmware
+    attributes:
+      label: PS5 Firmware
+      description: Select all firmware versions on which the issue occurs.
+      multiple: true
+      options:
+        - "13.60"
+        - "13.42"
+        - "13.40"
+        - "13.20"
+        - "13.00"
+        - "12.70"
+        - "12.60"
+        - "12.40"
+        - "12.02"
+        - "12.00"
+        - "11.60"
+        - "11.40"
+        - "11.20"
+        - "11.00"
+        - "10.60"
+        - "10.40"
+        - "10.20"
+        - "10.01"
+        - "10.00"
+        - "9.60"
+        - "9.40"
+        - "9.20"
+        - "9.00"
+        - "8.60"
+        - "8.40"
+        - "8.20"
+        - "8.00"
+        - "7.61"
+        - "7.40"
+        - "7.20"
+        - "7.01"
+        - "6.50"
+        - "6.02"
+        - "6.00"
+        - "5.50"
+        - "5.10"
+        - "4.51"
+        - "4.50"
+        - "4.03"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: exploit
+    attributes:
+      label: Exploit
+      description: Which exploit are you using?
+      options:
+        - Relapse
+        - Lapse
+        - Poops
+        - P2JB
+        - UMTX2
+        - Other
+        - Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: jailbreak_method
+    attributes:
+      label: Jailbreak / Payload Method
+      description: Which entry point or payload-loading method are you using?
+      options:
+        - WebKit
+        - Y2JB
+        - Autoloader (WebKit)
+        - Autoloader (Y2JB)
+        - Normal ELF
+        - BD-JB
+        - Other
+        - Unknown
