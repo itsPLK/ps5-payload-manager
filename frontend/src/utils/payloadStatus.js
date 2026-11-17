@@ -26,6 +26,17 @@ export function isRepositoryPayloadVisible(payload, srcUrl) {
     ![payload?.id, payload?.name, payload?.filename].some(isSystemPayload);
 }
 
+/**
+ * Moves payloads with an available update to the front of the list while
+ * keeping the existing relative order of both groups (stable partition).
+ */
+export function pinUpdatesFirst(payloads = []) {
+  const updates = [];
+  const rest = [];
+  for (const p of payloads) (p?.isUpdate ? updates : rest).push(p);
+  return updates.concat(rest);
+}
+
 export function normalizeUrl(url) {
   if (!url || typeof url !== 'string') return '';
   return url.trim().replace(/\/+$/, '');

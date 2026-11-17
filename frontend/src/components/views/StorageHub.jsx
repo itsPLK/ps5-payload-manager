@@ -3,7 +3,7 @@ import { CloudDownload, Upload, Package, Database, RefreshCw, Loader2, AlertTria
 import { useTranslation } from 'react-i18next'
 import { QRCodeSVG } from 'qrcode.react'
 import { cn, isPS5, isIOS } from '../../utils/helpers'
-import { getPayloadStatus, resolveSourceDisplayName, isRepositoryPayloadVisible } from '../../utils/payloadStatus'
+import { getPayloadStatus, resolveSourceDisplayName, isRepositoryPayloadVisible, pinUpdatesFirst } from '../../utils/payloadStatus'
 import { slug } from '../../utils/versions'
 import { formatSyncTime } from '../../utils/syncTime'
 import PayloadName from '../ui/PayloadName'
@@ -551,6 +551,7 @@ const StorageHub = ({
                   return acc
                 }, {})
                 categories = Object.keys(groupedPayloads).sort()
+                for (const cat of categories) groupedPayloads[cat] = pinUpdatesFirst(groupedPayloads[cat])
                 hasMultipleCategories = categories.length > 1
               } else {
                 availablePayloads.sort((a, b) => {
@@ -566,6 +567,7 @@ const StorageHub = ({
                   return 0
                 })
               }
+              availablePayloads = pinUpdatesFirst(availablePayloads)
 
               return (
                 <div
