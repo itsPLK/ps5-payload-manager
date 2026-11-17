@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { getPayloadStatus, formatRepoNameFromUrl, resolveSourceDisplayName, isGitHubUrl, isOfficialSource } from '../src/utils/payloadStatus.js';
+import { getPayloadStatus, formatRepoNameFromUrl, resolveSourceDisplayName, isGitHubUrl, isOfficialSource, pinUpdatesFirst } from '../src/utils/payloadStatus.js';
 
 const OFFICIAL_URL = 'https://official.repo/payloads.json';
 const OTHER_URL = 'https://other.repo/payloads.json';
@@ -303,4 +303,18 @@ test('isOfficialSource accurately identifies official repo names and urls', () =
   assert.equal(isOfficialSource('My Custom Source', 'https://example.com/payloads.json'), false);
   assert.equal(isOfficialSource('Other Repository'), false);
   assert.equal(isOfficialSource(null, null), false);
+});
+
+test('pinUpdatesFirst moves updates to the front and keeps relative order', () => {
+  const list = [
+    { id: 'a' },
+    { id: 'b', isUpdate: true },
+    { id: 'c' },
+    { id: 'd', isUpdate: true },
+    { id: 'e', isUpdate: false },
+  ];
+  assert.deepEqual(pinUpdatesFirst(list).map((p) => p.id), ['b', 'd', 'a', 'c', 'e']);
+  assert.deepEqual(list.map((p) => p.id), ['a', 'b', 'c', 'd', 'e'], 'input is not mutated');
+  assert.deepEqual(pinUpdatesFirst([]), []);
+  assert.deepEqual(pinUpdatesFirst(), []);
 });
